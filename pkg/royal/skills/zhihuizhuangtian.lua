@@ -29,7 +29,7 @@ draw_effect:addEffect(fk.DrawNCards, {
     data.n = data.n + 1
     player.room:removePlayerMark(player, "@zhihuizhuangtian_draw")
     player.room:notifySkillInvoked(player, "zhihuizhuangtian")
-    player.room:broadcastSkillInvoke("zhihuizhuangtian")
+    player:broadcastSkillInvoke("zhihuizhuangtian")
   end,
 })
 
@@ -69,29 +69,25 @@ zhihuizhuangtian:addEffect(fk.RoundStart, {
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(self.name)
   end,
-  on_cost = function(self, event, target, player, data)
-    local room = player.room
-    local targets = room:getAlivePlayers()
-    local choices = room:askForChoosePlayers(player, targets, 0, 3, 
-      "#zhihuizhuangtian-choose", self.name, true)
-    if #choices > 0 then
-      self.cost_data = choices
-      return true
-    end
-    return false
-  end,
+  on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local choices = self.cost_data
-    
-    room:notifySkillInvoked(player, self.name)
-    
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
-      room:addPlayerMark(targetPlayer, "@zhihuizhuangtian_draw", 1)
-      room:addPlayerMark(targetPlayer, "@zhihuizhuangtian_slash", 1)
+    local targets = room:getAlivePlayers()
+    local to = room:askToChoosePlayers(player,{
+      targets=targets,
+      min_num=0,
+      max_num=3, 
+      skill_name=zhihuizhuangtian.name,
+      prompt="#zhihuizhuangtian-choose", 
+      cancelable=true})
+    if #to > 0 then
+      room:notifySkillInvoked(player, self.name)
+      for _, targetPlayer in ipairs(to) do
+        room:addPlayerMark(targetPlayer, "@zhihuizhuangtian_draw", 1)
+       room:addPlayerMark(targetPlayer, "@zhihuizhuangtian_slash", 1)
+      end
     end
-  end,
+  end
 })
 
 return zhihuizhuangtian
