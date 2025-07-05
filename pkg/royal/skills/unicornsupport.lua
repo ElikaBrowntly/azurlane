@@ -81,8 +81,13 @@ support:addEffect(fk.CardUsing, {
     local room = player.room
     local all_players = room:getAlivePlayers()
     
-    local choices = room:askForChoosePlayers(player, all_players, 0, #all_players, 
-      "#unicornsupport-choose", support.name, true)
+    local choices = room:askToChoosePlayers(player, {
+      targets=all_players,
+      min_num=0,
+      max_num=#all_players, 
+      prompt="#unicornsupport-choose",
+      skill_name=support.name,
+      cancelable=true})
     
     if #choices == 0 then
       return
@@ -91,34 +96,36 @@ support:addEffect(fk.CardUsing, {
     local min_hp_players = {}
     local min_hp = 100
     local hp_values = {}
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
-      hp_values[pid] = targetPlayer.hp
+    for _, targetPlayer in ipairs(choices) do
+      hp_values[targetPlayer] = targetPlayer.hp
     end
     
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
+    for _, targetPlayer in ipairs(choices) do
       applySupportEffect(room, player, targetPlayer, 1, support.name)
     end
 
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
+    for _, targetPlayer in ipairs(choices) do
       local hp = targetPlayer.hp
       if hp < min_hp then
         min_hp = hp
-        min_hp_players = {pid}
+        min_hp_players = {targetPlayer}
       elseif hp == min_hp then
-        table.insert(min_hp_players, pid)
+        table.insert(min_hp_players, targetPlayer)
       end
     end
     
     if #min_hp_players > 0 then
-      local choice = room:askForChoosePlayers(player, min_hp_players, 0, 1, 
-        "#unicornsupport-choose-extra", support.name, true)
+      local choice = room:askToChoosePlayers(player, {
+        targets=min_hp_players,
+        min_num=0,
+        max_num=1, 
+        prompt="#unicornsupport-choose-extra", 
+        skill_name=support.name,
+        cancelable=true}
+      )
       
       if #choice > 0 then
-        local targetPlayer = room:getPlayerById(choice[1])
-        applySupportEffect(room, player, targetPlayer, 1, support.name)
+        applySupportEffect(room, player, choice[1], 1, support.name)
       end
     end
   end,
@@ -139,8 +146,13 @@ support:addEffect(fk.CardResponding, {
     local room = player.room
     local all_players = room:getAlivePlayers()
     
-    local choices = room:askForChoosePlayers(player, all_players, 0, #all_players, 
-      "#unicornsupport-choose", support.name, true)
+    local choices = room:askToChoosePlayers(player,{ 
+      targets=all_players,
+      min_num=0,
+      max_num=#all_players, 
+      prompt="#unicornsupport-choose", 
+      skill_name=support.name,
+      cancelable=true})
     
     if #choices == 0 then
       return
@@ -149,34 +161,35 @@ support:addEffect(fk.CardResponding, {
     local min_hp_players = {}
     local min_hp = 100
     local hp_values = {}
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
-      hp_values[pid] = targetPlayer.hp
+    for _, targetPlayer in ipairs(choices) do
+      hp_values[targetPlayer] = targetPlayer.hp
     end
     
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
+    for _, targetPlayer in ipairs(choices) do
       applySupportEffect(room, player, targetPlayer, 1, support.name)
     end
     
-    for _, pid in ipairs(choices) do
-      local targetPlayer = room:getPlayerById(pid)
-      local hp = targetPlayer.hp
-      if hp < min_hp then
-        min_hp = hp
-        min_hp_players = {pid}
-      elseif hp == min_hp then
-        table.insert(min_hp_players, pid)
-      end
+    for _, targetPlayer in ipairs(choices) do
+        local hp = targetPlayer.hp
+        if hp < min_hp then
+            min_hp = hp
+            min_hp_players = {targetPlayer} 
+        elseif hp == min_hp then
+            table.insert(min_hp_players, targetPlayer) 
+        end
     end
     
     if #min_hp_players > 0 then
-      local choice = room:askForChoosePlayers(player, min_hp_players, 0, 1, 
-        "#unicornsupport-choose-extra", support.name, true)
+      local choice = room:askToChoosePlayers(player,{
+        targets=min_hp_players, 
+        min_num=0,
+        max_num=1, 
+        prompt="#unicornsupport-choose-extra",
+        skill_name=support.name, 
+        cancelable=true} )
       
       if #choice > 0 then
-        local targetPlayer = room:getPlayerById(choice[1])
-        applySupportEffect(room, player, targetPlayer, 1, support.name)
+        applySupportEffect(room, player, choice[1], 1, support.name)
       end
     end
   end,

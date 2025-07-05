@@ -14,9 +14,6 @@ Fk:loadTranslationTable({
   ["#hangmutexing-use"] = "你可以移去1个「空袭」视为使用或打出【杀】",
   ["#hangmutexing-choose"] = "请选择要重置技能的角色",
   ["#hangmutexing-target"] = "航母特性：请选择任意名角色作为【杀】的目标",
-  
-  ["$hangmutexing1"] = "虎豹骁骑，甲兵自当冠宇天下。",
-  ["$hangmutexing2"] = "非虎贲难入我营，唯坚铠方配锐士。",
 })
 
 --重置技能
@@ -94,7 +91,7 @@ skill:addEffect("viewas", {
     
     use.card.skillName = skill.name
     
-    if not use.card.responding then
+    if use.responseToEvent == nil then
       local targets = room:getOtherPlayers(player)
       
       if #targets > 0 then
@@ -137,7 +134,7 @@ skill:addEffect("viewas", {
       end
     end
     
-    return true
+    return nil
   end,
   enabled_at_play = function(self, player)
     return player:getMark("@kongxi") > 0
