@@ -1,12 +1,12 @@
 local extension = Package:new("royal")
-extension.extensionName = "azurlane"
-extension:loadSkillSkelsByPath("./packages/azurlane/pkg/royal/skills")
+extension.extensionName = "hidden-clouds"
+extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/royal/skills")
 
 local unicorn = General:new(extension, "unicorn", "moe", 3, 4, General.Female):addSkills { "hangmutexing", "unicornsupport", "zhihuizhuangtian" }
 
 Fk:loadTranslationTable
 {
-  ["azurlane"] = "碧蓝航线",
+  ["hidden-clouds"] = "夜隐浮云",
   ["royal"] = "皇家",
   ["unicorn"] = "独角兽",
   ["#unicorn"] = "妹妹",
