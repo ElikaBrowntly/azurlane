@@ -22,7 +22,6 @@ Fk:loadTranslationTable{
   ["$jinghaijinglei2"] = "分段射击，御敌绸缪。",
 }
 
--- 使用杀后召唤7道落雷
 skill:addEffect(fk.TargetSpecified, {
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self.name) and 
@@ -37,21 +36,17 @@ skill:addEffect(fk.TargetSpecified, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    
-    -- 随机播放台词
+
     local index = math.random(1, 2)
     player:broadcastSkillInvoke(self.name, index)
     
-    -- 记录使用的杀ID
     player:setMark("jinghaijinglei_card_id", data.card.id)
     local damaged = {}
     
-    -- 召唤7道落雷
     for i = 1, 7 do
       local available = room:getOtherPlayers(player, true)
       if #available == 0 then break end
-      
-      -- 选择目标
+
       local target_list = room:askToChoosePlayers(player, {
         targets=available,
         min_num=1,
@@ -70,8 +65,7 @@ skill:addEffect(fk.TargetSpecified, {
       if math.random() < 0.5 then
         damage = 2
       end
-      
-      -- 造成雷电伤害
+
       room:damage{
         from = player,
         to = t,
@@ -80,23 +74,20 @@ skill:addEffect(fk.TargetSpecified, {
         skillName = self.name,
       }
       
-      -- 记录受伤角色
       if not table.contains(damaged, t.id) then
         table.insert(damaged, t.id)
       end
     end
     
-    -- 保存受伤角色列表
     if #damaged > 0 then
       room:setTag("jinghaijinglei_damaged_"..player.id, damaged)
     end
     
-    -- 标记已使用
     player:addMark("@jinghaijinglei_used-turn",1)
   end,
 })
 
--- 杀结算完成后添加伤害加成标记
+-- 易伤标记
 skill:addEffect(fk.CardEffectFinished, {
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(self.name) and 
@@ -106,7 +97,6 @@ skill:addEffect(fk.CardEffectFinished, {
     local room = player.room
     local damaged = room:getTag("jinghaijinglei_damaged_"..player.id) or {}
     
-    -- 过滤存活角色
     local aliveDamaged = {}
     for _, id in ipairs(damaged) do
       local p = room:getPlayerById(id)
@@ -140,7 +130,7 @@ skill:addEffect(fk.CardEffectFinished, {
   end,
 })
 
--- 伤害加成效果
+-- 易伤
 skill:addEffect(fk.DamageInflicted, {
   global = true,
   can_trigger = function(self, event, target, player, data)
@@ -158,7 +148,7 @@ skill:addEffect(fk.DamageInflicted, {
   end,
 })
 
--- 回合结束时清除标记
+-- 清除标记
 skill:addEffect(fk.EventPhaseEnd, {
   can_trigger = function(self, event, target, player, data)
     return target.phase == Player.Finish
@@ -166,11 +156,9 @@ skill:addEffect(fk.EventPhaseEnd, {
   on_use = function(self, event, target, player, data)
     local room = target.room
     
-    -- 清除使用次数标记
     target:removeMark("@jinghaijinglei_used-turn")
     target:removeMark("jinghaijinglei_card_id")
     
-    -- 清除伤害加成标记
     local debuffed = room:getTag("jinghaijinglei_debuffed_"..target.id) or {}
     for _, id in ipairs(debuffed) do
       local p = room:getPlayerById(id)

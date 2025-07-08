@@ -22,10 +22,8 @@ Fk:loadTranslationTable{
   ["$gongfangzhihu2"] = "你只要安心享受胜利的喜悦就好，呵呵~",
 }
 
--- 伤害减免效果
 skill:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
-    -- 确保目标就是技能拥有者，并且拥有技能
     return target == player and player:hasSkill(self.name) and not player.dead
   end,
   on_use = function(self, event, target, player, data)
@@ -33,7 +31,6 @@ skill:addEffect(fk.DamageInflicted, {
     local canReduce = false
     local seatCount = #room:getAlivePlayers()
     
-    -- 检查减伤条件
     if player.seat ~= 1 then
       canReduce = true
     else
@@ -53,10 +50,8 @@ skill:addEffect(fk.DamageInflicted, {
     
     if not canReduce then return false end
     
-    -- 计算减伤后的伤害值
     local reducedDamage = math.floor(data.damage / 2)
     
-    -- 防止伤害（减至0）
     if reducedDamage <= 0 then
       room:sendLog{
         type = "#gongfangzhihu-prevent",
@@ -70,7 +65,6 @@ skill:addEffect(fk.DamageInflicted, {
       return true
     end
     
-    -- 减半伤害
     room:sendLog{
       type = "#gongfangzhihu-reduce",
       from = player.id,
@@ -99,7 +93,6 @@ skill:addEffect(fk.DamageFinished, {
         arg2 = self.name
       }
       
-      -- 失去体力
       room:loseHp(player, math.floor(preventCount / 2))
       player:setMark("gongfangzhihu_prevent_count", preventCount % 2)
     end
@@ -119,7 +112,6 @@ skill:addEffect(fk.EventPhaseStart, {
       return false
     end
     
-    -- 检查阵营是否相同
     local sameCamp = (player.role == target.role)
     return sameCamp
   end,
@@ -134,19 +126,14 @@ skill:addEffect(fk.EventPhaseStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     
-    -- 增加使用次数
     player:addMark("gongfangzhihu_used_global", 1)
-    
-    -- 随机选择一句台词
     local soundIndex = math.random(1, 2)
     player:broadcastSkillInvoke(self.name, soundIndex)
     
-    -- 召唤3道落雷
     for i = 1, 3 do
       local available = room:getOtherPlayers(player, true)
       if #available == 0 then break end
-      
-      -- 选择目标 - 使用正确的参数格式
+
       local target_list = room:askToChoosePlayers(player, {
         targets=available, 
         min_num=1, 
@@ -166,7 +153,6 @@ skill:addEffect(fk.EventPhaseStart, {
         damage = 2
       end
       
-      -- 造成雷电伤害
       room:damage{
         from = player,
         to = t,
