@@ -1,26 +1,122 @@
 local skill = fk.CreateSkill{
   name = "gongfangzhihu",
-  events = {fk.DamageInflicted, fk.EventPhaseStart, fk.DamageFinished},
+  events = {fk.DamageInflicted, fk.EventPhaseStart, fk.DamageFinished, fk.GameStart, fk.Death},
   anim_type = "defensive",
   frequency = Skill.Compulsory,
-  global = false
 }
 
 Fk:loadTranslationTable{
   ["gongfangzhihu"] = "公方之护",
   [":gongfangzhihu"] = "锁定技，若你不处于一号位，或有一半的角色位于你的攻击范围内，"..
-  "你受到的伤害减半（向下取整）;你每以此法防止2次伤害，则失去1点体力。"..
-  "每局限两次，其他角色的回合开始时，若其确定与你阵营相同，你可以召唤3道落雷",
+  "你受到的伤害减半（向下取整）；你未以此法受到伤害每有2次，则失去1点体力。"..
+  "游戏开始时，你可以选择至多两名其他角色，这些角色受到伤害时，你可代为承受。"..
+  "每局游戏限2次，友方角色的回合开始时，你可以召唤3道落雷" ,
   
+  ["@@gongfangzhihu_protected"] = "公方之护",
   ["#gongfangzhihu-ask"] = "公方之护：是否召唤3道落雷？",
-  ["#gongfangzhihu-choose"] = "公方之护：请选择第 %arg 道落雷的目标",
+  ["#gongfangzhihu-choose"] = "公方之护：请选择本次落雷的目标",
   ["#gongfangzhihu-reduce"] = "「公方之护」效果触发，%from 受到的伤害从 %arg 点减至 %arg2 点",
   ["#gongfangzhihu-prevent"] = "「公方之护」效果触发，%from 防止了 %arg 点伤害",
   ["#gongfangzhihu-losehp"] = "「公方之护」效果触发，%from 因防止了2次伤害而失去体力",
+  ["#gongfangzhihu-protect-ask"] = "公方之护：请选择至多两名其他角色组成舰队",
+  ["#gongfangzhihu-protect-trigger"] = "公方之护：是否要代为承受伤害？",
+  ["#gongfangzhihu-protect"] = "%from 发动「公方之护」，为 %to 承受伤害",
   
   ["$gongfangzhihu1"] = "可不能被胜利冲昏了头脑……",
   ["$gongfangzhihu2"] = "你只要安心享受胜利的喜悦就好，呵呵~",
 }
+
+-- 游戏开始时
+skill:addEffect(fk.GameStart, {
+  can_trigger = function(self, event, target, player, data)
+    return player:hasSkill(self.name)
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local available = room:getOtherPlayers(player, true)
+    
+    if #available == 0 then return end
+    
+    local target_list = room:askToChoosePlayers(player, {
+      targets = available,
+      min_num = 0,
+      max_num = 2,
+      prompt = "#gongfangzhihu-protect-ask",
+      skill_name = self.name,
+      cancelable = true
+    })
+    
+    if #target_list > 0 then
+      local protect_ids = {}
+      for _, p in ipairs(target_list) do
+        table.insert(protect_ids, p.id)
+        p.room:addPlayerMark(p,"@@gongfangzhihu_protected",1)
+      end
+      room:setTag("gongfangzhihu_protect_"..player.id, protect_ids)
+    end
+  end,
+})
+
+-- 死亡时清除
+skill:addEffect(fk.Death, {
+  on_cost = function(self, event, target, player, data)
+    return data.who:hasSkill(skill.name)
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local protect_ids = room:getTag("gongfangzhihu_protect_"..player.id) or {}
+    
+    for _, id in ipairs(protect_ids) do
+      local p = room:getPlayerById(id)
+      if p then
+        p.room:removePlayerMark(p,"@@gongfangzhihu_protected")
+      end
+    end
+    
+    room:removeTag("gongfangzhihu_protect_"..player.id)
+  end,
+})
+
+-- 转移伤害
+skill:addEffect(fk.DamageInflicted, {
+  global = true,
+  can_trigger = function(self, event, target, player, data)
+    if target == player then return false end
+    
+    local room = player.room
+    local protect_ids = room:getTag("gongfangzhihu_protect_"..player.id) or {}
+    
+    local protected = false
+    for _, id in ipairs(protect_ids) do
+      if id == target.id then
+        protected = true
+        break
+      end
+    end
+    
+    return protected and player:hasSkill(self.name) and not player.dead
+  end,
+  on_cost = function(self, event, target, player, data)
+    local room = player.room
+    return room:askToSkillInvoke(player, {
+      skill_name = self.name,
+      target = target,
+      prompt = "#gongfangzhihu-protect-trigger::"..target.id
+    })
+  end,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    
+    room:sendLog{
+      type = "#gongfangzhihu-protect",
+      from = player.id,
+      to = {target.id},
+      arg = self.name
+    }
+
+    data.to = player
+  end,
+})
 
 skill:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
@@ -60,7 +156,7 @@ skill:addEffect(fk.DamageInflicted, {
         arg2 = self.name
       }
       
-      player:addMark("gongfangzhihu_prevent_count", 1)
+      player.room:addPlayerMark(player,"gongfangzhihu_prevent_count", 1)
       data.damage = 0
       return true
     end
@@ -78,7 +174,7 @@ skill:addEffect(fk.DamageInflicted, {
 
 -- 防止伤害后失去体力
 skill:addEffect(fk.DamageFinished, {
-  can_trigger = function(self, event, target, player, data)
+  on_cost = function(self, event, target, player, data)
     return data.to == player and player:hasSkill(self.name) and not player.dead
   end,
   on_use = function(self, event, target, player, data)
@@ -102,11 +198,10 @@ skill:addEffect(fk.DamageFinished, {
 -- 召唤3道落雷
 skill:addEffect(fk.EventPhaseStart, {
   can_trigger = function(self, event, target, player, data)
-    if target == player then return false end  -- 自己的回合不触发
-    if player:getMark("gongfangzhihu_used_global") >= 2 then return false end  -- 每局限两次
-    if not player:hasSkill(self.name) or player.dead then return false end  -- 确保玩家拥有技能且存活
+    if target == player then return false end
+    if player:getMark("gongfangzhihu_used_global") >= 2 then return false end
+    if not player:hasSkill(self.name) or player.dead then return false end
     
-    -- 检查游戏模式
     local room = player.room
     if not (room:isGameMode("1v2_mode") or room:isGameMode("2v2_mode")) then
       return false

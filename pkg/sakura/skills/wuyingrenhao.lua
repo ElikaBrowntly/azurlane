@@ -50,7 +50,7 @@ skill:addEffect(fk.CardUsing, {
 })
 
 -- 加伤
-skill:addEffect(fk.PreDamage, {
+skill:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
     return data.from and data.from == player and 
            data.to and data.to ~= player and 
