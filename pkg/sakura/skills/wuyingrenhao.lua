@@ -22,7 +22,8 @@ skill:addEffect("targetmod", {
   times = function(self, player, skillObj, scope, card)
     if player:getEquipment(Player.WeaponSlot) and
        scope == Player.HistoryPhase and 
-       skillObj.trueName == "slash_skill" then
+       skillObj.trueName == "slash_skill" 
+       and player:hasSkill(skill.name) then
       return 1
     end
   end,
@@ -30,8 +31,8 @@ skill:addEffect("targetmod", {
 
 -- 强中
 skill:addEffect(fk.CardUsing, {
-  can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(self.name) and 
+  on_cost = function(self, event, target, player, data)
+    return player:hasSkill(skill.name) and 
            player:getEquipment(Card.SubtypeWeapon) and
            data.card.trueName == "slash"
   end,
@@ -52,8 +53,8 @@ skill:addEffect(fk.CardUsing, {
 -- 加伤
 skill:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
-    return data.from and data.from == player and 
-           data.to and data.to ~= player and 
+    return data.from and data.from == player and player:hasSkill(skill.name) and
+           data.to and data.to ~= player and
            data.damage > 1 and
            not data.wuyingrenhao_triggered
   end,

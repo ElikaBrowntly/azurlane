@@ -117,10 +117,10 @@ skill:addEffect(fk.DamageInflicted, {
     data.to = player
   end,
 })
-
+--减伤
 skill:addEffect(fk.DamageInflicted, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(self.name) and not player.dead
+    return data.to == player and data.to:hasSkill(self.name) and not player.dead
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -181,7 +181,7 @@ skill:addEffect(fk.DamageFinished, {
     local room = player.room
     local preventCount = player:getMark("gongfangzhihu_prevent_count")
     
-    if preventCount >= 2 then
+    if preventCount >= 2 and preventCount % 2 == 0 then
       room:sendLog{
         type = "#gongfangzhihu-losehp",
         from = player.id,
@@ -189,8 +189,7 @@ skill:addEffect(fk.DamageFinished, {
         arg2 = self.name
       }
       
-      room:loseHp(player, math.floor(preventCount / 2))
-      player.room:addPlayerMark(player,"gongfangzhihu_prevent_count", preventCount % 2)
+      room:loseHp(player, 1)
     end
   end,
 })
