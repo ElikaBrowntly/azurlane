@@ -190,7 +190,7 @@ skill:addEffect(fk.DamageFinished, {
       }
       
       room:loseHp(player, math.floor(preventCount / 2))
-      player:setMark("gongfangzhihu_prevent_count", preventCount % 2)
+      player.room:addPlayerMark(player,"gongfangzhihu_prevent_count", preventCount % 2)
     end
   end,
 })
@@ -221,7 +221,7 @@ skill:addEffect(fk.EventPhaseStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     
-    player:addMark("gongfangzhihu_used_global", 1)
+    player.room:addPlayerMark(player,"gongfangzhihu_used_global", 1)
     local soundIndex = math.random(1, 2)
     player:broadcastSkillInvoke(self.name, soundIndex)
     
