@@ -9,8 +9,8 @@ Fk:loadTranslationTable{
   ["gongfangzhihu"] = "公方之护",
   [":gongfangzhihu"] = "锁定技，若你不处于一号位，或有一半的角色位于你的攻击范围内，"..
   "你受到的伤害减半（向下取整）；你未以此法受到伤害每有2次，则失去1点体力。"..
-  "游戏开始时，你可以选择至多两名其他角色，这些角色受到伤害时，你可代为承受。"..
-  "每局游戏限2次，友方角色的回合开始时，你可以召唤3道落雷" ,
+  "游戏开始时，你可以选择至多两名其他角色，这些角色受到伤害时，你可代为承受；"..
+  "每局游戏限2次，这些角色的回合开始时，你可以召唤3道落雷" ,
   
   ["@@gongfangzhihu_protected"] = "公方之护",
   ["#gongfangzhihu-ask"] = "公方之护：是否召唤3道落雷？",
@@ -195,19 +195,23 @@ skill:addEffect(fk.DamageFinished, {
 })
 
 -- 召唤3道落雷
-skill:addEffect(fk.EventPhaseStart, {
+skill:addEffect(fk.TurnStart, {
   can_trigger = function(self, event, target, player, data)
-    if target == player then return false end
-    if player:getMark("gongfangzhihu_used_global") >= 2 then return false end
-    if not player:hasSkill(self.name) or player.dead then return false end
-    
-    local room = player.room
-    if not (room:isGameMode("1v2_mode") or room:isGameMode("2v2_mode")) then
-      return false
+  if player:getMark("gongfangzhihu_used_global") >= 2 then return false end
+  if not player:hasSkill(self.name) or player.dead then return false end
+  
+  local room = player.room
+  local protect_ids = room:getTag("gongfangzhihu_protect_"..player.id) or {}
+
+  local isProtected = false
+  for _, id in ipairs(protect_ids) do
+    if id == target.id then
+      isProtected = true
+      break
     end
-    
-    local sameCamp = (player.role == target.role)
-    return sameCamp
+  end
+  
+  return isProtected
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
