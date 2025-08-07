@@ -15,4 +15,15 @@ Fk:loadTranslationTable
   ["~exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
+local mou_wupu = General:new(extension, "mou_wupu", "qun", 4, 4, General.Male)
+mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
+mou_wupu:addRelatedSkill("wuling")
+Fk:loadTranslationTable
+{
+  ["mou_wupu"] = "谋吴普",
+  ["#mou_wupu"] = "健体养魄",
+  ["designer:mou_wupu"] = "夜隐浮云，孤星似梦",
+  ["~mou_wupu"] = "五禽犹在，此戏传于后来人。",
+}
+
 return extension

@@ -2,8 +2,8 @@ local extension = Package:new("royal")
 extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/royal/skills")
 
-local unicorn = General:new(extension, "unicorn", "moe", 3, 4, General.Female):addSkills { "hangmutexing", "unicornsupport", "zhihuizhuangtian" }
-
+local unicorn = General:new(extension, "unicorn", "moe", 3, 4, General.Female)
+unicorn:addSkills { "hangmutexing", "unicornsupport", "zhihuizhuangtian" }
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
@@ -14,6 +14,18 @@ Fk:loadTranslationTable
   ["cv:unicorn"] = "加隈亚衣",
   ["designer:unicorn"] = "夜隐浮云，孤星似梦",
   ["~unicorn"] = "呜呜…在哥哥面前…要坚强…",
+}
+
+local Cheshire = General:new(extension, "Cheshire", "moe", 4, 4, General.Female)
+Cheshire:addSkills { "yyfy_fangkong", "yyfy_toutu" }
+Fk:loadTranslationTable
+{
+  ["Cheshire"] = "柴郡",
+  ["#Cheshire"] = "拿来吧你！焯",
+  ["illustrator:Cheshire"] = "全班最菜嘤嘤嘤",
+  ["cv:Cheshire"] = "石上静香",
+  ["designer:Cheshire"] = "夜隐浮云，孤星似梦",
+  ["~Cheshire"] = "趁敌人没注意到的时候，赶紧溜走吧？",
 }
 
 return extension
