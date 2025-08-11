@@ -26,4 +26,14 @@ Fk:loadTranslationTable
   ["~mou_wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
+local lan_tengfanglan = General:new(extension, "lan_tengfanglan", "wu", 3, 3, General.Female)
+lan_tengfanglan:addSkills { "lan_luochong", "lan_aichen" }
+Fk:loadTranslationTable
+{
+  ["lan_tengfanglan"] = "烂滕芳兰",
+  ["#lan_tengfanglan"] = "铃兰凋落",
+  ["designer:lan_tengfanglan"] = "水上由岐",
+  ["~lan_tengfanglan"] = "封侯归命，夫妻同归。",
+}
+
 return extension
