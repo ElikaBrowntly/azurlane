@@ -1,8 +1,5 @@
 local luochong = fk.CreateSkill{
   name = "lan_luochong",
-  dynamic_desc = function(self, player)
-    return "落宠"
-  end,
 }
 
 Fk:loadTranslationTable{
