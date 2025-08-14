@@ -1,15 +1,15 @@
 local aichen = fk.CreateSkill {
-  name = "lan_aichen",
+  name = "lan__aichen",
   tags = { Skill.Compulsory },
 }
 
 Fk:loadTranslationTable{
-  ["lan_aichen"] = "哀尘",
-  [":lan_aichen"] = "锁定技，若牌堆中的牌数：大于80，每当你区域内的牌被弃置后，"
+  ["lan__aichen"] = "哀尘",
+  [":lan__aichen"] = "锁定技，若牌堆中的牌数：大于80，每当你区域内的牌被弃置后，"
   .."你可以摸两张牌；大于40，你跳过弃牌阶段。",
 
-  ["$lan_aichen1"] = "君可负妾，然妾不负君。",
-  ["$lan_aichen2"] = "所思所想，皆系陛下。",
+  ["$lan__aichen1"] = "君可负妾，然妾不负君。",
+  ["$lan__aichen2"] = "所思所想，皆系陛下。",
 }
 
 -- 牌堆>80

@@ -3,29 +3,29 @@ local luochong = fk.CreateSkill{
 }
 
 Fk:loadTranslationTable{
-  ["lan_luochong"] = "落宠",
-  [":lan_luochong"] = "每轮开始时、准备阶段或当你受到伤害后，你可以任意顺序执行："
+  ["lan__luochong"] = "落宠",
+  [":lan__luochong"] = "每轮开始时、准备阶段或当你受到伤害后，你可以任意顺序执行："
     .. "<br>\n<font color='green'>①令一名角色回复1点体力</font>；"
     .. "<br>\n<font color='red'>②令一名角色失去1点体力</font>；"
     .. "<br>\n<font color='purple'>③令一名角色摸两张牌</font>；"
     .. "<br>\n<font color='blue'>④重复此流程至多4次：弃置一名角色的一张牌</font>。",
 
-  ["#lan_luochong-invoke"] = "落宠：选择一项并指定目标",
-  ["#lan_luochong-discard"] = "落宠：请选择要弃置的角色（还可弃置 %arg 次）",
-  ["#lan_luochong-discard-card"] = "落宠：请选择要弃置的牌",
+  ["#lan__luochong-invoke"] = "落宠：选择一项并指定目标",
+  ["#lan__luochong-discard"] = "落宠：请选择要弃置的角色（还可弃置 %arg 次）",
+  ["#lan__luochong-discard-card"] = "落宠：请选择要弃置的牌",
   ["Cancel"] = "结束",
   
-  ["lan_luochong1"] = "回复1点体力",
-  ["lan_luochong2"] = "失去1点体力",
-  ["lan_luochong3"] = "摸2张牌",
-  ["lan_luochong4"] = "弃置1张牌",
+  ["lan__luochong1"] = "回复1点体力",
+  ["lan__luochong2"] = "失去1点体力",
+  ["lan__luochong3"] = "摸2张牌",
+  ["lan__luochong4"] = "弃置1张牌",
   
-  ["$lan_luochong1"] = "宠至莫言非，恩移难恃貌。",
-  ["$lan_luochong2"] = "君王一时情，安有恩长久。",
-  ["$lan_luochong3"] = "陛下独宠他人，奈何雨露不均？",
-  ["$lan_luochong4"] = "妾贵于佳丽，然宠不及三千。",
-  ["$lan_luochong5"] = "琴筝夜久殷勤弄，心怯空房不忍归。",
-  ["$lan_luochong6"] = "西宫夜静百花香，欲卷珠帘春恨长。"
+  ["$lan__luochong1"] = "宠至莫言非，恩移难恃貌。",
+  ["$lan__luochong2"] = "君王一时情，安有恩长久。",
+  ["$lan__luochong3"] = "陛下独宠他人，奈何雨露不均？",
+  ["$lan__luochong4"] = "妾贵于佳丽，然宠不及三千。",
+  ["$lan__luochong5"] = "琴筝夜久殷勤弄，心怯空房不忍归。",
+  ["$lan__luochong6"] = "西宫夜静百花香，欲卷珠帘春恨长。"
 }
 
 local function triggerLuochong(player, event)
@@ -34,10 +34,10 @@ local function triggerLuochong(player, event)
   local allPlayers = room.alive_players
   
   local all_choices = {
-    Fk:translate("lan_luochong1"),
-    Fk:translate("lan_luochong2"),
-    Fk:translate("lan_luochong3"),
-    Fk:translate("lan_luochong4"),
+    Fk:translate("lan__luochong1"),
+    Fk:translate("lan__luochong2"),
+    Fk:translate("lan__luochong3"),
+    Fk:translate("lan__luochong4"),
     Fk:translate("Cancel")
   }
   
@@ -60,7 +60,7 @@ local function triggerLuochong(player, event)
       choices = choices,
       all_choices = all_choices,
       skill_name = luochong.name,
-      prompt = "#lan_luochong-invoke",
+      prompt = "#lan__luochong-invoke",
       cancelable = true
     })
     
@@ -69,13 +69,13 @@ local function triggerLuochong(player, event)
     end
     
     local choice
-    if choiceText == Fk:translate("lan_luochong1") then
+    if choiceText == Fk:translate("lan__luochong1") then
       choice = 1
-    elseif choiceText == Fk:translate("lan_luochong2") then
+    elseif choiceText == Fk:translate("lan__luochong2") then
       choice = 2
-    elseif choiceText == Fk:translate("lan_luochong3") then
+    elseif choiceText == Fk:translate("lan__luochong3") then
       choice = 3
-    elseif choiceText == Fk:translate("lan_luochong4") then
+    elseif choiceText == Fk:translate("lan__luochong4") then
       choice = 4
     else
       break
@@ -104,7 +104,7 @@ local function triggerLuochong(player, event)
         targets = validTargets,
         min_num = 1,
         max_num = 1,
-        prompt = "#lan_luochong-invoke",
+        prompt = "#lan__luochong-invoke",
         skill_name = luochong.name
       })
       if #target == 0 then
@@ -143,7 +143,7 @@ local function triggerLuochong(player, event)
         
         if #discardTargets == 0 then break end
         
-        local prompt = "#lan_luochong-discard:::" .. (maxDiscards - discardCount)
+        local prompt = "#lan__luochong-discard:::" .. (maxDiscards - discardCount)
 
         local target = room:askToChoosePlayers(player, {
         targets = discardTargets,
@@ -164,7 +164,7 @@ local function triggerLuochong(player, event)
           goto discard_continue
         end
         
-        local discardCard = room:askForCardChosen(player, target, "hej", luochong.name, false, "#lan_luochong-discard-card")
+        local discardCard = room:askForCardChosen(player, target, "hej", luochong.name, false, "#lan__luochong-discard-card")
         if discardCard < 0 then break end
 
         room:throwCard({discardCard}, luochong.name, target, player)
