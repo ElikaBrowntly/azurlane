@@ -1,5 +1,5 @@
 local luochong = fk.CreateSkill{
-  name = "lan_luochong",
+  name = "lan__luochong",
 }
 
 Fk:loadTranslationTable{
