@@ -44,7 +44,7 @@ Fk:loadTranslationTable
   ["lan__xunyou"] = "荀攸",
   ["#lan__xunyou"] = "荀攸布兰德",
   ["designer:lan__xunyou"] = "水上由岐",
-  ["illustrator:olz__xunyou"] = "错落宇宙",
+  ["illustrator:lan__xunyou"] = "错落宇宙",
   ["$qice_lan__xunyou1"] = "二袁相争，此曹公得利之时",
   ["$qice_lan__xunyou2"] = "穷寇宜追，需防死蛇之不僵",
   ["$qice_lan__xunyou3"] = "颜良兵围白马，今兵少不敌，分其势乃可",
@@ -52,6 +52,15 @@ Fk:loadTranslationTable
   ["$daojie_lan__xunyou1"] = "秉忠正之心，可抚宁内外",
   ["$daojie_lan__xunyou2"] = "贤者，温良恭俭让以得之",
   ["~lan__xunyou"] = "北雁南顾，当折彭䗍之滨……",
+}
+
+local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4, 4, General.Male)
+lijueguosi:addSkills { "yyfy_xiongxi", "yyfy_yisuan" }
+Fk:loadTranslationTable{
+  ["yyfy_lijueguosi"] = "李傕郭汜",
+  ["#yyfy_lijueguosi"] = "犯祚倾祸",
+  ["designer:yyfy_lijueguosi"] = "多喝热水",
+  ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
 return extension
