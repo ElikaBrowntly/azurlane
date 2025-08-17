@@ -26,8 +26,8 @@ Fk:loadTranslationTable
   ["~mou_wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
-local lan_tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
-lan_tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
+local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
+lan__tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
 Fk:loadTranslationTable
 {
   ["lan"] = "烂",
@@ -52,6 +52,22 @@ Fk:loadTranslationTable
   ["$daojie_lan__xunyou1"] = "秉忠正之心，可抚宁内外",
   ["$daojie_lan__xunyou2"] = "贤者，温良恭俭让以得之",
   ["~lan__xunyou"] = "北雁南顾，当折彭䗍之滨……",
+}
+
+local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4, General.Male)
+lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "baozu" }
+Fk:loadTranslationTable
+{
+  ["lan__zhonghui"] = "钟会",
+  ["#lan__zhonghui"] = "钟会布兰德",
+  ["designer:lan__zhonghui"] = "水上由岐",
+  ["~lan__zhonghui"] = "棋差一着，棋差一着呀",
+  ["$baozu_lan__zhonghui1"] = "吾族恒大，谁敢欺之？",
+  ["$baozu_lan__zhonghui2"] = "动我钟家的人，哼，你长了几个脑袋？",
+  ["$baozu_lan__zhonghui3"] = "有我在一日，谁也动不得吾族分毫。",
+  ["$baozu_lan__zhonghui4"] = "诸位同门，随我钟会赌一遭如何？",
+  ["$baozu_lan__zhonghui5"] = "钟门三世皆为佐国之臣，彼可取而代之",
+  ["$baozu_lan__zhonghui6"] = "司马氏已居大，我族岂逊他三分！",
 }
 
 local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4, 4, General.Male)
