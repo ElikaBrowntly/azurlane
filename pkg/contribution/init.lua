@@ -79,4 +79,11 @@ Fk:loadTranslationTable{
   ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
+local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Male)
+zhixushenghua:addSkills { "shengjianchujue", "tianmingyini", "shengshayuduo" }
+Fk:loadTranslationTable{
+  ["yyfy_zhixushenghua"] = "至序圣华",
+  ["designer:yyfy_zhixushenghua"] = "一维无限",
+  ["~yyfy_zhixushenghua"] = "一心相争，兵败战损",
+}
 return extension
