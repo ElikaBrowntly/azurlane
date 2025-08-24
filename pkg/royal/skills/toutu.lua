@@ -5,20 +5,21 @@ local yyfy_toutu = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_toutu"] = "偷图",
-  [":yyfy_toutu"] = "出牌阶段限一次，你可以偷一张图纸，并获得对应效果（X为该类图纸的数量）："..
-  "<br>\n①<font color='red'>彩炮</font>：你使用杀造成伤害后，可令受伤角色获得【燃殇】然后对其造成X点火焰伤害；"..
-  "<br>\n②<font color='blue'>天雷</font>：你使用牌可以额外指定至多X个目标；"..
-  "<br>\n③<font color='green'>la-9</font>：你不因此技能造成伤害时，可令此伤害+X；"..
-  "<br>\n④<font color='purple'>彩船</font>：出牌阶段限一次，你可从X+1个萌势力武将中选择一个，获得其武将牌上全部技能。",
+  [":yyfy_toutu"] = "出牌阶段限一次，你可以随机获得以下每种图纸0~1张，并获得对应效果（X为该类图纸的数量）："..
+  "<br>\n①<font color='red'>主炮</font>：你使用牌可以多结算X次；"..
+  "<br>\n②<font color='orange'>副炮</font>：你使用杀造成伤害后，可令受伤角色获得【燃殇】然后对其造成X点火焰伤害；"..
+  "<br>\n③<font color='green'>战斗机</font>：你受到的伤害-X；"..
+  "<br>\n④<font color='cyan'>轰炸机</font>：你使用牌可以额外指定至多X个目标；"..
+  "<br>\n⑤<font color='blue'>鱼雷</font>：你不因此技能造成伤害时，可令此伤害+X；"..
+  "<br>\n⑥<font color='purple'>彩船</font>：出牌阶段限一次，你可从X+2个武将中选择X个，获得其武将牌上全部技能。",
 
   
-  ["#yyfy_toutu-choose"] = "偷图：请选择要获得的标记",
-  ["caipao"] = "彩炮",
-  ["tianlei"] = "天雷",
-  ["caichuan"] = "彩船",
-  ["@yyfy_toutu_caipao"] = "彩炮",
-  ["@yyfy_toutu_tianlei"] = "天雷",
-  ["@yyfy_toutu_la-9"] = "[la-9]",
+  ["#yyfy_toutu-get"] = "偷图：每种图纸随机偷取0~1张",
+  ["@yyfy_toutu_zhupao"] = "主炮",
+  ["@yyfy_toutu_fupao"] = "副炮",
+  ["@yyfy_toutu_zhandouji"] = "战斗机",
+  ["@yyfy_toutu_hongzhaji"] = "轰炸机",
+  ["@yyfy_toutu_yulei"] = "鱼雷",
   ["@yyfy_toutu_caichuan"] = "彩船",
   
   ["$yyfy_toutu1"] = "猜猜看，今天为你们准备的主菜是鱼雷呢，还是炮弹呢~？",
@@ -26,45 +27,68 @@ Fk:loadTranslationTable{
 }
 
 local MARK_TYPES = {
-  "caipao",
-  "tianlei",
-  "la-9",
+  "zhupao",
+  "fupao", 
+  "zhandouji",
+  "hongzhaji",
+  "yulei",
   "caichuan",
 }
 
 yyfy_toutu:addEffect("active", {
-  prompt = "#yyfy_toutu-choose",
+  prompt = "#yyfy_toutu-get",
   card_num = 0,
   target_num = 0,
   max_phase_use_time = 1,
-  interaction = function(self, player)
-    return UI.ComboBox {
-      choices = MARK_TYPES,
-      all_choices = MARK_TYPES,
-    }
-  end,
   on_use = function(self, room, effect)
     local player = effect.from
-    local choice = self.interaction.data
-    print(choice)
-    if(choice=="caipao") then room:addPlayerMark(player,"@yyfy_toutu_caipao",1) end
-    if(choice=="tianlei") then room:addPlayerMark(player,"@yyfy_toutu_tianlei",1) end
-    if(choice=="la-9") then room:addPlayerMark(player,"@yyfy_toutu_la-9",1) end
-    if(choice=="caichuan") then room:addPlayerMark(player,"@yyfy_toutu_caichuan",1) end
-    print(player:getMark("@yyfy_toutu_caichuan") )
+    local obtained = {}
+    
+    -- 随机获得每种图纸0~1张
+    for _, markType in ipairs(MARK_TYPES) do
+      if math.random() < 0.5 then
+        local markName = "@yyfy_toutu_" .. markType
+        room:addPlayerMark(player, markName, 1)
+        table.insert(obtained, markType)
+      end
+    end
+    
+    -- 发送获得的图纸信息
+    if #obtained > 0 then
+      local obtainedNames = {}
+      for _, markType in ipairs(obtained) do
+        table.insert(obtainedNames, Fk:translate(markType))
+      end
+    end
+    
     -- 彩船
-    if player:getMark("@yyfy_toutu_caichuan") > 0 and not player:hasSkill("yyfy_caichuan") then
+    if table.contains(obtained, "caichuan") and not player:hasSkill("yyfy_caichuan") then
       room:handleAddLoseSkills(player, "yyfy_caichuan", yyfy_toutu.name, true, true)
     end
   end,
 })
 
--- 彩炮
+-- 主炮
+yyfy_toutu:addEffect(fk.CardUsing, {
+  anim_type = "control",
+  is_delay_effect = true,
+  can_trigger = function(self, event, target, player, data)
+    return target == player and player:hasSkill(yyfy_toutu.name) and
+           player:getMark("@yyfy_toutu_zhupao") > 0 and
+           #data.tos > 0 and (data.card.type == Card.TypeBasic or data.card:isCommonTrick() )
+  end,
+  on_use = function(self, event, target, player, data)
+    local X = player:getMark("@yyfy_toutu_zhupao")
+    data.additionalEffect = (data.additionalEffect or 0) + X
+  end,
+})
+
+-- 副炮
 yyfy_toutu:addEffect(fk.Damage, {
   on_cost = function(self, event, target, player, data)
     if not (data.from and data.from:hasSkill(yyfy_toutu.name) and
            data.card and data.card.trueName == "slash" and
-           data.from:getMark("@yyfy_toutu_caipao") > 0 and
+           data.from:getMark("@yyfy_toutu_fupao") > 0 and
            data.to:isAlive()) then return false end
     local room = player.room
     return room:askToSkillInvoke(data.from, {
@@ -82,7 +106,7 @@ yyfy_toutu:addEffect(fk.Damage, {
     
     -- 火焰伤害
     if from == nil then return end
-    local X = from:getMark("@yyfy_toutu_caipao")
+    local X = from:getMark("@yyfy_toutu_fupao")
     room:damage{
       from = from,
       to = to,
@@ -93,11 +117,11 @@ yyfy_toutu:addEffect(fk.Damage, {
   end,
 })
 
--- 天雷
+-- 轰炸机
 yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(yyfy_toutu.name) and
-           player:getMark("@yyfy_toutu_tianlei") > 0 and
+           player:getMark("@yyfy_toutu_hongzhaji") > 0 and
            player.phase == Player.Play
   end,
   on_cost = function(self, event, target, player, data)
@@ -105,7 +129,7 @@ yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
     local extraTargets = data:getExtraTargets({bypass_distances = true})
     if #extraTargets == 0 then return false end
 
-    local X = player:getMark("@yyfy_toutu_tianlei")
+    local X = player:getMark("@yyfy_toutu_hongzhaji")
     local maxNum = math.min(#extraTargets, X)
     
     local tos = room:askToChoosePlayers(player, {
@@ -113,7 +137,7 @@ yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
       max_num = maxNum,
       targets = extraTargets,
       skill_name = yyfy_toutu.name,
-      prompt = "天雷：你可以为此牌额外选择X个目标",
+      prompt = "轰炸机：你可以为此牌额外选择X个目标",
       cancelable = true,
     })
     
@@ -131,23 +155,35 @@ yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
   end,
 })
 
--- la-9
+-- 鱼雷
 yyfy_toutu:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
     return data.from == player and player:hasSkill(yyfy_toutu.name) and
            data.skillName ~= yyfy_toutu.name and
-           player:getMark("@yyfy_toutu_la-9") > 0
+           player:getMark("@yyfy_toutu_yulei") > 0
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
     return room:askToSkillInvoke(player, {
       skill_name = yyfy_toutu.name,
-      prompt = "la-9：是否要令此伤害+X？"
+      prompt = "鱼雷：是否要令此伤害+X？"
     })
   end,
   on_use = function(self, event, target, player, data)
-    local X = player:getMark("@yyfy_toutu_la-9")
+    local X = player:getMark("@yyfy_toutu_yulei")
     data.damage = data.damage + X
+  end,
+})
+
+-- 战斗机
+yyfy_toutu:addEffect(fk.DamageInflicted, {
+  on_cost = function(self, event, target, player, data)
+    return data.to == player and player:hasSkill(yyfy_toutu.name) and
+           player:getMark("@yyfy_toutu_zhandouji") > 0
+  end,
+  on_use = function(self, event, target, player, data)
+    local X = player:getMark("@yyfy_toutu_zhandouji")
+    data.damage = math.max(0, data.damage - X)
   end,
 })
 

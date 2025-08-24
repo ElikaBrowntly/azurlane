@@ -4,7 +4,7 @@ extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/contribution/skills
 
 local exgod_zhangliao = General:new(extension, "exgod_zhangliao", "god", 4, 5, General.Male)
 exgod_zhangliao:addSkills { "yyfy_duorui", "yyfy_zhiti" }
-exgod_zhangliao:addRelatedSkill("ty__wangxi")
+exgod_zhangliao:addRelatedSkill("yyfy_wangxi")
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",

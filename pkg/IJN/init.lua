@@ -1,13 +1,13 @@
-local extension = Package:new("sakura")
+local extension = Package:new("IJN")
 extension.extensionName = "hidden-clouds"
-extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/sakura/skills")
+extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/IJN/skills")
 
 local musashi = General:new(extension, "musashi", "moe", 5, 5, General.Female):addSkills {"jinghaijinglei", "wuyingrenhao", "gongfangzhihu"}
 
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
-  ["sakura"] = "重樱",
+  ["IJN"] = "重樱",
   ["musashi"] = "武藏",
   ["#musashi"] = "紫绛槿岚",
   ["illustrator:musashi"] = "dishwasher1910",

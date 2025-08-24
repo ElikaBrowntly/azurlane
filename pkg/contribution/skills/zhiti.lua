@@ -38,14 +38,14 @@ yyfy_zhiti:addEffect(fk.CardUsing, {
 local wangxiRefresh = {
   can_refresh = function(self, event, target, player, data)
     return player:hasSkill(yyfy_zhiti.name) and
-      ((player:hasSkill("ty__wangxi", true) and getWoundedCount(player.room) < 2) or
-      (not player:hasSkill("ty__wangxi", true) and getWoundedCount(player.room) >= 2 ))
+      ((player:hasSkill("yyfy_wangxi", true) and getWoundedCount(player.room) < 2) or
+      (not player:hasSkill("yyfy_wangxi", true) and getWoundedCount(player.room) >= 2 ))
   end,
   on_refresh = function(self, event, target, player, data)
-    if player:hasSkill("ty__wangxi", true) then
-      player.room:handleAddLoseSkills(player, "-ty__wangxi")
+    if player:hasSkill("yyfy_wangxi", true) then
+      player.room:handleAddLoseSkills(player, "-yyfy_wangxi")
     else
-      player.room:handleAddLoseSkills(player, "ty__wangxi")
+      player.room:handleAddLoseSkills(player, "yyfy_wangxi")
     end
   end,
 }
