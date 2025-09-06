@@ -1,14 +1,14 @@
 local daojie = fk.CreateSkill{
-  name = "daojie",
+  name = "yyfy_daojie",
   tags = { Skill.Family, Skill.Compulsory },
 }
 
 Fk:loadTranslationTable{
-  ["daojie"] = "蹈节",
-  [":daojie"] = "宗族技，锁定技，当你每回合首次使用非伤害类普通锦囊牌后，你选择一项：1.失去1点体力；2.失去一个锁定技。然后令一名同族角色获得此牌。",
+  ["yyfy_daojie"] = "蹈节",
+  [":yyfy_daojie"] = "宗族技，锁定技，当你每回合首次使用非伤害类普通锦囊牌后，你令一名同族角色获得此牌，然后你可以失去1点体力或一个锁定技。",
 
-  ["#daojie-choice"] = "蹈节：选择失去一个锁定技，或失去1点体力",
-  ["#daojie-choose"] = "蹈节：令一名同族角色获得此%arg",
+  ["#yyfy_daojie-choice"] = "蹈节：选择失去一个锁定技，或失去1点体力",
+  ["#yyfy_daojie-choose"] = "蹈节：令一名同族角色获得此%arg",
 }
 
 local U = require "packages/utility/utility"
@@ -25,7 +25,7 @@ daojie:addEffect(fk.CardUseFinished, {
     end) then return false end
     local logic = room.logic
     local use_event = logic:getCurrentEvent()
-    local mark_name = "daojie_record-turn"
+    local mark_name = "yyfy_daojie_record-turn"
     local mark = player:getMark(mark_name)
     if mark == 0 then
       logic:getEventsOfScope(GameEvent.UseCard, 1, function (e)
@@ -42,21 +42,6 @@ daojie:addEffect(fk.CardUseFinished, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local skills = table.filter(player:getSkillNameList(), function (s)
-      return Fk.skills[s]:hasTag(Skill.Compulsory, false)
-    end)
-    table.insert(skills, "loseHp")
-    local choice = room:askToChoice(player, {
-      choices = skills,
-      skill_name = daojie.name,
-      prompt = "#daojie-choice",
-      detailed = true,
-    })
-    if choice == "loseHp" then
-      room:loseHp(player, 1, daojie.name)
-    else
-      room:handleAddLoseSkills(player, "-"..choice)
-    end
     if not player.dead and table.every(Card:getIdList(data.card), function (id)
       return room:getCardArea(id) == Card.Processing
     end) then
@@ -69,12 +54,36 @@ daojie:addEffect(fk.CardUseFinished, {
           max_num = 1,
           targets = targets,
           skill_name = daojie.name,
-          prompt = "#daojie-choose:::"..data.card:toLogString(),
+          prompt = "#yyfy_daojie-choose:::"..data.card:toLogString(),
           cancelable = false,
         })
       end
       room:obtainCard(targets[1], data.card, true, fk.ReasonPrey, player, daojie.name)
     end
+    local skills = table.filter(player:getSkillNameList(), function (s)
+      return Fk.skills[s]:hasTag(Skill.Compulsory, false)
+    end)
+    local pre_choice = room:askToChoice(player, {
+      choices = {"确定", "取消"},
+      skill_name = daojie.name,
+      prompt = "蹈节：要失去1点体力或1个锁定技吗？",
+    })
+    if pre_choice == "取消" then return end
+    table.insert(skills, "loseHp")
+    table.insert(skills, "cancel")
+    local choice = room:askToChoice(player, {
+      choices = skills,
+      skill_name = daojie.name,
+      prompt = "#yyfy_daojie-choice",
+      detailed = true,
+    })
+    
+    if choice == "loseHp" then
+      room:loseHp(player, 1, daojie.name)
+    else
+      room:handleAddLoseSkills(player, "-"..choice)
+    end
+    
   end,
 })
 

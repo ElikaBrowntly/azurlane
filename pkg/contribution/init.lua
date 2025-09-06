@@ -8,7 +8,7 @@ exgod_zhangliao:addRelatedSkill("yyfy_wangxi")
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
-  ["contribution"] = "投稿",
+  ["contribution"] = "夜隐浮云-投稿",
   ["exgod_zhangliao"] = "界神张辽",
   ["#exgod_zhangliao"] = "美食家",
   ["designer:exgod_zhangliao"] = "投稿者",
@@ -17,7 +17,7 @@ Fk:loadTranslationTable
 
 local mou_wupu = General:new(extension, "mou_wupu", "qun", 4, 4, General.Male)
 mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
-mou_wupu:addRelatedSkill("wuling")
+--mou_wupu:addRelatedSkill("wuling")
 Fk:loadTranslationTable
 {
   ["mou_wupu"] = "谋吴普",
@@ -38,36 +38,36 @@ Fk:loadTranslationTable
 }
 
 local lan__xunyou = General:new(extension, "lan__xunyou", "wei", 3, 3, General.Male)
-lan__xunyou:addSkills { "lan__baichu", "qice", "lan__zhiyu", "daojie" }
+lan__xunyou:addSkills { "lan__baichu", "yyfy_qice", "lan__zhiyu", "yyfy_daojie" }
 Fk:loadTranslationTable
 {
   ["lan__xunyou"] = "荀攸",
   ["#lan__xunyou"] = "荀攸布兰德",
   ["designer:lan__xunyou"] = "水上由岐",
   ["illustrator:lan__xunyou"] = "错落宇宙",
-  ["$qice_lan__xunyou1"] = "二袁相争，此曹公得利之时",
-  ["$qice_lan__xunyou2"] = "穷寇宜追，需防死蛇之不僵",
-  ["$qice_lan__xunyou3"] = "颜良兵围白马，今兵少不敌，分其势乃可",
-  ["$qice_lan__xunyou4"] = "文丑疲军而来，此所以擒敌，奈何去之",
-  ["$daojie_lan__xunyou1"] = "秉忠正之心，可抚宁内外",
-  ["$daojie_lan__xunyou2"] = "贤者，温良恭俭让以得之",
+  ["$yyfy_qice_lan__xunyou1"] = "二袁相争，此曹公得利之时",
+  ["$yyfy_qice_lan__xunyou2"] = "穷寇宜追，需防死蛇之不僵",
+  ["$yyfy_qice_lan__xunyou3"] = "颜良兵围白马，今兵少不敌，分其势乃可",
+  ["$yyfy_qice_lan__xunyou4"] = "文丑疲军而来，此所以擒敌，奈何去之",
+  ["$yyfy_daojie_lan__xunyou1"] = "秉忠正之心，可抚宁内外",
+  ["$yyfy_daojie_lan__xunyou2"] = "贤者，温良恭俭让以得之",
   ["~lan__xunyou"] = "北雁南顾，当折彭䗍之滨……",
 }
 
 local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4, General.Male)
-lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "baozu" }
+lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "yyfy_baozu" }
 Fk:loadTranslationTable
 {
   ["lan__zhonghui"] = "钟会",
   ["#lan__zhonghui"] = "钟会布兰德",
   ["designer:lan__zhonghui"] = "水上由岐",
   ["~lan__zhonghui"] = "棋差一着，棋差一着呀",
-  ["$baozu_lan__zhonghui1"] = "吾族恒大，谁敢欺之？",
-  ["$baozu_lan__zhonghui2"] = "动我钟家的人，哼，你长了几个脑袋？",
-  ["$baozu_lan__zhonghui3"] = "有我在一日，谁也动不得吾族分毫。",
-  ["$baozu_lan__zhonghui4"] = "诸位同门，随我钟会赌一遭如何？",
-  ["$baozu_lan__zhonghui5"] = "钟门三世皆为佐国之臣，彼可取而代之",
-  ["$baozu_lan__zhonghui6"] = "司马氏已居大，我族岂逊他三分！",
+  ["$yyfy_baozu_lan__zhonghui1"] = "吾族恒大，谁敢欺之？",
+  ["$yyfy_baozu_lan__zhonghui2"] = "动我钟家的人，哼，你长了几个脑袋？",
+  ["$yyfy_baozu_lan__zhonghui3"] = "有我在一日，谁也动不得吾族分毫。",
+  ["$yyfy_baozu_lan__zhonghui4"] = "诸位同门，随我钟会赌一遭如何？",
+  ["$yyfy_baozu_lan__zhonghui5"] = "钟门三世皆为佐国之臣，彼可取而代之",
+  ["$yyfy_baozu_lan__zhonghui6"] = "司马氏已居大，我族岂逊他三分！",
 }
 
 local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4, 4, General.Male)
@@ -84,6 +84,13 @@ zhixushenghua:addSkills { "shengjianchujue", "tianmingyini", "shengshayuduo" }
 Fk:loadTranslationTable{
   ["yyfy_zhixushenghua"] = "至序圣华",
   ["designer:yyfy_zhixushenghua"] = "一维无限",
-  ["~yyfy_zhixushenghua"] = "一心相争，兵败战损",
 }
+
+local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Male)
+xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
+Fk:loadTranslationTable{
+  ["yyfy_xunshengshouwei"] = "循声守卫",
+  ["designer:yyfy_xunshengshouwei"] = "一维无限",
+}
+
 return extension

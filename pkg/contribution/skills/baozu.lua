@@ -1,13 +1,13 @@
 local baozu = fk.CreateSkill{
-  name = "baozu",
+  name = "yyfy_baozu",
   tags = { Skill.Family , Skill.Limited },
 }
 
 Fk:loadTranslationTable{
-  ["baozu"] = "保族",
-  [":baozu"] = "宗族技，限定技，当同族角色进入濒死状态时，你可以令其横置并回复1点体力。",
+  ["yyfy_baozu"] = "保族",
+  [":yyfy_baozu"] = "宗族技，限定技，当同族角色进入濒死状态时，你可以令其横置并回复至1点体力。",
 
-  ["#baozu-invoke"] = "保族：你可以令 %dest 横置并回复1点体力",
+  ["#yyfy_baozu-invoke"] = "保族：你可以令 %dest 横置并回复1点体力",
 }
 
 local U = require "packages/utility/utility"
@@ -23,7 +23,7 @@ baozu:addEffect(fk.EnterDying, {
     local room = player.room
     if room:askToSkillInvoke(player, {
       skill_name = baozu.name,
-      prompt = "#baozu-invoke::"..target.id,
+      prompt = "#yyfy_baozu-invoke::"..target.id,
     }) then
       event:setCostData(self, {tos = {target}})
       return true
@@ -37,7 +37,7 @@ baozu:addEffect(fk.EnterDying, {
     if not target.dead and target:isWounded() then
       room:recover{
         who = target,
-        num = 1,
+        num = 1 - target.hp,
         recoverBy = player,
         skillName = baozu.name,
       }

@@ -1,6 +1,6 @@
 local skill = fk.CreateSkill{
   name = "fate_bishi",
-  anim_type = "control",
+  anim_type = "defensive",
 }
 
 Fk:loadTranslationTable{
@@ -19,7 +19,7 @@ Fk:loadTranslationTable{
 skill:addEffect(fk.AskForCardUse, {
   can_trigger = function(self, event, target, player, data)
     local cardType = data.pattern
-    if cardType ~= "jink" and cardType ~= "nullification" then
+    if cardType ~= "jink" then --and cardType ~= "nullification" 
       return false
     end
     return player:hasSkill("fate_bishi") and player:isAlive()
@@ -66,7 +66,8 @@ skill:addEffect(fk.AskForCardUse, {
 
 skill:addEffect(fk.PreCardEffect, {
   can_trigger = function (self, event, target, player, data)
-    return data.card:isCommonTrick() and player:hasSkill(skill.name) 
+    print("yes1")
+    return data.card:isCommonTrick() and player:hasSkill(skill.name)
     and target:isAlive() and #data.tos == 1 and data.card.trueName ~= "nullification"
   end,
   on_cost = function(self, event, target, player, data)
