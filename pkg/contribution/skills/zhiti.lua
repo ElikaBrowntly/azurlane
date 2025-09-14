@@ -76,10 +76,11 @@ yyfy_zhiti:addEffect("active", {
   min_target_num = 1,
   max_target_num = 1,
   max_phase_use_time = 1,
-  on_cost = function(self, player)
+  can_use = function(self, player)
     return player:hasSkill(yyfy_zhiti.name) and 
-      getWoundedCount(player.room) >= 4 and
+      getWoundedCount(Fk:currentRoom()) >= 4 and
       player.phase == Player.Play
+      and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
   end,
   target_filter = function(self, to_select, selected)
     return #selected == 0
