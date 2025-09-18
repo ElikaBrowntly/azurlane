@@ -93,4 +93,14 @@ Fk:loadTranslationTable{
   ["designer:yyfy_xunshengshouwei"] = "一维无限",
 }
 
+local caomao = General:new(extension, "lan__caomao", "wei", 4, 4, General.Male)
+caomao:addSkills {"lan__qianlong", "lan__juetao", "lan__fensi", "lan__weitong"}
+Fk:loadTranslationTable{
+  ["lan__caomao"] = "曹髦",
+  ["#lan__caomao"] = "曹髦布兰德",
+  ["designer:lan__caomao"] = "水上由岐",
+  ["!lan__caomao"] = "少康诛寒浞以中兴，朕夷司马未尝不可！",
+  ["~lan__caomao"] = "纵不成身死，朕亦为太祖子孙，大魏君王……"
+}
+
 return extension
