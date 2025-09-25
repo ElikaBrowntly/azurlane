@@ -81,12 +81,6 @@ yongzu:addEffect(fk.EventPhaseStart, {
     if not player:isWounded() then
       table.remove(choices, 2)
     end
-    if player:hasSkill("lan__jianxiong") then
-      table.remove(choices, 5)
-    end
-    if player:hasSkill("tianming") then
-      table.remove(choices, 6)
-    end
     local choice = DoYongzu(player, choices, all_choices)
     if to.dead then return end
     if choices[2] ~= "recover" and to:isWounded() then

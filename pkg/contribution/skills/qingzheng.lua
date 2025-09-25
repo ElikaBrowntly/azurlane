@@ -15,7 +15,6 @@ Fk:loadTranslationTable{
   ["$lan__qingzheng1"] = "朕虽不德，昧于大道，思与宇内共臻兹路。",
   ["$lan__qingzheng2"] = "愿遵前人教诲，为一国明帝贤君。",
 }
-
 local U = require "packages/utility/utility"
 
 qingzheng:addEffect(fk.EventPhaseStart, {
@@ -31,8 +30,11 @@ qingzheng:addEffect(fk.EventPhaseStart, {
   on_cost = function(self, event, target, player, data)
     local room = player.room
     local targets = table.filter(room:getOtherPlayers(player, false), function(p)
-      return not p:isKongcheng()
+      return not p:isKongcheng() and not p.dead
     end)
+    
+    if #targets == 0 then return false end
+    
     local listNames = {"log_spade", "log_club", "log_heart", "log_diamond"}
     local listCards = { {}, {}, {}, {} }
     for _, id in ipairs(player:getCardIds("h")) do
@@ -41,6 +43,17 @@ qingzheng:addEffect(fk.EventPhaseStart, {
         table.insertIfNeed(listCards[suit], id)
       end
     end
+    
+    -- 检查是否有可弃置的牌
+    local hasCards = false
+    for _, cards in ipairs(listCards) do
+      if #cards > 0 then
+        hasCards = true
+        break
+      end
+    end
+    if not hasCards then return false end
+    
     local choices = U.askForChooseCardList(room, player, listNames, listCards, 1, 1, qingzheng.name, "#lan__qingzheng-card")
     if #choices == 1 then
       local to = room:askToChoosePlayers(player, {
@@ -56,20 +69,34 @@ qingzheng:addEffect(fk.EventPhaseStart, {
         return true
       end
     end
+    return false
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local choice = event:getCostData(self).choice
-    local to = event:getCostData(self).tos[1]
+    local costData = event:getCostData(self)
+
+    if not costData or not costData.tos or #costData.tos == 0 then return end
+    
+    local choice = costData.choice
+    local to = costData.tos[1]
+
+    if not to or to.dead or player.dead then return end
+    
     local my_throw = table.filter(player:getCardIds("h"), function (id)
       return not player:prohibitDiscard(Fk:getCardById(id)) and Fk:getCardById(id):getSuitString(true) == choice
     end)
-    room:throwCard(my_throw, qingzheng.name, player, player)
-    if player.dead then return end
+    
+    if #my_throw > 0 then
+      room:throwCard(my_throw, qingzheng.name, player, player)
+    end
+    
+    if player.dead or to.dead then return end
+    
     local to_throw = {}
     local listNames = {"log_spade", "log_club", "log_heart", "log_diamond"}
     local listCards = { {}, {}, {}, {} }
-    local can_throw
+    local can_throw = false
+    
     for _, id in ipairs(to:getCardIds("h")) do
       local suit = Fk:getCardById(id).suit
       if suit ~= Card.NoSuit then
@@ -77,17 +104,22 @@ qingzheng:addEffect(fk.EventPhaseStart, {
         can_throw = true
       end
     end
+    
     if can_throw then
       choice = U.askForChooseCardList(room, player, listNames, listCards, 1, 1, qingzheng.name,
-        "#lan__qingzheng-throw:::"..to.id, false, false)
+      "#lan__qingzheng-throw::"..to.id, false, false)  -- 改为两个冒号
       if #choice == 1 then
         to_throw = table.filter(to:getCardIds("h"), function(id)
-          return Fk:getCardById(id):getSuitString(true) == choice[1]
+        return Fk:getCardById(id):getSuitString(true) == choice[1]
         end)
       end
     end
-    room:throwCard(to_throw, qingzheng.name, to, player)
-    if not to.dead then
+    
+    if #to_throw > 0 then
+      room:throwCard(to_throw, qingzheng.name, to, player)
+    end
+    
+    if not to.dead and not player.dead then
       room:doIndicate(player, {to})
       room:damage{
         from = player,
