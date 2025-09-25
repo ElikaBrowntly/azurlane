@@ -32,7 +32,7 @@ Fk:loadTranslationTable
 {
   ["lan"] = "烂",
   ["lan__tengfanglan"] = "滕芳兰",
-  ["#lan__tengfanglan"] = "滕芳兰布兰德",
+  ["#lan__tengfanglan"] = "滕子布兰德",
   ["designer:lan__tengfanglan"] = "水上由岐",
   ["~lan__tengfanglan"] = "封侯归命，夫妻同归。",
 }
@@ -79,14 +79,14 @@ Fk:loadTranslationTable{
   ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
-local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Male)
+local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Female)
 zhixushenghua:addSkills { "shengjianchujue", "tianmingyini", "shengshayuduo" }
 Fk:loadTranslationTable{
   ["yyfy_zhixushenghua"] = "至序圣华",
   ["designer:yyfy_zhixushenghua"] = "一维无限",
 }
 
-local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Male)
+local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Female)
 xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
 Fk:loadTranslationTable{
   ["yyfy_xunshengshouwei"] = "循声守卫",
@@ -103,4 +103,12 @@ Fk:loadTranslationTable{
   ["~lan__caomao"] = "纵不成身死，朕亦为太祖子孙，大魏君王……"
 }
 
+local huanggai = General:new(extension, "lan__huanggai", "wu", 4, 4, General.Male)
+huanggai:addSkills {"kurou", "lan__zhaxiang", "lan__lieji", "lan__quzhou"}
+Fk:loadTranslationTable{
+  ["lan__huanggai"] = "黄盖",
+  ["#lan__huanggai"] = "盖子布兰德",
+  ["designer:lan__huanggai"] = "水上由岐",
+  ["~lan__huanggai"] = "哈哈哈哈，公瑾计成，老夫死也无憾了……"
+}
 return extension
