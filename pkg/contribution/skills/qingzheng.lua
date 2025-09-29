@@ -107,7 +107,7 @@ qingzheng:addEffect(fk.EventPhaseStart, {
     
     if can_throw then
       choice = U.askForChooseCardList(room, player, listNames, listCards, 1, 1, qingzheng.name,
-      "#lan__qingzheng-throw::"..to.id, false, false)  -- 改为两个冒号
+      "#lan__qingzheng-throw::"..to.id, false, false)
       if #choice == 1 then
         to_throw = table.filter(to:getCardIds("h"), function(id)
         return Fk:getCardById(id):getSuitString(true) == choice[1]

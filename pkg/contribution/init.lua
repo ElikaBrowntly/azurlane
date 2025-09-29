@@ -111,4 +111,13 @@ Fk:loadTranslationTable{
   ["designer:lan__huanggai"] = "水上由岐",
   ["~lan__huanggai"] = "哈哈哈哈，公瑾计成，老夫死也无憾了……"
 }
+
+local dengai = General:new(extension, "lan__dengai", "wei", 4, 4, General.Male)
+dengai:addSkills {"lan__neyan", "lan__tuntian", "lan__zaoxian", "lan__jixi", "ty__zhouxi"}
+Fk:loadTranslationTable{
+  ["lan__dengai"] = "邓艾",
+  ["#lan__dengai"] = "邓艾布兰德",
+  ["designer:lan__dengai"] = "水上由岐",
+  ["~lan__dengai"] = "钟会！你为何害我！"
+}
 return extension

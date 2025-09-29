@@ -17,7 +17,7 @@ yyfy_shicao:addEffect("active", {
   card_num = 0,
   target_num = 0,
   max_phase_use_time = 1,
-  on_cost = function(self, player)
+  can_use = function(self, player)
     return player.phase == Player.Play and player:hasSkill(yyfy_shicao.name)
   end,
   on_use = function(self, room, effect)
