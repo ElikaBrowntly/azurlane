@@ -16,9 +16,9 @@ yyfy_shicao:addEffect("active", {
   prompt = "#yyfy_shicao",
   card_num = 0,
   target_num = 0,
-  max_phase_use_time = 1,
   can_use = function(self, player)
-    return player.phase == Player.Play and player:hasSkill(yyfy_shicao.name)
+    return player and player.phase == Player.Play and player:hasSkill(yyfy_shicao.name)
+    and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from

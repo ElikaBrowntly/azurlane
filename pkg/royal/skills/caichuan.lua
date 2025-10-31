@@ -3,7 +3,6 @@ local yyfy_toutu_caichuan = fk.CreateSkill{
   name = "yyfy_caichuan",
   anim_type = "support",
   prompt = "#yyfy_caichuan",
-  card_num = 0,
   target_num = 0,
   max_phase_use_time = 1,
 }
@@ -17,6 +16,7 @@ Fk:loadTranslationTable{
 }
 
 yyfy_toutu_caichuan:addEffect("active",{
+  card_num = 0,
   can_use = function(self, player)
     return player:getMark("@yyfy_toutu_caichuan") > 0 and
            player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
