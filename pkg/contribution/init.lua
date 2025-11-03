@@ -120,12 +120,21 @@ Fk:loadTranslationTable{
   ["designer:lan__dengai"] = "水上由岐",
   ["~lan__dengai"] = "钟会！你为何害我！"
 }
+
 local pianye = General:new(extension, "yyfy_pianye", "god", 1, 999, General.Male)
 pianye:addSkills {"yyfy_gouyun", "yyfy_haopai", "yyfy_huangdou"}
 Fk:loadTranslationTable{
   ["yyfy_pianye"] = "偏✌️",
   ["#yyfy_pianye"] = "偏将军就是✌️",
   ["designer:yyfy_pianye"] = "幻矩",
+}
+
+local piangrandpa = General:new(extension, "yyfy_piangrandpa", "god", 4, 4, General.Male)
+piangrandpa:addSkills {"yyfy_gouyun", "yyfy_haopai↓", "yyfy_huangdou"}
+Fk:loadTranslationTable{
+  ["yyfy_piangrandpa"] = "偏爷",
+  ["#yyfy_piangrandpa"] = "偏将军就是爷",
+  ["designer:yyfy_piangrandpa"] = "幻矩",
 }
 
 return extension
