@@ -58,7 +58,7 @@ skill:addEffect(fk.AskForCardUse, {
       return true
 
     else
-      room:obtainCard(player.id, judgeCard.id, false, fk.ReasonJustMove)
+      room:obtainCard(player, judgeCard.id, false, fk.ReasonJustMove)
       return false
     end
   end,
@@ -101,7 +101,7 @@ skill:addEffect(fk.PreCardEffect, {
     data.nullified = true
 
     else
-      player.room:obtainCard(player.id, judgeCard.id, false, fk.ReasonJustMove)
+      player.room:obtainCard(player, judgeCard.id, false, fk.ReasonJustMove)
       return false
     end
   end

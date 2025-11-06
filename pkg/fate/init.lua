@@ -15,4 +15,16 @@ Fk:loadTranslationTable
   ["~CuChulainn"] = "失算……了……",
 }
 
+local ArchetypeEarth = General:new(extension, "ArchetypeEarth", "moon", 4, 4, General.Female):addSkills { "fate_hongzhimoyan", "fate_xingzhituxi", "fate_FunnyVamp", "fate_kongxiangjvxianhua" }
+
+Fk:loadTranslationTable
+{
+  ["ArchetypeEarth"] = "爱尔奎特",
+  ["#ArchetypeEarth"] = "原初之一",
+  ["illustrator:ArchetypeEarth"] = "武内崇",
+  ["cv:ArchetypeEarth"] = "长谷川育美",
+  ["designer:ArchetypeEarth"] = "夜隐浮云，孤星似梦",
+  ["~ArchetypeEarth"] = "……意料外的情况，格外有趣……",
+}
+
 return extension
