@@ -24,6 +24,7 @@ Fk:loadTranslationTable
   ["illustrator:ArchetypeEarth"] = "武内崇",
   ["cv:ArchetypeEarth"] = "长谷川育美",
   ["designer:ArchetypeEarth"] = "夜隐浮云，孤星似梦",
+  ["!ArchetypeEarth"] = "已经结束了……期待与希望可没那么容易实现哦。",
   ["~ArchetypeEarth"] = "……意料外的情况，格外有趣……",
 }
 
