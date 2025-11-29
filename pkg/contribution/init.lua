@@ -137,4 +137,11 @@ Fk:loadTranslationTable{
   ["designer:yyfy_piangrandpa"] = "幻矩",
 }
 
+local youlewangzi = General:new(extension, "yyfy_youlewangzi", "god", 4, 4, General.Male)
+youlewangzi:addSkills {"yyfy_mianjv", "yyfy_miyu"}
+Fk:loadTranslationTable{
+  ["yyfy_youlewangzi"] = "游乐王子",
+  ["#yyfy_youlewangzi"] = "谜语人",
+  ["designer:yyfy_youlewangzi"] = "夜隐浮云，孤星似梦",
+}
 return extension

@@ -30,8 +30,8 @@ lan__fangzhu:addEffect("active", {
   card_num = 0,
   target_num = 1,
   max_phase_use_time = 1,
-  target_filter = function(self, to_select, selected)
-    return to_select:isAlive() and #selected == 0
+  target_filter = function(self, player, to_select, selected)
+    return to_select:isAlive() and to_select ~= player and #selected == 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from
