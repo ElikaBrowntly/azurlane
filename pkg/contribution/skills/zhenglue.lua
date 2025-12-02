@@ -101,7 +101,7 @@ zhenglue:addEffect(fk.EventPhaseStart, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(self.name) and
       player.phase == Player.Start and
-      player:getMark("@@lan__zhenglue_awakened") == 0
+      player:getMark("lan__zhenglue_awakened") == 0
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -110,7 +110,7 @@ zhenglue:addEffect(fk.EventPhaseStart, {
     end)
     
     if lieCount >= 2 then
-      room:setPlayerMark(player, "@@lan__zhenglue_awakened", 1)
+      room:setPlayerMark(player, "lan__zhenglue_awakened", 1)
       room:handleAddLoseSkills(player, "pingrong|feiying")
       
       -- 播放觉醒音效

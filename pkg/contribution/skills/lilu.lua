@@ -19,11 +19,14 @@ Fk:loadTranslationTable{
 }
 
 lilu:addEffect(fk.DrawNCards, {
+  can_trigger = function (self, event, target, player, data)
+    return player and player:hasSkill(self.name) and target == player
+  end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = self.name,
       prompt = "#lan__lilu-invoke",
-    }) and player and player:hasSkill(self.name) and target == player
+    })
   end,
   on_use = function(self, event, target, player, data)
     data.n = data.n + player.maxHp
@@ -32,7 +35,7 @@ lilu:addEffect(fk.DrawNCards, {
 
 lilu:addEffect(fk.EventPhaseEnd, {
   can_trigger = function (self, event, target, player, data)
-    return target == player and player.phase == Player.Draw
+    return target == player and player.phase == Player.Draw and player:hasSkill(self.name)
     and not player:isKongcheng() and #player.room:getOtherPlayers(player, false) ~= 0
   end,
   on_cost = function ()
