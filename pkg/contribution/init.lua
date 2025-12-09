@@ -15,15 +15,15 @@ Fk:loadTranslationTable
   ["~exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
-local mou_wupu = General:new(extension, "mou_wupu", "qun", 4, 4, General.Male)
+local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4, 4, General.Male)
 mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
 --mou_wupu:addRelatedSkill("wuling")
 Fk:loadTranslationTable
 {
-  ["mou_wupu"] = "谋吴普",
-  ["#mou_wupu"] = "健体养魄",
-  ["designer:mou_wupu"] = "夜隐浮云，孤星似梦",
-  ["~mou_wupu"] = "五禽犹在，此戏传于后来人。",
+  ["yyfy_mou_wupu"] = "谋吴普",
+  ["#yyfy_mou_wupu"] = "健体养魄",
+  ["designer:yyfy_mou_wupu"] = "夜隐浮云，孤星似梦",
+  ["~yyfy_mou_wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
 local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
@@ -144,4 +144,14 @@ Fk:loadTranslationTable{
   ["#yyfy_youlewangzi"] = "谜语人",
   ["designer:yyfy_youlewangzi"] = "夜隐浮云，孤星似梦",
 }
+
+local ex_simashi = General:new(extension, "yyfy_ex_simashi", "wei", 4, 4, General.Male)
+ex_simashi:addSkills {"yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli"}
+Fk:loadTranslationTable{
+  ["yyfy_ex_simashi"] = "界司马师",
+  ["#yyfy_ex_simashi"] = "摧坚荡异",
+  ["designer:yyfy_ex_simashi"] = "非电竞恐龙",
+  ["~yyfy_ex_simashi"] = "子上，先之则太过，后之则不及……"
+}
+
 return extension
