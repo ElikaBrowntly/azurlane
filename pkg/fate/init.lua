@@ -13,6 +13,7 @@ Fk:loadTranslationTable
   ["cv:CuChulainn"] = "神奈延年",
   ["designer:CuChulainn"] = "Manic",
   ["~CuChulainn"] = "失算……了……",
+  ["!CuChulainn"] = "什么嘛，真是不堪一击。"
 }
 
 local ArchetypeEarth = General:new(extension, "ArchetypeEarth", "moon", 4, 4, General.Female):addSkills { "fate_hongzhimoyan", "fate_xingzhituxi", "fate_FunnyVamp", "fate_kongxiangjvxianhua" }

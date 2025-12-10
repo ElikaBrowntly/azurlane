@@ -5,7 +5,7 @@ local yyfy_ex_jinglue = fk.CreateSkill {
 Fk:loadTranslationTable{
   ["yyfy_ex_jinglue"] = "景略",
   [":yyfy_ex_jinglue"] = "出牌阶段限一次，若场上没有“死士”牌，你可观看一名其他角色的手牌，"
-  .."将其中一张牌标记为“死士”。“死士”牌不能被打出，当“死士”牌被其使用时，你令此牌无效并重铸你的一张手牌；"
+  .."将其中一张牌标记为“死士”。“死士”牌不能被打出，当“死士”牌被其使用时，你令此牌无效并可以重铸一张手牌；"
   .."其回合结束时，若“死士”牌在牌堆、弃牌堆或任意角色的区域内，你获得之并摸一张牌。"
   .."每回合限一次，你对手牌区有“死士”牌的角色使用【杀】可以额外结算一次",
 
@@ -90,7 +90,7 @@ yyfy_ex_jinglue:addEffect(fk.CardUsing, {
       arg = yyfy_ex_jinglue.name,
       arg2 = data.card:toLogString(),
     }
-    
+
     -- 移除禁止打出标记
     for _, id in ipairs(Card:getIdList(data.card)) do
       room:setCardMark(Fk:getCardById(id), "yyfy_ex_sishi_forbid", 0)

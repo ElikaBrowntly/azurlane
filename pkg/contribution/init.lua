@@ -149,7 +149,6 @@ local ex_simashi = General:new(extension, "yyfy_ex_simashi", "wei", 4, 4, Genera
 ex_simashi:addSkills {"yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli"}
 Fk:loadTranslationTable{
   ["yyfy_ex_simashi"] = "界司马师",
-  ["#yyfy_ex_simashi"] = "摧坚荡异",
   ["designer:yyfy_ex_simashi"] = "非电竞恐龙",
   ["~yyfy_ex_simashi"] = "子上，先之则太过，后之则不及……"
 }
