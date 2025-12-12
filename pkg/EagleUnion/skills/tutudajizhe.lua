@@ -5,9 +5,8 @@ local tutudajizhe = fk.CreateSkill{
 -- 回合开始时印杀
 tutudajizhe:addEffect(fk.TurnStart, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and
-           player:getMark("@@yyfy_tutudajizhe") > 0 and
-           player.room:getCurrent() == player
+    return player and player:getMark("@@yyfy_tutudajizhe") > 0
+    and #player.room:getAlivePlayers() > 1
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
@@ -47,8 +46,8 @@ tutudajizhe:addEffect(fk.TurnStart, {
     if #targets > 0 then
       use.tos = {}
       table.insert(use.tos, targets[1])
+      room:useCard(use)
     end
-    room:useCard(use)
   end,
 })
 

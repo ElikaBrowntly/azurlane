@@ -6,7 +6,7 @@ local beishuizhizhan = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["yyfy_beishuizhizhan"] = "背水之战",
   [":yyfy_beishuizhizhan"] = "持恒技，你不会流失体力，受到的伤害-x/2且至多为1，造成的伤害+x/2。"..
-  "每局游戏限5次，当你进入濒死状态时，你可以将体力值改为1并获得x点护甲（x为战意标记数）。",
+  "每局游戏限5次，当你进入濒死状态时，你可以将体力值改为1并获得x点护甲（x为「战意」标记数）。",
   
   ["@yyfy_beishuizhizhan"] = "背水之战 剩余",
   
