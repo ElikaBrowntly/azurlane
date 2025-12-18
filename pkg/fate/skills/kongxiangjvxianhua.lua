@@ -5,12 +5,12 @@ local fate_kongxiangjvxianhua = fk.CreateSkill({
 
 Fk:loadTranslationTable{
   ["fate_kongxiangjvxianhua"] = "空想具现化",
-  [":fate_kongxiangjvxianhua"] = "蓄力技（0/3），出牌阶段限一次，你可以消耗1点蓄力点，"..
-  "对任意名其他角色造成2点伤害，然后可令任意名有蓄力技的其他角色获得1点蓄力点。",
+  [":fate_kongxiangjvxianhua"] = "蓄力技（0/300），出牌阶段限一次，你可以消耗100点蓄力点，"..
+  "对任意名其他角色造成2点伤害，然后可令任意名有蓄力技的其他角色获得20点蓄力点。",
   
   ["#fate_kongxiangjvxianhua-choose"] = "空想具现化：请选择任意名角色",
   ["#fate_kongxiangjvxianhua-damage"] = "空想具现化：对 %src 造成 %arg 点伤害",
-  ["#fate_kongxiangjvxianhua-charge-choose"] = "空想具现化：请令任意名有蓄力技的其他角色各获得1点蓄力点",
+  ["#fate_kongxiangjvxianhua-charge-choose"] = "空想具现化：请令任意名有蓄力技的其他角色各获得20点蓄力点",
   ["fate_kongxiangjvxianhua_has_charge"] = "有蓄力技",
 
   ["$fate_kongxiangjvxianhua1"] = "被吾之千锁吞没吧。人智未及，灵峰梦幻。让你见识一下吧，覆盖星辰的华盖！",
@@ -27,7 +27,7 @@ fate_kongxiangjvxianhua:addEffect("active", {
   card_num = 0,
   max_phase_use_time = 1,
   can_use = function(self, player)
-    return player:getMark("skill_charge") >= 1
+    return player:getMark("skill_charge") >= 100
   end,
   target_filter = function(self, player, to_select, selected)
     return to_select:isAlive() and to_select ~= player
@@ -36,8 +36,8 @@ fate_kongxiangjvxianhua:addEffect("active", {
     local player = effect.from
     local targets = effect.tos
     
-    -- 消耗1点蓄力点
-    U.skillCharged(player, -1)
+    -- 消耗100点蓄力点
+    U.skillCharged(player, -100)
     -- 播放动画和语音
     player:broadcastSkillInvoke(self.name)
     room:doSuperLightBox("packages/hidden-clouds/qml/kongxiangjvxianhua.qml")
@@ -70,7 +70,7 @@ fate_kongxiangjvxianhua:addEffect("active", {
       room:setPlayerMark(player, "yyfy_xingzhituxi_mark", 0)
     end
     
-    -- 获得1点蓄力点
+    -- 获得20点蓄力点
     local availableTargets = table.filter(room:getOtherPlayers(player), function(p)
       if table.find(p:getSkillNameList(), function(s) return Fk.skills[s]:hasTag(Skill.Charge) end)
       then return true end
@@ -89,7 +89,7 @@ fate_kongxiangjvxianhua:addEffect("active", {
       
       if #chargeTargets > 0 then
         for _, p in ipairs(chargeTargets) do
-          U.skillCharged(p, 1)
+          U.skillCharged(p, 20)
         end
       end
     end
@@ -98,20 +98,20 @@ fate_kongxiangjvxianhua:addEffect("active", {
 
 -- 技能获得时初始化蓄力点
 fate_kongxiangjvxianhua:addAcquireEffect(function (self, player)
-  U.skillCharged(player, 0, 3)
+  U.skillCharged(player, 0, 300)
 end)
 
 -- 技能失去时移除蓄力点
 fate_kongxiangjvxianhua:addLoseEffect(function (self, player)
-  U.skillCharged(player, 0, -3)
+  U.skillCharged(player, 0, -300)
 end)
 
 -- 目标提示：显示哪些角色有蓄力技
 Fk:addTargetTip{
   name = "fate_kongxiangjvxianhua",
   target_tip = function(_, _, to_select)
-    if table.find(to_select:getSkillNameList(), function(s) 
-      return Fk.skills[s]:hasTag(Skill.Charge) 
+    if table.find(to_select:getSkillNameList(), function(s)
+      return Fk.skills[s]:hasTag(Skill.Charge)
     end) then
       return "fate_kongxiangjvxianhua_has_charge"
     end

@@ -54,9 +54,7 @@ sunguan_skill:addEffect(fk.Death, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:getMark("@@yyfy_sunguan") > 0 and data.who == player
   end,
-  on_cost = function(self, event, target, player, data)
-    return true
-  end,
+  on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
     

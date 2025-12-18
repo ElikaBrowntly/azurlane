@@ -6,9 +6,9 @@ local xingzhituxi = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["fate_xingzhituxi"] = "星之吐息",
-  [":fate_xingzhituxi"] = "出牌阶段限一次，你可以获得1点蓄力点，并令下一次〖空想具象化〗造成的伤害+1。",
+  [":fate_xingzhituxi"] = "出牌阶段限一次，你可以获得100点蓄力点，并令下一次〖空想具象化〗造成的伤害+1。",
   
-  ["#fate_xingzhituxi-use"] = "星之吐息：是否获得1点蓄力点？",
+  ["#fate_xingzhituxi-use"] = "星之吐息：是否获得100点蓄力点？",
 
   ["$fate_xingzhituxi1"] = "光体，抑制——",
   ["$fate_xingzhituxi2"] = "为了遏止这焦急的心情。",
@@ -27,8 +27,8 @@ xingzhituxi:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     
-    -- 获得1点蓄力点
-    U.skillCharged(player, 1)
+    -- 获得100点蓄力点
+    U.skillCharged(player, 100)
     
     -- 获得一个不可见的标记，用于宝具增伤计算
     room:setPlayerMark(player, "fate_xingzhituxi_mark", 1)
