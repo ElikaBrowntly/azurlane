@@ -3,6 +3,8 @@ local baichu = fk.CreateSkill{
   tags = { Skill.Compulsory },
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["lan__baichu"] = "百出",
   [":lan__baichu"] = "锁定技，你使用锦囊牌后，摸1张牌并回复1点体力。"..
@@ -24,6 +26,7 @@ baichu:addEffect(fk.CardUseFinished, {
     local room = player.room
 
     player:drawCards(1, self.name)
+    room:addPlayerMark(player, "lan__baichu-achievements") -- 用于统计战功
     room:recover{
       who = player,
       num = 1,
@@ -32,10 +35,31 @@ baichu:addEffect(fk.CardUseFinished, {
     }
     -- 检查：转化伤害牌
     local card = data.card
-    if card.is_damage_card and card:isVirtual() and #card.subcards > 0 then
-      player:drawCards(#card.subcards, self.name)
+    local X = #card.subcards
+    if card.is_damage_card and card:isVirtual() and X > 0 then
+      player:drawCards(X, self.name)
+      room:addPlayerMark(player, "lan__baichu-achievements", X) -- 用于统计战功
     end
   end,
+})
+
+--战功：十二奇策
+baichu:addEffect(fk.GameFinished, {
+  global = true,
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    return player:getMark("lan__baichu-achievements") >= 12
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    local players = room.players
+    local winners = data:split("+")
+    for _, p in ipairs(players) do
+      if table.contains(winners, p.role) then
+        D.updateAchievement(room, p, "lan__xunyou", "lan__xunyou_1", 1)
+      end
+    end
+  end
 })
 
 return baichu

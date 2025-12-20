@@ -4,6 +4,8 @@ local yyfy_duanti = fk.CreateSkill {
   anim_type = "support",
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["yyfy_duanti"] = "锻体",
   [":yyfy_duanti"] = "转换技，锁定技，你每使用或打出一张牌结算结束后，阳：你增加一点体力上限；"..
@@ -34,6 +36,8 @@ local function handleDuantiEffect(self, event, target, player, data)
 
     if yangCount >= 5 and not player:hasSkill("wuling") then
       room:handleAddLoseSkills(player, "wuling")
+      -- 计入战功进度
+      D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_1", 3)
     end
 
   end

@@ -3,6 +3,8 @@ local quanji = fk.CreateSkill {
   derived_piles = "lan__zhonghui_quan",
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["lan__quanji"] = "权计",
   [":lan__quanji"] = "出牌阶段结束时，或当你受到1点伤害后，你可以加一点手牌上限，摸一张牌，"..
@@ -23,7 +25,7 @@ quanji:addEffect(fk.EventPhaseEnd, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    room:addPlayerMark(player, "quanji_max_addition", 1)
+    room:addPlayerMark(player, "quanji_max_addition")
     player:drawCards(1, quanji.name)
     if not (player.dead or player:isKongcheng()) then
       local card = room:askToCards(player, {
@@ -35,6 +37,7 @@ quanji:addEffect(fk.EventPhaseEnd, {
         prompt = "#lan__quanji-push",
       })
       player:addToPile("lan__zhonghui_quan", card, true, quanji.name)
+      room:addPlayerMark(player, "lan__quanji-achievements") -- 用于统计战功
     end
   end
 })
@@ -58,6 +61,7 @@ quanji:addEffect(fk.Damaged, {
         prompt = "#lan__quanji-push",
       })
       player:addToPile("lan__zhonghui_quan", card, true, quanji.name)
+      room:addPlayerMark(player, "lan__quanji-achievements") -- 用于统计战功
     end
   end,
 })
@@ -70,6 +74,25 @@ quanji:addEffect("maxcards", {
       return 0
     end
   end,
+})
+
+--战功：今日起兵
+quanji:addEffect(fk.GameFinished, {
+  global = true,
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    return player:getMark("lan__quanji-achievements") >= 3
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    local players = room.players
+    local winners = data:split("+")
+    for _, p in ipairs(players) do
+      if table.contains(winners, p.role) then
+        D.updateAchievement(room, p, "lan__zhonghui", "lan__zhonghui_1", 3)
+      end
+    end
+  end
 })
 
 return quanji

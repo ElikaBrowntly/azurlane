@@ -3,6 +3,8 @@ local qianlong = fk.CreateSkill {
   tags = { Skill.Permanent },
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["lan__qianlong"] = "潜龙",
   [":lan__qianlong"] = "持恒技，游戏开始时，你获得20点道心值；如下情况时，你获得对应数量的道心值：" ..
@@ -157,10 +159,29 @@ qianlong:addEffect(fk.Damaged or fk.Damage, {
     room:addPlayerMark(player, "lan__qianlong__weilord")
     if player:getMark("lan__qianlong__weilord") == 2 then
       get_wei_lord_skills(player)
+      room:addPlayerMark(player, "lan__qianlong-achievements") -- 用于统计战功
       room:setPlayerMark(player, "lan__qianlong__weilord", 0)
     end
   end,
 })
 
+--战功：大魏君王
+qianlong:addEffect(fk.GameFinished, {
+  global = true,
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    return player:getMark("lan__qianlong-achievements") >= 3
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    local players = room.players
+    local winners = data:split("+")
+    for _, p in ipairs(players) do
+      if table.contains(winners, p.role) then
+        D.updateAchievement(room, p, "lan__caomao", "lan__caomao_1", 1)
+      end
+    end
+  end
+})
 
 return qianlong

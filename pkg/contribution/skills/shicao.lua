@@ -3,6 +3,8 @@ local yyfy_shicao = fk.CreateSkill{
   anim_type = "drawcard",
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["yyfy_shicao"] = "识草",
   [":yyfy_shicao"] = "出牌阶段限一次，你可以从牌堆底摸2张牌；然后从牌堆顶摸牌直到获得了类型不同的牌",
@@ -23,9 +25,9 @@ yyfy_shicao:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     
-    -- 牌堆底摸2
+    -- 牌堆底摸2，计入战功进度
     room:drawCards(player, 2, yyfy_shicao.name, "bottom")
-    
+    D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
     -- 记录已出现类型
     local existingTypes = {}
     
@@ -38,6 +40,8 @@ yyfy_shicao:addEffect("active", {
       local cardType = Fk:getCardById(card).type
       
       room:obtainCard(player, card, false, fk.ReasonDraw)
+      -- 计入战功进度
+      D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
       
       local isNewType = false
       for _, t in ipairs(existingTypes) do

@@ -2,6 +2,8 @@ local luochong = fk.CreateSkill{
   name = "lan__luochong",
 }
 
+local D = require "packages.danganronpa.record.DRRP"
+
 Fk:loadTranslationTable{
   ["lan__luochong"] = "落宠",
   [":lan__luochong"] = "每轮开始时、准备阶段或当你受到伤害后，你可以任意顺序执行："
@@ -32,7 +34,7 @@ local function triggerLuochong(player, event)
   local room = player.room
   local usedOptions = {}
   local allPlayers = room.alive_players
-  
+  local count = 0
   local all_choices = {
     Fk:translate("lan__luochong1"),
     Fk:translate("lan__luochong2"),
@@ -122,12 +124,15 @@ local function triggerLuochong(player, event)
           recoverBy = player,
           skillName = luochong.name,
         }
+        count = count + 1
       elseif choice == 2 then
         player:broadcastSkillInvoke(luochong.name, math.random(5,6))
         room:loseHp(target, 1, luochong.name)
+        count = count + 1
       elseif choice == 3 then
         player:broadcastSkillInvoke(luochong.name, 1)
         target:drawCards(2, luochong.name)
+        count = count + 1
       end
     
     -- 选项4
@@ -169,7 +174,8 @@ local function triggerLuochong(player, event)
 
         room:throwCard({discardCard}, luochong.name, target, player)
         discardCount = discardCount + 1
-        
+        count = count + 1
+
         ::discard_continue::
       end
     end
@@ -179,6 +185,10 @@ local function triggerLuochong(player, event)
     -- 检查是否还有可用选项
     if #choices <= 1 then
       break
+    end
+    -- 计入战功进度
+    if count == 7 then
+      D.updateAchievement(room, player, "lan__tengfanglan", "lan__tengfanglan_1", 3)
     end
   end
 end

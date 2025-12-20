@@ -17,7 +17,7 @@ Fk:loadTranslationTable
 
 local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4, 4, General.Male)
 mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
---mou_wupu:addRelatedSkill("wuling")
+mou_wupu:addRelatedSkill("wuling")
 Fk:loadTranslationTable
 {
   ["yyfy_mou_wupu"] = "谋吴普",
@@ -31,7 +31,7 @@ lan__tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
 Fk:loadTranslationTable
 {
   ["lan"] = "烂",
-  ["lan__tengfanglan"] = "滕芳兰",
+  ["lan__tengfanglan"] = "烂滕芳兰",
   ["#lan__tengfanglan"] = "滕子布兰德",
   ["designer:lan__tengfanglan"] = "水上由岐",
   ["~lan__tengfanglan"] = "封侯归命，夫妻同归。",
@@ -41,7 +41,7 @@ local lan__xunyou = General:new(extension, "lan__xunyou", "wei", 3, 3, General.M
 lan__xunyou:addSkills { "lan__baichu", "yyfy_qice", "lan__zhiyu", "yyfy_daojie" }
 Fk:loadTranslationTable
 {
-  ["lan__xunyou"] = "荀攸",
+  ["lan__xunyou"] = "烂荀攸",
   ["#lan__xunyou"] = "荀攸布兰德",
   ["designer:lan__xunyou"] = "水上由岐",
   ["illustrator:lan__xunyou"] = "错落宇宙",
@@ -58,7 +58,7 @@ local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4, Gener
 lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "yyfy_baozu" }
 Fk:loadTranslationTable
 {
-  ["lan__zhonghui"] = "钟会",
+  ["lan__zhonghui"] = "烂钟会",
   ["#lan__zhonghui"] = "钟会布兰德",
   ["designer:lan__zhonghui"] = "水上由岐",
   ["~lan__zhonghui"] = "棋差一着，棋差一着呀",
@@ -96,7 +96,7 @@ Fk:loadTranslationTable{
 local caomao = General:new(extension, "lan__caomao", "wei", 4, 4, General.Male)
 caomao:addSkills {"lan__qianlong", "lan__juetao", "lan__fensi", "lan__weitong"}
 Fk:loadTranslationTable{
-  ["lan__caomao"] = "曹髦",
+  ["lan__caomao"] = "烂曹髦",
   ["#lan__caomao"] = "曹髦布兰德",
   ["designer:lan__caomao"] = "水上由岐",
   ["!lan__caomao"] = "少康诛寒浞以中兴，朕夷司马未尝不可！",
@@ -106,7 +106,7 @@ Fk:loadTranslationTable{
 local huanggai = General:new(extension, "lan__huanggai", "wu", 4, 4, General.Male)
 huanggai:addSkills {"kurou", "lan__zhaxiang", "lan__lieji", "lan__quzhou"}
 Fk:loadTranslationTable{
-  ["lan__huanggai"] = "黄盖",
+  ["lan__huanggai"] = "烂黄盖",
   ["#lan__huanggai"] = "盖子布兰德",
   ["designer:lan__huanggai"] = "水上由岐",
   ["~lan__huanggai"] = "哈哈哈哈，公瑾计成，老夫死也无憾了……"
@@ -115,7 +115,7 @@ Fk:loadTranslationTable{
 local dengai = General:new(extension, "lan__dengai", "wei", 4, 4, General.Male)
 dengai:addSkills {"lan__neyan", "lan__tuntian", "lan__zaoxian", "lan__jixi", "ty__zhouxi"}
 Fk:loadTranslationTable{
-  ["lan__dengai"] = "邓艾",
+  ["lan__dengai"] = "烂邓艾",
   ["#lan__dengai"] = "邓艾布兰德",
   ["designer:lan__dengai"] = "水上由岐",
   ["~lan__dengai"] = "钟会！你为何害我！"

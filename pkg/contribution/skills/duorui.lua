@@ -1,6 +1,8 @@
-local yyfy_duorui = fk.CreateSkill {
+local duorui = fk.CreateSkill {
   name = "yyfy_duorui",
 }
+
+local D = require "packages.danganronpa.record.DRRP"
 
 Fk:loadTranslationTable{
   ["yyfy_duorui"] = "夺锐",
@@ -14,10 +16,10 @@ Fk:loadTranslationTable{
   ["$yyfy_duorui2"] = "尖锐之势，吾亦可一人夺之！",
 }
 
-yyfy_duorui:addEffect(fk.Damage, {
+duorui:addEffect(fk.Damage, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(yyfy_duorui.name) and
+    return target == player and player:hasSkill(self.name) and
       data.to ~= player and not data.to.dead
   end,
   on_cost = function(self, event, target, player, data)
@@ -69,11 +71,32 @@ yyfy_duorui:addEffect(fk.Damage, {
     
     -- 自己获得技能
     room:handleAddLoseSkills(player, skill_name, nil, true, true)
-    
+    -- 通过标记，记录获得的技能数量，用于游戏获胜时的战功判定
+    room:addPlayerMark(player, "exgod_zhangliao-achievements")
+
     if cost_data.lose then
       room:handleAddLoseSkills(target_player, "-"..skill_name, nil, true, false)
     end
   end,
 })
 
-return yyfy_duorui
+--战功：闻风丧胆
+duorui:addEffect(fk.GameFinished, {
+  global = true,
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    return player:getMark("exgod_zhangliao-achievements") >= 5 -- 至少获得了5个技能
+  end,
+  on_refresh = function(self, event, target, player, data)
+    local room = player.room
+    local players = room.players
+    local winners = data:split("+")
+    for _, p in ipairs(players) do
+      if table.contains(winners, p.role) then
+        D.updateAchievement(room, p, "exgod_zhangliao", "exgod_zhangliao_1", 1)
+      end
+    end
+  end
+})
+
+return duorui
