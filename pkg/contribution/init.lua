@@ -202,18 +202,12 @@ local achievements_data = {
         name = "医脉相承",
         desc = "累计3次通过〖锻体〗获得技能〖五灵〗。"
       },
-    },
-  },
-  {
-    id = "yyfy_mou_wupu",
-    name = "谋吴普",
-    achievements = {
       {
         id = "yyfy_mou_wupu_2",
         target = 100,
         name = "遍尝百草",
         desc = "通过〖识草〗累计获得100张牌。"
-      },
+      }
     },
   },
   {
@@ -269,19 +263,5 @@ local achievements_data = {
 if ok and D then
   D.RegisterAchievementPackage("夜隐浮云", achievements_data, "hidden-clouds/image/generals")
 end
-
-Fk:addTaskDef {
-  type = "danganronpa_getzhangong",
-  handler = function(task)
-    local allsave = D.getAchievementPackages()
-    if allsave then
-        task.player:doNotify("dp_getAchievementPackages", json.encode(allsave))
-    end
-    local save = task.player:getGlobalSaveState("hidden-clouds_Achievements")
-    if save then
-      task.player:doNotify("dp_getzhangong", save)
-    end
-  end,
-}
 
 return extension
