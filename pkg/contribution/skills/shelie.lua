@@ -73,9 +73,6 @@ shelie:addEffect(fk.EventPhaseEnd, {
   end,
   on_cost = function(self, event, target, player)
     local choices = { "phase_draw", "phase_play" }
-    if player:getMark("_yyfy_shelie") ~= 0 then
-      table.removeOne(choices, player:getMark("_yyfy_shelie"))
-    end
     event:setCostData(self, player.room:askToChoice(
       player,
       {
