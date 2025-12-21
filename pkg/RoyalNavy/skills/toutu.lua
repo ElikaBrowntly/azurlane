@@ -70,6 +70,7 @@ yyfy_toutu:addEffect("active", {
 
 -- 主炮
 yyfy_toutu:addEffect(fk.CardUsing, {
+  mute = true,
   anim_type = "control",
   is_delay_effect = true,
   can_trigger = function(self, event, target, player, data)
@@ -119,6 +120,7 @@ yyfy_toutu:addEffect(fk.Damage, {
 
 -- 轰炸机
 yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(yyfy_toutu.name) and
            player:getMark("@yyfy_toutu_hongzhaji") > 0 and
@@ -157,6 +159,7 @@ yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
 
 -- 鱼雷
 yyfy_toutu:addEffect(fk.DamageCaused, {
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return data.from == player and player:hasSkill(yyfy_toutu.name) and
            data.skillName ~= yyfy_toutu.name and
