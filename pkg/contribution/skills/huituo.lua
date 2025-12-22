@@ -1,6 +1,6 @@
 local huituo = fk.CreateSkill {
   name = "lan__huituo",
-  frequency = { Skill.Permanent },
+  tags = { Skill.Permanent },
 }
 
 Fk:loadTranslationTable{

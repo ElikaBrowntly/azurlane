@@ -4,7 +4,7 @@ local extension = Package:new("contribution")
 extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/contribution/skills")
 
-local exgod_zhangliao = General:new(extension, "exgod_zhangliao", "god", 4, 5, General.Male)
+local exgod_zhangliao = General:new(extension, "exgod_zhangliao", "god", 4, 5)
 exgod_zhangliao:addSkills { "yyfy_duorui", "yyfy_zhiti" }
 exgod_zhangliao:addRelatedSkill("yyfy_wangxi")
 Fk:loadTranslationTable
@@ -17,7 +17,7 @@ Fk:loadTranslationTable
   ["~exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
-local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4, 4, General.Male)
+local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4)
 mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
 mou_wupu:addRelatedSkill("wuling")
 Fk:loadTranslationTable
@@ -28,7 +28,7 @@ Fk:loadTranslationTable
   ["~yyfy_mou_wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
-local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
+local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, General.Female)
 lan__tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
 Fk:loadTranslationTable
 {
@@ -39,7 +39,7 @@ Fk:loadTranslationTable
   ["~lan__tengfanglan"] = "封侯归命，夫妻同归。",
 }
 
-local lan__xunyou = General:new(extension, "lan__xunyou", "wei", 3, 3, General.Male)
+local lan__xunyou = General:new(extension, "lan__xunyou", "wei", 3)
 lan__xunyou:addSkills { "lan__baichu", "yyfy_qice", "lan__zhiyu", "yyfy_daojie" }
 Fk:loadTranslationTable
 {
@@ -56,7 +56,7 @@ Fk:loadTranslationTable
   ["~lan__xunyou"] = "北雁南顾，当折彭䗍之滨……",
 }
 
-local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4, General.Male)
+local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4)
 lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "yyfy_baozu" }
 Fk:loadTranslationTable
 {
@@ -72,7 +72,7 @@ Fk:loadTranslationTable
   ["$yyfy_baozu_lan__zhonghui6"] = "司马氏已居大，我族岂逊他三分！",
 }
 
-local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4, 4, General.Male)
+local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4)
 lijueguosi:addSkills { "yyfy_xiongxi", "yyfy_yisuan" }
 Fk:loadTranslationTable{
   ["yyfy_lijueguosi"] = "李傕郭汜",
@@ -81,21 +81,21 @@ Fk:loadTranslationTable{
   ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
-local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Female)
+local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, General.Female)
 zhixushenghua:addSkills { "shengjianchujue", "tianmingyini", "shengshayuduo" }
 Fk:loadTranslationTable{
   ["yyfy_zhixushenghua"] = "至序圣华",
   ["designer:yyfy_zhixushenghua"] = "一维无限",
 }
 
-local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Female)
+local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, General.Female)
 xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
 Fk:loadTranslationTable{
   ["yyfy_xunshengshouwei"] = "循声守卫",
   ["designer:yyfy_xunshengshouwei"] = "一维无限",
 }
 
-local caomao = General:new(extension, "lan__caomao", "wei", 4, 4, General.Male)
+local caomao = General:new(extension, "lan__caomao", "wei", 4)
 caomao:addSkills {"lan__qianlong", "lan__juetao", "lan__fensi", "lan__weitong"}
 Fk:loadTranslationTable{
   ["lan__caomao"] = "烂曹髦",
@@ -105,7 +105,7 @@ Fk:loadTranslationTable{
   ["~lan__caomao"] = "纵不成身死，朕亦为太祖子孙，大魏君王……"
 }
 
-local huanggai = General:new(extension, "lan__huanggai", "wu", 4, 4, General.Male)
+local huanggai = General:new(extension, "lan__huanggai", "wu", 4)
 huanggai:addSkills {"kurou", "lan__zhaxiang", "lan__lieji", "lan__quzhou"}
 Fk:loadTranslationTable{
   ["lan__huanggai"] = "烂黄盖",
@@ -114,7 +114,7 @@ Fk:loadTranslationTable{
   ["~lan__huanggai"] = "哈哈哈哈，公瑾计成，老夫死也无憾了……"
 }
 
-local dengai = General:new(extension, "lan__dengai", "wei", 4, 4, General.Male)
+local dengai = General:new(extension, "lan__dengai", "wei", 4)
 dengai:addSkills {"lan__neyan", "lan__tuntian", "lan__zaoxian", "lan__jixi", "ty__zhouxi"}
 Fk:loadTranslationTable{
   ["lan__dengai"] = "烂邓艾",
@@ -123,7 +123,7 @@ Fk:loadTranslationTable{
   ["~lan__dengai"] = "钟会！你为何害我！"
 }
 
-local pianye = General:new(extension, "yyfy_pianye", "god", 1, 999, General.Male)
+local pianye = General:new(extension, "yyfy_pianye", "god", 1, 999)
 pianye:addSkills {"yyfy_gouyun", "yyfy_haopai", "yyfy_huangdou"}
 Fk:loadTranslationTable{
   ["yyfy_pianye"] = "偏✌️",
@@ -131,7 +131,7 @@ Fk:loadTranslationTable{
   ["designer:yyfy_pianye"] = "幻矩",
 }
 
-local piangrandpa = General:new(extension, "yyfy_piangrandpa", "god", 4, 4, General.Male)
+local piangrandpa = General:new(extension, "yyfy_piangrandpa", "god", 4)
 piangrandpa:addSkills {"yyfy_gouyun", "yyfy_haopai↓", "yyfy_huangdou"}
 Fk:loadTranslationTable{
   ["yyfy_piangrandpa"] = "偏爷",
@@ -139,7 +139,7 @@ Fk:loadTranslationTable{
   ["designer:yyfy_piangrandpa"] = "幻矩",
 }
 
-local youlewangzi = General:new(extension, "yyfy_youlewangzi", "god", 4, 4, General.Male)
+local youlewangzi = General:new(extension, "yyfy_youlewangzi", "god", 4)
 youlewangzi:addSkills {"yyfy_mianjv", "yyfy_miyu"}
 Fk:loadTranslationTable{
   ["yyfy_youlewangzi"] = "游乐王子",
@@ -147,7 +147,7 @@ Fk:loadTranslationTable{
   ["designer:yyfy_youlewangzi"] = "夜隐浮云，孤星似梦",
 }
 
-local ex_simashi = General:new(extension, "yyfy_ex_simashi", "wei", 4, 4, General.Male)
+local ex_simashi = General:new(extension, "yyfy_ex_simashi", "wei", 4)
 ex_simashi:addSkills {"yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli"}
 Fk:loadTranslationTable{
   ["yyfy_ex_simashi"] = "界司马师",
@@ -155,11 +155,19 @@ Fk:loadTranslationTable{
   ["~yyfy_ex_simashi"] = "子上，先之则太过，后之则不及……"
 }
 
-local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3, 3, General.Male)
+local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
 gaodaerhao:addSkills {"yyfy_shelie", "yyfy_gongxin"}
 Fk:loadTranslationTable{
   ["yyfy_gaodaerhao"] = "高达二号",
   ["~yyfy_gaodaerhao"] = "终是逃不开，追魂索命之咒……"
+}
+
+local KusanagiGodou = General:new(extension, "yyfy_KusanagiGodou", "evil", 4)
+KusanagiGodou:addSkills {"yyfy_shishen", }--"yyfy_quanneng"
+Fk:loadTranslationTable{
+  ["yyfy_KusanagiGodou"] = "草薙护堂",
+  ["#yyfy_KusanagiGodou"] = "弑神者",
+  ["designer:yyfy_KusanagiGodou"] = "夜隐浮云，孤星似梦",
 }
 
 Fk:loadTranslationTable {

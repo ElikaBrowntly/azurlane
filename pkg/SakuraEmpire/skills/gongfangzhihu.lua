@@ -2,7 +2,7 @@ local skill = fk.CreateSkill{
   name = "gongfangzhihu",
   events = {fk.DamageInflicted, fk.EventPhaseStart, fk.DamageFinished, fk.GameStart, fk.Death},
   anim_type = "defensive",
-  frequency = Skill.Compulsory,
+  tags = {Skill.Compulsory},
 }
 
 Fk:loadTranslationTable{

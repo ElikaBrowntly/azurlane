@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
   ["$lan__aige2"] = "生民百遗一，念之断人肠。",
 }
 
-aige:addEffect(fk.Dying, {
+aige:addEffect(fk.EnterDying, {
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(aige.name) and player:usedSkillTimes(aige.name, Player.HistoryGame) == 0
   end,

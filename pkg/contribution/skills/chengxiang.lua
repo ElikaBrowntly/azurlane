@@ -1,10 +1,11 @@
 local chengxiang = fk.CreateSkill{
   name = "lan__chengxiang",
+  tags = { Skill.Permanent },
 }
 
 Fk:loadTranslationTable{
   ["lan__chengxiang"] = "称象",
-  [":lan__chengxiang"] = "当你受到1点伤害后，你可以亮出牌堆顶四张牌，获得其中任意张数量点数之和不大于13的牌，将其余的牌置入弃牌堆。"..
+  [":lan__chengxiang"] = "持恒技，当你受到1点伤害后，你可以亮出牌堆顶四张牌，获得其中任意张数量点数之和不大于13的牌，将其余的牌置入弃牌堆。"..
   "若获得的牌点数之和恰好为13，你复原武将牌，且本局游戏发动〖称象〗时多亮出一张牌。",
 
   ["#lan__chengxiang-choose"] = "称象：请选择任意张点数之和不大于13的牌",
