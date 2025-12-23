@@ -2,7 +2,7 @@ local duorui = fk.CreateSkill {
   name = "yyfy_duorui",
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["yyfy_duorui"] = "夺锐",

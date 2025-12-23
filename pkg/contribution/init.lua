@@ -170,6 +170,13 @@ Fk:loadTranslationTable{
   ["designer:yyfy_KusanagiGodou"] = "夜隐浮云，孤星似梦",
 }
 
+local yueCaocao = General:new(extension, "yyfy_yueCaocao", "wei", 4)
+yueCaocao:addSkills {"yyfy_yanjv", "yyfy_hejue"}
+Fk:loadTranslationTable{
+  ["yyfy_yueCaocao"] = "乐曹操",
+  ["designer:yyfy_yueCaocao"] = "幻矩",
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

@@ -3,7 +3,7 @@ local yyfy_shicao = fk.CreateSkill{
   anim_type = "drawcard",
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["yyfy_shicao"] = "识草",

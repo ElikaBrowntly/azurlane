@@ -36,6 +36,7 @@ local MARK_TYPES = {
 }
 
 yyfy_toutu:addEffect("active", {
+  mute = true,
   prompt = "#yyfy_toutu-get",
   card_num = 0,
   target_num = 0,
@@ -52,7 +53,8 @@ yyfy_toutu:addEffect("active", {
         table.insert(obtained, markType)
       end
     end
-    
+    player:broadcastSkillInvoke(self.name, 1)
+    player:chat("$yyfy_toutu1")
     -- 发送获得的图纸信息
     if #obtained > 0 then
       local obtainedNames = {}
@@ -79,6 +81,7 @@ yyfy_toutu:addEffect(fk.CardUsing, {
            #data.tos > 0 and (data.card.type == Card.TypeBasic or data.card:isCommonTrick() )
   end,
   on_use = function(self, event, target, player, data)
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_zhupao")
     local X = player:getMark("@yyfy_toutu_zhupao")
     data.additionalEffect = (data.additionalEffect or 0) + X
   end,
@@ -86,6 +89,7 @@ yyfy_toutu:addEffect(fk.CardUsing, {
 
 -- 副炮
 yyfy_toutu:addEffect(fk.Damage, {
+  mute = true,
   on_cost = function(self, event, target, player, data)
     if not (data.from and data.from:hasSkill(yyfy_toutu.name) and
            data.card and data.card.trueName == "slash" and
@@ -101,7 +105,9 @@ yyfy_toutu:addEffect(fk.Damage, {
     local room = player.room
     local from = data.from
     local to = data.to
-    
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_fupao")
+    player:broadcastSkillInvoke(self.name, 2)
+    player:chat("$yyfy_toutu2")
     -- 获得燃殇
     room:handleAddLoseSkills(to, "ranshang", yyfy_toutu.name, true)
     
@@ -149,6 +155,7 @@ yyfy_toutu:addEffect(fk.AfterCardTargetDeclared, {
     end
   end,
   on_use = function(self, event, target, player, data)
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_hongzhaji")
     local tos = event:getCostData(self).tos
     if tos == nil then return end
     for _, p in ipairs(tos) do
@@ -173,6 +180,7 @@ yyfy_toutu:addEffect(fk.DamageCaused, {
     })
   end,
   on_use = function(self, event, target, player, data)
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_yulei")
     local X = player:getMark("@yyfy_toutu_yulei")
     data.damage = data.damage + X
   end,
@@ -180,11 +188,14 @@ yyfy_toutu:addEffect(fk.DamageCaused, {
 
 -- 战斗机
 yyfy_toutu:addEffect(fk.DamageInflicted, {
+  mute =true,
   on_cost = function(self, event, target, player, data)
     return data.to == player and player:hasSkill(yyfy_toutu.name) and
            player:getMark("@yyfy_toutu_zhandouji") > 0
   end,
   on_use = function(self, event, target, player, data)
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_zhandouji")
+    player:broadcastSkillInvoke(self.name, 2)
     local X = player:getMark("@yyfy_toutu_zhandouji")
     data.damage = math.max(0, data.damage - X)
   end,

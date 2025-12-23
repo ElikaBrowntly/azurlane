@@ -73,7 +73,7 @@ hongzhimoyan:addEffect(fk.DamageInflicted, {
 -- 使用者造成伤害+1
 hongzhimoyan:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self.name) and
+    return player and player:hasSkill(self.name) and data.from and
     data.from:getMark("@@fate_hongzhimoyan_self_damage-turn") > 0
   end,
   on_cost = Util.TrueFunc,

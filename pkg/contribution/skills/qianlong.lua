@@ -3,7 +3,7 @@ local qianlong = fk.CreateSkill {
   tags = { Skill.Permanent },
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["lan__qianlong"] = "潜龙",

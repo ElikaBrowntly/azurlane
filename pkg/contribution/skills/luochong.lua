@@ -2,7 +2,7 @@ local luochong = fk.CreateSkill{
   name = "lan__luochong",
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["lan__luochong"] = "落宠",

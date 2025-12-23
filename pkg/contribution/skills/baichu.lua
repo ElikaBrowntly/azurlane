@@ -3,7 +3,7 @@ local baichu = fk.CreateSkill{
   tags = { Skill.Compulsory },
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["lan__baichu"] = "百出",

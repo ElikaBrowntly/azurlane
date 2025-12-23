@@ -4,7 +4,7 @@ local yyfy_duanti = fk.CreateSkill {
   anim_type = "support",
 }
 
-local D = require "packages.danganronpa.record.DRRP"
+local D = require "packages.DR-system.record.DRRP"
 
 Fk:loadTranslationTable{
   ["yyfy_duanti"] = "锻体",
