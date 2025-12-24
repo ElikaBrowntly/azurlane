@@ -125,18 +125,7 @@ yanjv:addEffect("invalidity", {
     return false
   end
 })
--- 锦囊和多字基本（如果有的话）失效效果
--- 实现方式是让锦囊牌视为自印卡“句”，但这样一张锦囊牌上会显示两个“句”符号，暂不采纳
--- yanjv:addEffect("filter", {
---   mute = true,
---   card_filter = function(self, card, player, isJudgeEvent)
---     return player:hasSkill(yanjv.name) and card and
---     card:getMark("@@yyfy_yanjv-mark") > 0 and card.type ~= Card.TypeEquip
---   end,
---   view_as = function(self, player, card)
---     return Fk:cloneCard("yyfy_jv", card.suit, card.number)
---   end,
--- })
+-- 锦囊基本失效效果
 yanjv:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
     return card:getMark("@@yyfy_yanjv-mark") > 0 and card.type ~= Card.TypeEquip
