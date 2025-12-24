@@ -1,4 +1,4 @@
-local ok, D = pcall(require, "packages.danganronpa.record.DRRP")
+local ok, D = pcall(require "packages.DR-system.record.DRRP")
 
 local extension = Package:new("contribution")
 extension.extensionName = "hidden-clouds"
