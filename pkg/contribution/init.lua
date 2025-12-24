@@ -163,7 +163,7 @@ Fk:loadTranslationTable{
 }
 
 local KusanagiGodou = General:new(extension, "yyfy_KusanagiGodou", "evil", 4)
-KusanagiGodou:addSkills {"yyfy_shishen", }--"yyfy_quanneng"
+KusanagiGodou:addSkills {"yyfy_shishen", "yyfy_quanneng" }
 Fk:loadTranslationTable{
   ["yyfy_KusanagiGodou"] = "草薙护堂",
   ["#yyfy_KusanagiGodou"] = "弑神者",
@@ -181,6 +181,7 @@ Fk:loadTranslationTable{
   ["$zhubei_yyfy_yueCaocao2"] = "我有嘉宾，鼓瑟吹笙。",
   ["$duoyue_yyfy_yueCaocao1"] = "明明，如月，何时，可掇？",
   ["$duoyue_yyfy_yueCaocao2"] = "皎皎如月，何时可辍？",
+  ["~yyfy_yueCaocao"] = "安敢败我诗兴？（我...）"
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
 

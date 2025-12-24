@@ -8,8 +8,8 @@ Fk:loadTranslationTable{
   [":yyfy_quanneng"] = "持恒技，一名角色的回合开始时，你可以获得<a href='Verethragna'>乌鲁斯拉格纳十大化身"..
   "</a>中的最多3个(不能选择上回合获得过的)，然后此回合结束时，你失去这些化身和X-1点体力(X为选择的化身数量)。",
 
-  ["Verethragna"] = "<br><font color='red'>强风</font>：你至其他角色的距离恒为1，你使用牌无次数限制且无法被响应"..
-  "<br><font color='orange'>公牛</font>：你造成的伤害改为受伤角色的当前体力值"..
+  ["Verethragna"] = "<br><font color='red'>强风</font>：你与其他角色的距离-10，你使用牌无次数限制且无法被响应"..
+  "<br><font color='orange'>公牛</font>：你造成的伤害改为受伤角色的当前体力值(后面都未实装)"..
   "<br><font color='yellow'>白马</font>：其他角色造成伤害后，你可以对其造成等量火焰伤害"..
   "<br><font color='green'>骆驼</font>：你受到伤害时回复等量体力"..
   "<br><font color='cyan'>山猪</font>：获得此技能时，令一名其他角色失去所有体力"..
@@ -41,9 +41,9 @@ local all_skills = {
   "yyfy_shaonian", "yyfy_fenghuang", "yyfy_muyang", "yyfy_shanyang", "yyfy_zhanshi"
 }
 
-quanneng:addEffect(fk.EventPhaseStart, {
+quanneng:addEffect(fk.TurnStart, {
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(quanneng.name) and target.phase == Player.Start and player:isAlive()
+    return player:hasSkill(quanneng.name) and target == player and player:isAlive()
   end,
   on_cost = function(self, event, target, player, data)
     local room = player.room
@@ -105,10 +105,10 @@ quanneng:addEffect(fk.EventPhaseStart, {
 })
 
 -- 回合结束时失去技能和体力
-quanneng:addEffect(fk.EventPhaseEnd, {
+quanneng:addEffect(fk.TurnEnd, {
   can_trigger = function(self, event, target, player, data)
     -- 检查是否是技能持有者记录的回合目标
-    if player:getMark("yyfy_quanneng_current") > 0 then
+    if player:getMark("yyfy_quanneng_current") then
       return target.id == player:getMark("yyfy_quanneng_target")
     end
     return false
