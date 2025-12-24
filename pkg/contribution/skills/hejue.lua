@@ -4,9 +4,9 @@ local hejue = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_hejue"] = "和绝",
-  [":yyfy_hejue"] = "你可以弃置一张装备【句】，于对应时机发动：〖西向〗〖逐北〗〖归心〗〖掇月〗；"..
-  "你可以将一张锦囊【句】当作立即判定的【闪电】置于自己的判定区，结算结束后你获得一种颜色的判定牌。"..
-  "你每回合失去3张或得到3张【句】后，此技能本阶段失效。",
+  [":yyfy_hejue"] = "你可以弃置一张装备【句】，在受到伤害后发动〖归心〗/在出牌阶段开始时发动〖掇月〗/"..
+  "在出牌阶段获得〖西向〗或〖逐北〗直到回合结束；你可以将一张锦囊【句】当作立即判定的【闪电】"..
+  "置于自己的判定区，结算结束后你获得一种颜色的判定牌。",
   
   ["yyfy_hejue_active"] = "发动〖和绝〗效果",
   ["yyfy_hejue_xixiang"] = "西向",
@@ -90,12 +90,14 @@ hejue:addEffect("active", {
     if effectChoice == "yyfy_hejue_xixiang" then
       room:throwCard(jv, "yyfy_hejue", player, player)
       room:notifySkillInvoked(player, "yyfy_hejue", "control")
-      room:handleAddLoseSkills(player, "xixiang", self, false, true)
+      room:handleAddLoseSkills(player, "xixiang") -- 这里有一个bug，如果填了源技能为self，就失去不了了
+      room:addPlayerMark(player, "yyfy_hejue_xixiang") -- 便于后续失去
     elseif effectChoice == "yyfy_hejue_zhubei" then
       -- 获得"逐北" 
       room:throwCard(jv, "yyfy_hejue", player, player)
       room:notifySkillInvoked(player, "yyfy_hejue", "control")
-      room:handleAddLoseSkills(player, "zhubei", self, false, true)
+      room:handleAddLoseSkills(player, "zhubei")
+      room:addPlayerMark(player, "yyfy_hejue_zhubei") -- 便于后续失去
     elseif effectChoice == "yyfy_hejue_lightning" then
       -- 模拟立即判定的闪电
       local lightningCard = Fk:cloneCard("lightning")
@@ -150,6 +152,7 @@ hejue:addEffect("active", {
         -- 如果闪电已经触发，或者玩家死亡，则停止
       until lightningTriggered or currentPlayer.dead or #players == 0
       -- 将闪电从判定区弃置
+      room:throwCard(jv, self.name, player)
       local judgeCards = player:getCardIds("j")
       for _, id in ipairs(judgeCards) do
         local card = Fk:getCardById(id)
@@ -278,7 +281,7 @@ hejue:addEffect(fk.Damaged, {
     -- 弃置选择的装备牌
     room:throwCard(chosenEquip[1], "yyfy_hejue", player, player)
     -- 播放音效
-    player:broadcastSkillInvoke("yyfy_hejue", math.random(1, 2))
+    player:broadcastSkillInvoke("yyfy_hejue")
     -- 发动"归心"技能
     room:notifySkillInvoked(player, "yyfy_hejue", "support")
     for _, p in ipairs(room:getOtherPlayers(player)) do
@@ -299,6 +302,7 @@ hejue:addEffect(fk.Damaged, {
 
 -- 出牌阶段开始时触发"掇月"
 hejue:addEffect(fk.EventPhaseStart, {
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(hejue.name) and hasJuEquip(player) and
       player.phase == Player.Play and player:isAlive() and
@@ -352,7 +356,7 @@ hejue:addEffect(fk.EventPhaseStart, {
     room:throwCard(chosenEquip[1], "yyfy_hejue", player, player)
     
     -- 播放音效
-    player:broadcastSkillInvoke("yyfy_hejue", 1)
+    player:broadcastSkillInvoke("duoyue_yyfy_yueCaocao")
     
     -- 发动"掇月"技能
     room:notifySkillInvoked(player, "duoyue", "drawcard")
@@ -414,6 +418,25 @@ hejue:addEffect(fk.EventPhaseStart, {
       to = tos[1]
     end
   end,
+})
+
+hejue:addEffect(fk.TurnEnd, {
+  mute = true,
+  can_trigger = function (self, event, target, player, data)
+    return player and ((player:hasSkill("xixiang", true) and player:getMark("yyfy_hejue_xixiang") > 0)
+    or (player:hasSkill("zhubei", true) and player:getMark("yyfy_hejue_zhubei") > 0))
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
+    if player:getMark("yyfy_hejue_xixiang") > 0 then
+      player.room:handleAddLoseSkills(player, "-xixiang")
+      player.room:setPlayerMark(player, "yyfy_hejue_xixiang", 0)
+    end
+    if player:getMark("yyfy_hejue_zhubei") > 0 then
+      player.room:handleAddLoseSkills(player, "-zhubei")
+      player.room:setPlayerMark(player, "yyfy_hejue_zhubei", 0)
+    end
+  end
 })
 
 return hejue

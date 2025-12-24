@@ -177,13 +177,20 @@ Fk:loadTranslationTable{
   ["designer:yyfy_yueCaocao"] = "幻矩",
   ["$xixiang_yyfy_yueCaocao1"] = "但为，君故，沉吟，至今。",
   ["$xixiang_yyfy_yueCaocao2"] = "但为君故，沉吟至今。",
-  ["zhubei_yyfy_yueCaocao1"] = "我有，嘉宾，鼓瑟，吹笙。",
-  ["zhubei_yyfy_yueCaocao2"] = "我有嘉宾，鼓瑟吹笙。",
-  ["duoyue_yyfy_yueCaocao1"] = "明明，如月，何时，可掇？",
-  ["duoyue_yyfy_yueCaocao2"] = "皎皎如月，何时可辍？",
+  ["$zhubei_yyfy_yueCaocao1"] = "我有，嘉宾，鼓瑟，吹笙。",
+  ["$zhubei_yyfy_yueCaocao2"] = "我有嘉宾，鼓瑟吹笙。",
+  ["$duoyue_yyfy_yueCaocao1"] = "明明，如月，何时，可掇？",
+  ["$duoyue_yyfy_yueCaocao2"] = "皎皎如月，何时可辍？",
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
--- 问题：不会失去技能，改为包含到二技能里面多写一个按钮；闪电没有被拆掉或者每回合都重新劈了；配音不对；锦囊牌不对
+
+local zengzhideG = General:new(extension, "yyfy_zengzhideG", "god", 2)
+zengzhideG:addSkill("yyfy_zengzhi")
+Fk:loadTranslationTable{
+  ["yyfy_zengzhideG"] = "增殖的G",
+  ["#yyfy_zengzhideG"] = "王牌怪兽",
+  ["designer:yyfy_zengzhideG"] = "夜隐浮云，孤星似梦",
+}
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
