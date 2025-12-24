@@ -23,17 +23,16 @@ Fk:loadTranslationTable{
   ["#yyfy_hejue_damage_trigger"] = "和绝：受到伤害后，你可以弃置一张【句】装备牌发动〖归心〗",
   ["#yyfy_hejue_start_trigger"] = "和绝：出牌阶段开始时，你可以弃置一张【句】装备牌发动〖掇月〗",
   
-  ["$yyfy_hejue1"] = "明明，如月，何时，可掇？",
-  ["$yyfy_hejue2"] = "山不，厌高，海不，厌深。",
-  ["$yyfy_hejue3"] = "周公，吐哺，天下，归心。",
+  ["$yyfy_hejue1"] = "周公，吐哺，天下，归心。",
+  ["$yyfy_hejue2"] = "周公吐哺，天下归心。",
 }
 
 -- 检查玩家是否有所有装备牌"句"
 local function hasJuEquip(player)
-  local equipIds = player:getCardIds("e") or {}
+  local equipIds = player:getCardIds("he") or {}
   for _, id in ipairs(equipIds) do
     local card = Fk:getCardById(id)
-    if card:getMark("@@yyfy_yanjv-mark") > 0 then
+    if card:getMark("@@yyfy_yanjv-mark") > 0 and card.type == Card.TypeEquip then
       return true
     end
   end
@@ -43,10 +42,10 @@ end
 -- 获取玩家所有装备牌"句"
 local function getJuEquips(player)
   local juEquips = {}
-  local equipIds = player:getCardIds("e") or {}
+  local equipIds = player:getCardIds("he") or {}
   for _, id in ipairs(equipIds) do
     local card = Fk:getCardById(id)
-    if card:getMark("@@yyfy_yanjv-mark") > 0 then
+    if card:getMark("@@yyfy_yanjv-mark") > 0 and card.type == Card.TypeEquip then
       table.insert(juEquips, {id = id, card = card})
     end
   end
@@ -279,7 +278,7 @@ hejue:addEffect(fk.Damaged, {
     -- 弃置选择的装备牌
     room:throwCard(chosenEquip[1], "yyfy_hejue", player, player)
     -- 播放音效
-    player:broadcastSkillInvoke("yyfy_hejue", math.random(2, 3))
+    player:broadcastSkillInvoke("yyfy_hejue", math.random(1, 2))
     -- 发动"归心"技能
     room:notifySkillInvoked(player, "yyfy_hejue", "support")
     for _, p in ipairs(room:getOtherPlayers(player)) do
@@ -356,7 +355,7 @@ hejue:addEffect(fk.EventPhaseStart, {
     player:broadcastSkillInvoke("yyfy_hejue", 1)
     
     -- 发动"掇月"技能
-    room:notifySkillInvoked(player, "yyfy_duoyue", "drawcard")
+    room:notifySkillInvoked(player, "duoyue", "drawcard")
     local to = event:getCostData(self).tos[1]
 
     for n = 1, 3 do
@@ -415,12 +414,6 @@ hejue:addEffect(fk.EventPhaseStart, {
       to = tos[1]
     end
   end,
-})
-
-hejue:addEffect("invalidity", {
-  invalidity_func = function(self, from, skill)
-   return skill.name == self.name and from:getMark("yyfy_hejue-phase") > 0
-  end
 })
 
 return hejue

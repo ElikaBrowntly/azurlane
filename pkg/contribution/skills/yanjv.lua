@@ -7,8 +7,8 @@ Fk:loadTranslationTable{
   ["yyfy_yanjv"] = "言句",
   [":yyfy_yanjv"] = "锁定技，你获得多字手牌后，将此牌牌名替换为「句」，你的「句」不计入手牌上限。",
   
-  ["$yyfy_yanjv1"] = "言之无文，行而不远。",
-  ["$yyfy_yanjv2"] = "文以载道，言以修身。",
+  ["$yyfy_yanjv1"] = "对酒，当歌，人生，几何？",
+  ["$yyfy_yanjv2"] = "上有皓月当空，下有江波荡漾。此情此景，感慨系之。我当作歌，尔等和之！",
   
   ["@@yyfy_yanjv-mark"] = "句",
   ["yyfy_yueCaocao-jv"] = "句",
@@ -100,13 +100,16 @@ yanjv:addEffect(fk.AfterCardsMove, {
   end,
 })
 
+local F = require "packages.hidden-clouds.functions"
 -- 装备技能失效效果
 yanjv:addEffect("invalidity", {
   invalidity_func = function(self, from, skill)
    for _, c in ipairs(from:getCardIds("he")) do
       local card = Fk:getCardById(c, true)
+
       if card:getMark("@@yyfy_yanjv-mark") > 0 and
-        skill:getSkeleton().attached_equip == card.name then
+        (F.getCardNameFromSkillName(skill.name) == card.name) then
+        print(F.getCardNameFromSkillName(skill.name) )
         return true
       end
     end
@@ -116,6 +119,7 @@ yanjv:addEffect("invalidity", {
 
 -- 卡牌离开自己区域时恢复原牌名
 yanjv:addEffect(fk.AfterCardsMove, {
+  mute = true,
   can_refresh = function(self, event, target, player, data)
     if player:hasSkill(yanjv.name) then
       for _, move in ipairs(data) do
@@ -156,6 +160,25 @@ yanjv:addEffect(fk.AfterCardsMove, {
         end
     end
   end,
+})
+
+yanjv:addEffect("invalidity", {
+  invalidity_func = function(self, from, skill)
+   return skill.name == "yyfy_hejue" and from:getMark("yyfy_hejue-phase") > 0
+  end
+})
+
+yanjv:addEffect(fk.EventPhaseEnd, {
+  mute = true,
+  can_trigger = function (self, event, target, player, data)
+    return player and (player:hasSkill("xixiang", true)
+    or player:hasSkill("zhubei", true)) and player:hasSkill(self.name, true)
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
+      player.room:handleAddLoseSkills(player, "-zhubei", self, false, true)
+      player.room:handleAddLoseSkills(player, "-xixiang", self, false, true)
+  end
 })
 
 -- 不占手牌上限
