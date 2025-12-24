@@ -1,4 +1,4 @@
-local ok, D = pcall(require "packages.DR-system.record.DRRP")
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 local extension = Package:new("contribution")
 extension.extensionName = "hidden-clouds"
@@ -282,7 +282,7 @@ local achievements_data = {
   },
 }
 
-if ok and D then
+if ok and D and type(D.RegisterAchievementPackage) == "function" then
   D.RegisterAchievementPackage("夜隐浮云", achievements_data, "hidden-clouds/image/generals")
 end
 
