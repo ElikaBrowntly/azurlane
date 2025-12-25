@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
   "</a>中的最多3个(不能选择上回合获得过的)，然后此回合结束时，你失去这些化身和X-1点体力(X为选择的化身数量)。",
 
   ["Verethragna"] = "<br><font color='red'>强风</font>：你与其他角色的距离-10，你使用牌无次数限制且无法被响应"..
-  "<br><font color='orange'>公牛</font>：你造成的伤害改为受伤角色的当前体力值(后面都未实装)"..
+  "<br><font color='orange'>公牛</font>：你对其他角色造成的伤害改为其体力值(后面都未实装)"..
   "<br><font color='yellow'>白马</font>：其他角色造成伤害后，你可以对其造成等量火焰伤害"..
   "<br><font color='green'>骆驼</font>：你受到伤害时回复等量体力"..
   "<br><font color='cyan'>山猪</font>：获得此技能时，令一名其他角色失去所有体力"..

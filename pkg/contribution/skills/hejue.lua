@@ -5,8 +5,8 @@ local hejue = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["yyfy_hejue"] = "和绝",
   [":yyfy_hejue"] = "你可以弃置一张装备【句】，在受到伤害后发动〖归心〗/在出牌阶段开始时发动〖掇月〗/"..
-  "在出牌阶段获得〖西向〗或〖逐北〗直到回合结束；你可以将一张锦囊【句】当作立即判定的【闪电】"..
-  "置于自己的判定区，结算结束后你获得一种颜色的判定牌。",
+  "在出牌阶段获得〖西向〗或〖逐北〗直到回合结束；每回合限两次，你可以将一张锦囊【句】当作立即判定"..
+  "的【闪电】置于自己的判定区，结算结束后你获得一种颜色的判定牌。",
   
   ["yyfy_hejue_active"] = "发动〖和绝〗效果",
   ["yyfy_hejue_xixiang"] = "西向",
@@ -75,7 +75,8 @@ hejue:addEffect("active", {
     if jv.type == Card.TypeEquip then
       table.insert(choices, "yyfy_hejue_xixiang")
       table.insert(choices, "yyfy_hejue_zhubei")
-    else table.insert(choices, "yyfy_hejue_lightning")
+    elseif player:getMark("yyfy_hejue_lightning-turn") < 2 then -- 印闪电限两次
+      table.insert(choices, "yyfy_hejue_lightning")
     end
     -- 选择要发动的效果
     local effectChoice = room:askToChoice(player, {
@@ -113,6 +114,8 @@ hejue:addEffect("active", {
         skillName = "yyfy_hejue",
         virtualEquip = lightningCard,
       }
+      -- 记录发动次数，用于印闪电限两次的限制
+      room:addPlayerMark(player, "yyfy_hejue_lightning-turn")
       -- 记录所有判定牌
       local allJudgeCards = {}
       -- 从自己开始，按顺序对全场每个人判定，直到闪电劈下来为止

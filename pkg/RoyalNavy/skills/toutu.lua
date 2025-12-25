@@ -54,7 +54,7 @@ yyfy_toutu:addEffect("active", {
       end
     end
     player:broadcastSkillInvoke(self.name, 1)
-    player:chat("$yyfy_toutu1")
+    player:chat("猜猜看，今天为你们准备的主菜是鱼雷呢，还是炮弹呢~？")
     -- 发送获得的图纸信息
     if #obtained > 0 then
       local obtainedNames = {}
@@ -107,7 +107,7 @@ yyfy_toutu:addEffect(fk.Damage, {
     local to = data.to
     player.room:notifySkillInvoked(player, "@yyfy_toutu_fupao")
     player:broadcastSkillInvoke(self.name, 2)
-    player:chat("$yyfy_toutu2")
+    player:chat("赢啦，亲爱的，我们赢啦！耶~！")
     -- 获得燃殇
     room:handleAddLoseSkills(to, "ranshang", yyfy_toutu.name, true)
     

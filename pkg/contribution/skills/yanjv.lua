@@ -22,39 +22,6 @@ local function isMultiCharacterCard(card)
   return translatedName and translatedName:len() > 1
 end
 
--- 将牌名替换为"句"
-local function renameCardTojv(card)
-  -- 保存原牌名到extra_data
-  if not card.extra_data then
-    card.extra_data = {}
-  end
-  card.extra_data.yanjv_original_trueName = card.trueName
-  
-  -- 替换为"句"
-  card.trueName = "yyfy_yueCaocao-jv"
-  
-  -- 添加标记
-  return true
-end
-
--- 恢复原牌名
-local function restoreCardName(card)
-  if card.extra_data and card.extra_data.yanjv_original_trueName then
-    card.trueName = card.extra_data.yanjv_original_trueName
-    
-    -- 清理extra_data
-    card.extra_data.yanjv_original_trueName = nil
-    
-    -- 如果extra_data为空表，可以置空
-    if next(card.extra_data) == nil then
-      card.extra_data = nil
-    end
-    
-    return true
-  end
-  return false
-end
-
 -- 游戏开始时触发：多字牌变为“句”
 yanjv:addEffect(fk.GameStart, {
   mute = true,
@@ -69,8 +36,8 @@ yanjv:addEffect(fk.GameStart, {
       local card = Fk:getCardById(id)
       if isMultiCharacterCard(card) then
         -- 重命名卡牌
-        renameCardTojv(card)
-        -- 添加标记，用于不占手牌上限，以及二技能失效计数
+        card.trueName = "yyfy_yueCaocao-jv"
+        -- 添加标记，用于不占手牌上限
         room:setCardMark(card, "@@yyfy_yanjv-mark", 1)
       end
     end
@@ -101,7 +68,7 @@ yanjv:addEffect(fk.AfterCardsMove, {
           local card = Fk:getCardById(info.cardId)
           if isMultiCharacterCard(card) then
             -- 重命名卡牌
-            renameCardTojv(card)
+            card.trueName = "yyfy_yueCaocao-jv"
             -- 添加标记，用于不占手牌上限
             room:setCardMark(card, "@@yyfy_yanjv-mark", 1)
           end
@@ -134,42 +101,6 @@ yanjv:addEffect("prohibit", {
     return card:getMark("@@yyfy_yanjv-mark") > 0 and card.type ~= Card.TypeEquip
   end,
 })
--- 卡牌离开自己区域时恢复原牌名
-yanjv:addEffect(fk.AfterCardsMove, {
-  mute = true,
-  can_refresh = function(self, event, target, player, data)
-    if player:hasSkill(yanjv.name) then
-      for _, move in ipairs(data) do
-        if move.from == player and ((move.to ~= player and move.toArea == Card.PlayerHand)
-          or move.toArea == Card.DiscardPile or move.toArea == Card.DrawPile or
-          move.toArea == Card.Unknown or move.toArea == Card.Void or move.toArea == Card.PlayerJudge
-          or move.toArea == Card.PlayerSpecial ) then
-          for _, info in ipairs(move.moveInfo) do
-            local card = Fk:getCardById(info.cardId)
-            if card:getMark("@@yyfy_yanjv-mark") > 0 then
-              return true
-            end
-          end
-        end
-      end
-    end
-    return false
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    for _, move in ipairs(data) do
-        for _, info in ipairs(move.moveInfo) do
-          local card = Fk:getCardById(info.cardId)
-          if card:getMark("@@yyfy_yanjv-mark") > 0 then
-            -- 恢复原牌名
-            restoreCardName(card)
-            -- 处理标记
-            room:setCardMark(card, "@@yyfy_yanjv-mark", 0)
-          end
-        end
-    end
-  end,
-})
 
 -- 不占手牌上限
 yanjv:addEffect("maxcards", {
@@ -187,17 +118,5 @@ yanjv:addEffect("maxcards", {
     return false
   end,
 })
-
--- 技能失去时清理标记
-yanjv:addLoseEffect(function(self, player, is_death)
-  local room = player.room
-  for _, id in ipairs(player:getCardIds("h")) do
-    local card = Fk:getCardById(id)
-    if card:getMark("@@yyfy_yanjv-mark") > 0 then
-      room:setCardMark(card, "@@yyfy_yanjv-mark", 0)
-      restoreCardName(card)
-    end
-  end
-end)
 
 return yanjv

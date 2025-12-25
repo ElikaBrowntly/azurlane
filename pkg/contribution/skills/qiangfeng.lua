@@ -32,7 +32,7 @@ qiangfeng:addEffect(fk.CardUsing, {
   end,
   on_refresh = function(self, event, target, player, data)
     player.room:doAnimate("InvokeSkill", {
-      name = "qiangfeng",
+      name = self.name,
       player = player.id,
       skill_type = qiangfeng.name,
     })
