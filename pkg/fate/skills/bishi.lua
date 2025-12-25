@@ -66,7 +66,6 @@ skill:addEffect(fk.AskForCardUse, {
 
 skill:addEffect(fk.PreCardEffect, {
   can_trigger = function (self, event, target, player, data)
-    print("yes1")
     return data.card:isCommonTrick() and player:hasSkill(skill.name)
     and target:isAlive() and #data.tos == 1 and data.card.trueName ~= "nullification"
   end,

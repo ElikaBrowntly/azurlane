@@ -11,8 +11,8 @@ Fk:loadTranslationTable{
   ["Verethragna"] = "<br><font color='red'>强风</font>：你与其他角色的距离-10，你使用牌无次数限制且无法被响应"..
   "<br><font color='orange'>公牛</font>：你对其他角色造成的伤害改为其体力值"..
   "<br><font color='yellow'>白马</font>：其他角色造成伤害后，你可以对其造成等量火焰伤害"..
-  "<br><font color='green'>骆驼</font>：你受到伤害时回复等量体力(未实装)"..
-  "<br><font color='cyan'>山猪</font>：获得此技能时，令一名其他角色失去所有体力(未实装)"..
+  "<br><font color='green'>骆驼</font>：你受到伤害后回复等量体力"..
+  "<br><font color='cyan'>山猪</font>：获得此技能时，令一名其他角色失去所有体力"..
   "<br><font color='blue'>少年</font>：其他角色受到伤害后，或出牌阶段限一次你可以选择一名其他角色，你可以赐予其一个其他化身(未实装)"..
   "<br><font color='indigo'>凤凰</font>：其他角色至你的距离恒为10，你不是其他角色使用牌的合法目标(未实装)"..
   "<br><font color='purple'>牡羊</font>：限定技，你死亡时改为修整一回合(未实装)"..
