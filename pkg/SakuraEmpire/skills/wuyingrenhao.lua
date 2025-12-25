@@ -31,6 +31,7 @@ skill:addEffect("targetmod", {
 
 -- 强中
 skill:addEffect(fk.CardUsing, {
+  mute = true,
   on_cost = function(self, event, target, player, data)
     return player:hasSkill(skill.name) and 
            player:getEquipment(Card.SubtypeWeapon) and

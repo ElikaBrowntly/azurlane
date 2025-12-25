@@ -97,6 +97,7 @@ skill:addEffect(fk.TargetSpecified, {
 
 -- 易伤
 skill:addEffect(fk.DamageInflicted, {
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return data.to:getMark("@@jinghaijinglei_debuff") > 0 and player:hasSkill(skill.name)
   end,
@@ -115,6 +116,7 @@ skill:addEffect(fk.DamageInflicted, {
 
 -- 清除标记
 skill:addEffect(fk.EventPhaseEnd, {
+  mute = true,
   on_cost = function(self, event, target, player, data)
     if target.phase ~= Player.Finish then return false end
     for _, p in ipairs(target.room:getAlivePlayers()) do

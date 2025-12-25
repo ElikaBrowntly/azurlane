@@ -1,5 +1,6 @@
 local gongniu = fk.CreateSkill{
   name = "yyfy_gongniu",
+  tags = { Skill.Permanent },
 }
 
 Fk:loadTranslationTable{

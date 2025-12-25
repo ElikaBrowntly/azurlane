@@ -1,5 +1,5 @@
 local qiangfeng = fk.CreateSkill{
-  name = "yyfy_qiangfeng", -- 强风
+  name = "yyfy_qiangfeng",
   tags = { Skill.Permanent },
 }
 

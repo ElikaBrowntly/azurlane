@@ -59,6 +59,7 @@ skill:addEffect(fk.GameStart, {
 
 -- 死亡时清除
 skill:addEffect(fk.Death, {
+  mute = true,
   on_cost = function(self, event, target, player, data)
     return data.who:hasSkill(skill.name)
   end,
@@ -174,6 +175,7 @@ skill:addEffect(fk.DamageInflicted, {
 
 -- 防止伤害后失去体力
 skill:addEffect(fk.DamageFinished, {
+  mute = true,
   on_cost = function(self, event, target, player, data)
     return data.to == player and player:hasSkill(self.name) and not player.dead
   end,
