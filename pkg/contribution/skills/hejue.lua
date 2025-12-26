@@ -22,17 +22,16 @@ Fk:loadTranslationTable{
   ["#yyfy_hejue_color_choose"] = "和绝：请选择要获得的一种颜色",
   ["#yyfy_hejue_damage_trigger"] = "和绝：受到伤害后，你可以弃置一张【句】装备牌发动〖归心〗",
   ["#yyfy_hejue_start_trigger"] = "和绝：出牌阶段开始时，你可以弃置一张【句】装备牌发动〖掇月〗",
-  
-  ["$yyfy_hejue1"] = "周公，吐哺，天下，归心。",
-  ["$yyfy_hejue2"] = "周公吐哺，天下归心。",
 }
 
--- 检查玩家是否有所有装备牌"句"
+local F = require("packages.hidden-clouds.functions")
+
+-- 检查玩家是否有装备牌"句"
 local function hasJuEquip(player)
   local equipIds = player:getCardIds("he") or {}
   for _, id in ipairs(equipIds) do
     local card = Fk:getCardById(id)
-    if card:getMark("@@yyfy_yanjv-mark") > 0 and card.type == Card.TypeEquip then
+    if F.isJv(card) and card.type == Card.TypeEquip then
       return true
     end
   end
@@ -45,7 +44,7 @@ local function getJuEquips(player)
   local equipIds = player:getCardIds("he") or {}
   for _, id in ipairs(equipIds) do
     local card = Fk:getCardById(id)
-    if card:getMark("@@yyfy_yanjv-mark") > 0 and card.type == Card.TypeEquip then
+    if F.isJv(card) and card.type == Card.TypeEquip then
       table.insert(juEquips, {id = id, card = card})
     end
   end
@@ -61,8 +60,7 @@ hejue:addEffect("active", {
   include_equip = true,
   card_filter = function (self, player, to_select, selected, selected_targets)
     local card = Fk:getCardById(to_select)
-    return #selected == 0 and card:getMark("@@yyfy_yanjv-mark") > 0
-    and (card.type == Card.TypeEquip or card.type == Card.TypeTrick)
+    return #selected == 0 and F.isJv(card) and card.type ~= Card.TypeBasic
   end,
   target_num = 0,
   can_use = function(self, player)
@@ -283,8 +281,7 @@ hejue:addEffect(fk.Damaged, {
     end
     -- 弃置选择的装备牌
     room:throwCard(chosenEquip[1], "yyfy_hejue", player, player)
-    -- 播放音效
-    player:broadcastSkillInvoke("yyfy_hejue")
+    player:broadcastSkillInvoke("guixin_yyfy_yueCaocao")
     -- 发动"归心"技能
     room:notifySkillInvoked(player, "yyfy_hejue", "support")
     for _, p in ipairs(room:getOtherPlayers(player)) do

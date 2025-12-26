@@ -41,4 +41,19 @@ function functions.getCardNameFromSkillName(skillName)
     return cardName
 end
 
+-- 检查一张牌是不是“句”
+---@param card Card
+function functions.isJv(card)
+local JV_CARDS = {
+  ["yyfy_jv_basic"] = true,
+  ["yyfy_jv_trick"] = true,
+  ["yyfy_jv_weapon"] = true,
+  ["yyfy_jv_armor"] = true,
+  ["yyfy_jv_defensive"] = true,
+  ["yyfy_jv_offensive"] = true,
+  ["yyfy_jv_treasure"] = true,
+}
+  return JV_CARDS[card.name] or false
+end
+
 return functions
