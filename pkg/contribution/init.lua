@@ -28,7 +28,7 @@ Fk:loadTranslationTable
   ["~yyfy_mou_wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
-local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, General.Female)
+local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
 lan__tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
 Fk:loadTranslationTable
 {
@@ -81,14 +81,14 @@ Fk:loadTranslationTable{
   ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
-local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, General.Female)
+local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Female)
 zhixushenghua:addSkills { "shengjianchujue", "tianmingyini", "shengshayuduo" }
 Fk:loadTranslationTable{
   ["yyfy_zhixushenghua"] = "至序圣华",
   ["designer:yyfy_zhixushenghua"] = "一维无限",
 }
 
-local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, General.Female)
+local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Female)
 xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
 Fk:loadTranslationTable{
   ["yyfy_xunshengshouwei"] = "循声守卫",

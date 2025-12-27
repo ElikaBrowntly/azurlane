@@ -7,7 +7,7 @@ Fk:loadTranslationTable{
   ["yyfy_yanjv"] = "言句",
   [":yyfy_yanjv"] = "锁定技，你的多字手牌<a href='yyfy_yanjv_change'>牌名替换</a>为【句】，你的【句】不计入手牌上限。",
   
-  ["yyfy_yanjv_change"] = "替换了卡牌的trueName。<br>若被替换牌为装备牌，可以使用但无任何效果；<br>否则该牌无法使用或打出。",
+  ["yyfy_yanjv_change"] = "将原卡牌移出游戏，并印等量张【句】。<br>若被替换牌为装备牌，可以使用但无任何效果；<br>否则该牌无法使用或打出。",
   ["$yyfy_yanjv1"] = "对酒，当歌，人生，几何？",
   ["$yyfy_yanjv2"] = "上有皓月当空，下有江波荡漾。此情此景，感慨系之。我当作歌，尔等和之！",
 }
@@ -83,10 +83,12 @@ yanjv:addEffect(fk.AfterCardsMove, {
     local room = player.room
     local cards = event:getCostData(self).cards
     if cards == nil then return false end
+    local voidCards = {}
+    local printCards = {}
     for _, c in ipairs(cards) do
       if isMultiCharacterCard(c) then
       local card = Fk:getCardById(c)
-      room:moveCardTo(c, Card.Void, nil, nil, self.name, nil, false, player)
+      table.insert(voidCards, c)
       local newCard = nil
       if card.type == Card.TypeBasic then
         newCard = room:printCard("yyfy_jv_basic", card.suit, card.number)
@@ -105,9 +107,11 @@ yanjv:addEffect(fk.AfterCardsMove, {
         end
       end
       player:broadcastSkillInvoke(self.name)
-      room:moveCardTo(newCard, Card.PlayerHand, player, nil, self.name, nil, false, player)
+      table.insert(printCards, newCard)
       end
     end
+    room:moveCardTo(voidCards, Card.Void, nil, nil, self.name, nil, false, player)
+    room:moveCardTo(printCards, Card.PlayerHand, player, nil, self.name, nil, false, player)
   end,
 })
 

@@ -11,7 +11,7 @@ Fk:loadTranslationTable{
 luotuo:addEffect(fk.Damaged, {
   anim_type = "masochism",
   can_trigger = function (self, event, target, player, data)
-    return player and data.to == player
+    return player:isAlive() and data.to == player and player:hasSkill(self.name)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
