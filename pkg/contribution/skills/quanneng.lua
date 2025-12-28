@@ -14,10 +14,10 @@ Fk:loadTranslationTable{
   "<br><font color='yellow'>骆驼</font>：你受到伤害后回复等量体力"..
   "<br><font color='#93DB70'>山猪</font>：获得此技能时，令一名其他角色失去所有体力。若其死亡，视为你杀死了该角色。"..
   "<br><font color='green'>少年</font>：其他角色受到伤害后，或出牌阶段限一次你可以选择一名其他角色，你可以赐予其一个其他化身(未实装)"..
-  "<br><font color='cyan'>凤凰</font>：其他角色与你的距离+10，你不是其他角色使用牌的合法目标(未实装)"..
+  "<br><font color='cyan'>凤凰</font>：其他角色与你的距离+10，你不是其他角色使用牌的合法目标"..
   "<br><font color='blue'>牡羊</font>：限定技，你死亡时改为修整一回合"..
   "<br><font color='indigo'>山羊</font>：其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去X点体力(X为同意的人数)"..
-  "<br><font color='purple'>战士</font>：获得此技能时，你可以令一名其他角色失去所有技能直到你的回合结束(未实装)",
+  "<br><font color='purple'>战士</font>：获得此技能时，你可以令一名其他角色失去所有技能直到你的回合结束（未实装）",
 
   ["#yyfy_quanneng_trigger"] = "权能：是否发动〖权能〗？从10个技能中选择至多3个",
   ["#yyfy_quanneng_choose"] = "权能：请选择至多3个技能（不可选择上回合获得过的）",
@@ -116,6 +116,16 @@ quanneng:addEffect(fk.TurnEnd, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    -- 如果有玩家技能〖战士〗，则先恢复对方失去的技能
+    if target == player and player:hasSkill("yyfy_zhanshi") and player:getMark("yyfy_zhanshi_target") > 0 then
+      local lostSkills = player:getTableMark("yyfy_zhanshi_skills")
+      local lostTarget = room:getPlayerById(player:getMark("yyfy_zhanshi_target"))
+      if #lostSkills > 0 then -- 不用判断失去技能的人是否存活，因为对方修整时也需要归还
+        room:handleAddLoseSkills(lostTarget, lostSkills)
+      end
+      room:setPlayerMark(player, "yyfy_zhanshi_target", 0) -- 清空这些标记，以便下一次记录
+      room:setPlayerMark(player, "yyfy_zhanshi_skills", 0)
+    end
     -- 获取当前回合获得的技能
     local current_skills_str = player:getMark("yyfy_quanneng_current")
     local chosen_skills = {}
