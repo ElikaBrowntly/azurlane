@@ -37,10 +37,12 @@ yanjv:addEffect(fk.GameStart, {
     local room = player.room
     local cards = event:getCostData(self).cards
     if cards == nil then return false end
+    local voidCards = {}
+    local printCards = {}
     for _, c in ipairs(cards) do
       if isMultiCharacterCard(c) then
       local card = Fk:getCardById(c)
-      room:moveCardTo(c, Card.Void, nil, nil, self.name, nil, false, player)
+      table.insert(voidCards, c)
       local newCard = nil
       if card.type == Card.TypeBasic then
         newCard = room:printCard("yyfy_jv_basic", card.suit, card.number)
@@ -59,9 +61,11 @@ yanjv:addEffect(fk.GameStart, {
         end
       end
       player:broadcastSkillInvoke(self.name)
-      room:moveCardTo(newCard, Card.PlayerHand, player, nil, self.name, nil, false, player)
+      table.insert(printCards, newCard)
       end
     end
+    room:moveCardTo(voidCards, Card.Void, nil, nil, self.name, nil, false, player)
+    room:moveCardTo(printCards, Card.PlayerHand, player, nil, self.name, nil, false, player)
   end,
 })
 -- 获得牌时触发：检查是否为多字牌，是则重命名并添加标记

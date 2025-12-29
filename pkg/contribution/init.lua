@@ -181,6 +181,8 @@ Fk:loadTranslationTable{
   ["$zhubei_yyfy_yueCaocao2"] = "我有嘉宾，鼓瑟吹笙。",
   ["$duoyue_yyfy_yueCaocao1"] = "明明，如月，何时，可掇？",
   ["$duoyue_yyfy_yueCaocao2"] = "皎皎如月，何时可辍？",
+  ["$guixin_yyfy_yueCaocao1"] = "周公，吐哺，天下，归心。",
+  ["$guixin_yyfy_yueCaocao2"] = "周公吐哺，天下归心。",
   ["~yyfy_yueCaocao"] = "安敢败我诗兴？（我...）"
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
