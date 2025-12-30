@@ -21,6 +21,7 @@ Fk:loadTranslationTable{
 
 -- 主动效果：选择角色加伤
 fate_douzhengdemeili:addEffect("active", {
+  anim_type = "offensive",
   prompt = "#fate_douzhengdemeili-choose",
   card_num = 0,
   max_phase_use_time = 1,

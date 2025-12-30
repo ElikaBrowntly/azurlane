@@ -6,10 +6,10 @@ local fate_heizhitaiyang = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["fate_heizhitaiyang"] = "黑之太阳",
   [":fate_heizhitaiyang"] = "出牌阶段限一次，你可以赋予任意名角色<a href=':fate_wudi_1*3'>无敌状态</a>"..
-  "(1次·3回合)。然后，你获得50点蓄力点，这些角色中除你以外有蓄力技的角色各获得30点蓄力点。",
+  "(1次·3回合)。然后，你获得5点蓄力点，这些角色中除你以外有蓄力技的角色各获得3点蓄力点。",
 
   ["#fate_heizhitaiyang-choose"] = "黑之太阳：请选择任意名角色",
-  ["#fate_heizhitaiyang-charge"] = "黑之太阳：请选择任意名有蓄力技的其他角色，这些角色将各获得30点蓄力点",
+  ["#fate_heizhitaiyang-charge"] = "黑之太阳：请选择任意名有蓄力技的其他角色，这些角色将各获得3点蓄力点",
   ["#fate_heizhitaiyang-shield"] = "由于「黑之太阳」的效果，%from 防止了受到的伤害",
   
   ["$fate_heizhitaiyang1"] = "太阳变得模糊了。",
@@ -37,8 +37,8 @@ fate_heizhitaiyang:addEffect("active", {
       room:setPlayerMark(target, "fate_heizhitaiyang_shield_turns", 3) -- 剩余3个回合
     end
     
-    -- 自己获得50点蓄力点
-    U.skillCharged(player, 50)
+    -- 自己获得5点蓄力点
+    U.skillCharged(player, 5)
 
     local availableTargets = table.filter(targets, function(p)
       if p ~= player then
@@ -56,10 +56,10 @@ fate_heizhitaiyang:addEffect("active", {
       return false
     end)
     
-    -- 获得30点蓄力点
+    -- 获得3点蓄力点
     if #availableTargets > 0 then
         for _, p in ipairs(availableTargets) do
-          U.skillCharged(p, 30)
+          U.skillCharged(p, 3)
       end
     end
   end,

@@ -163,11 +163,15 @@ Fk:loadTranslationTable{
 }
 
 local KusanagiGodou = General:new(extension, "yyfy_KusanagiGodou", "evil", 4)
-KusanagiGodou:addSkills {"yyfy_shishen", "yyfy_quanneng" }
+KusanagiGodou:addSkills {"yyfy_shishen", "yyfy_quanneng"}
 Fk:loadTranslationTable{
   ["yyfy_KusanagiGodou"] = "草薙护堂",
   ["#yyfy_KusanagiGodou"] = "弑神者",
   ["designer:yyfy_KusanagiGodou"] = "夜隐浮云，孤星似梦",
+}
+KusanagiGodou:addRelatedSkills{
+  "yyfy_qiangfeng", "yyfy_gongniu", "yyfy_baima", "yyfy_luotuo", "yyfy_shanzhu",
+  "yyfy_shaonian", "yyfy_fenghuang", "yyfy_muyang", "yyfy_shanyang", "yyfy_zhanshi"
 }
 
 local yueCaocao = General:new(extension, "yyfy_yueCaocao", "wei", 4)

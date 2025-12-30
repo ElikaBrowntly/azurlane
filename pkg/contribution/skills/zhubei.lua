@@ -84,7 +84,7 @@ zhubei:addEffect("active", {
             from = target,
             to = player,
             toArea = Card.PlayerHand,
-            reason = fk.ReasonPrey,
+            moveReason = fk.ReasonPrey,
             skillName = self.name,
           })
         end

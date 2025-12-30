@@ -5,7 +5,7 @@ local qiangfeng = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_qiangfeng"] = "强风",
-  [":yyfy_qiangfeng"] = "你与其他角色的距离-10，你使用牌无次数限制且无法被响应",
+  [":yyfy_qiangfeng"] = "你与其他角色的距离-10，你使用牌无次数限制且无法被响应。",
 }
 qiangfeng:addEffect("distance", {
   correct_func = function(self, from, to)
@@ -27,14 +27,14 @@ qiangfeng:addEffect("targetmod", {
 qiangfeng:addEffect(fk.CardUsing, {
   can_refresh = function(self, event, target, player, data)
     return target == player and player:hasSkill(qiangfeng.name) and not data.extraUse and
-      (player:usedCardTimes("slash", Player.HistoryPhase) > 1
-      or player:usedCardTimes("analeptic", Player.HistoryPhase) > 1)
+      (player:usedCardTimes("slash", Player.HistoryPhase) > 1 and data.card.name == "slash")
+      or (player:usedCardTimes("analeptic", Player.HistoryPhase) > 1 and data.card.name == "analeptic")
   end,
   on_refresh = function(self, event, target, player, data)
     player.room:doAnimate("InvokeSkill", {
       name = self.name,
       player = player.id,
-      skill_type = qiangfeng.name,
+      skill_type = "paoxiao",
     })
   end,
 })

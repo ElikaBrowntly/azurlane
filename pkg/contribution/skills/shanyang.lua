@@ -5,7 +5,7 @@ local shanyang = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_shanyang"] = "山羊",
-  [":yyfy_shanyang"] = "其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去同意人数等量点体力)",
+  [":yyfy_shanyang"] = "其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去同意人数等量点体力。",
   ["#yyfy_shanyang-ask"] = "山羊：%dest1 想要令 %dest2 失去体力，你同意吗？",
   ["yyfy_shanyang_agree"] = "同意",
   ["yyfy_shanyang_disagree"] = "拒绝"
@@ -14,7 +14,7 @@ Fk:loadTranslationTable{
 -- 监听其他角色使用技能
 shanyang:addEffect(fk.SkillEffect, {
   is_delay_effect = true,
-  anim_type = "offensive",
+  anim_type = "control",
   can_trigger = function(self, event, target, player, data)
     return target and target ~= player and data.skill.name ~= self.name and
            player:hasSkill(self.name) and data.skill:isPlayerSkill(target)

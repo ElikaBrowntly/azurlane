@@ -7,11 +7,11 @@ local fate_FunnyVamp = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["fate_FunnyVamp"] = "Funny Vamp",
   [":fate_FunnyVamp"] = "出牌阶段限一次，你可以赋予任意名角色<a href=':fate_wudi_1*3'>无敌状态</a>"
-  .."(1次·3回合)。然后，这些角色中除你以外有蓄力技的角色各获得30点蓄力点。",
+  .."(1次·3回合)。然后，这些角色中除你以外有蓄力技的角色各获得3点蓄力点。",
   
   [":fate_wudi_1*3"] = "<b>「无敌」状态 (1次·3回合):</b><br>防止此后受到的第1次伤害，经过3个回合后无论是否使用都会失效。",
   ["#fate_FunnyVamp-choose"] = "Funny Vamp：请选择任意名角色",
-  ["#fate_FunnyVamp-charge"] = "Funny Vamp：请选择任意名有蓄力技的其他角色，这些角色将各获得30点蓄力点",
+  ["#fate_FunnyVamp-charge"] = "Funny Vamp：请选择任意名有蓄力技的其他角色，这些角色将各获得3点蓄力点",
   ["fate_has_charge"] = "有蓄力技",
   ["@fate_wudi"] = "无敌",
   ["#fate_FunnyVamp-shield"] = "由于「Funny Vamp」的效果，%from 防止了受到的伤害",
@@ -40,7 +40,7 @@ fate_FunnyVamp:addEffect("active", {
       room:setPlayerMark(target, "fate_FunnyVamp_shield_turns", 3) -- 剩余3个回合
     end
     
-    -- 获得1点蓄力点
+    -- 获得3点蓄力点
     local availableTargets = table.filter(targets, function(p)
       if p ~= player and table.find(p:getSkillNameList(), function(s) return Fk.skills[s]:hasTag(Skill.Charge) end)
       then return true end
@@ -59,7 +59,7 @@ fate_FunnyVamp:addEffect("active", {
       
       if #chargeTargets > 0 then
         for _, p in ipairs(chargeTargets) do
-          U.skillCharged(p, 30)
+          U.skillCharged(p, 3)
         end
       end
     end

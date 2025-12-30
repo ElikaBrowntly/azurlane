@@ -5,7 +5,7 @@ local luotuo = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_luotuo"] = "骆驼",
-  [":yyfy_luotuo"] = "你受到伤害后回复等量体力"
+  [":yyfy_luotuo"] = "你受到伤害后回复等量体力。"
 }
 
 luotuo:addEffect(fk.Damaged, {

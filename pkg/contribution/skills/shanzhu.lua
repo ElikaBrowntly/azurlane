@@ -17,6 +17,7 @@ shanzhu:addAcquireEffect(function (self, player, is_start)
     skill_name = self.name,
     prompt = "山猪：请选择一名其他角色，令其失去所有体力"
   })[1]
+  room:notifySkillInvoked(player, self.name, "offensive")
   room:addTableMark(player, "yyfy_shanzhu_killer", to.id)
   room:loseHp(to, to.hp, self.name, player)
   if not to.dead then
