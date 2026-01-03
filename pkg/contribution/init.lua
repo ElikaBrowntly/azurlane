@@ -191,13 +191,22 @@ Fk:loadTranslationTable{
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
 
-local zengzhideG = General:new(extension, "yyfy_zengzhideG", "god", 2)
+local zengzhideG = General:new(extension, "yyfy_zengzhideG", "evil", 2)
 zengzhideG:addSkill("yyfy_zengzhi")
 Fk:loadTranslationTable{
   ["yyfy_zengzhideG"] = "增殖的G",
   ["#yyfy_zengzhideG"] = "王牌怪兽",
   ["designer:yyfy_zengzhideG"] = "夜隐浮云，孤星似梦",
 }
+
+local huiliuli = General:new(extension, "yyfy_huiliuli", "evil", 3, 3, General.Female)
+huiliuli:addSkill("yyfy_hui")
+Fk:loadTranslationTable{
+  ["yyfy_huiliuli"] = "灰流丽",
+  ["#yyfy_huiliuli"] = "王牌怪兽の宿敌",
+  ["designer:yyfy_huiliuli"] = "夜隐浮云，孤星似梦",
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

@@ -8,9 +8,6 @@ Fk:loadTranslationTable {
   [":yyfy_zengzhi"] = "永恒技，其他角色使用牌或技能时，你摸1张牌、增加1点体力上限并回复1点体力。",
   
   ["#yyfy_zengzhi_trigger"] = "%from 使用%arg，触发 %to 的「增殖」",
-  
-  ["$yyfy_zengzhi1"] = "生生不息，源源不绝。",
-  ["$yyfy_zengzhi2"] = "以彼之力，壮我之躯。",
 }
 
 -- 永恒技：失去此技能时重新添加
