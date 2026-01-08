@@ -207,6 +207,19 @@ Fk:loadTranslationTable{
   ["designer:yyfy_huiliuli"] = "夜隐浮云，孤星似梦",
 }
 
+local caoshuang = General:new(extension, "yyfy_ex_caoshuang", "wei", 4)
+caoshuang:addSkills {"yyfy_tuogu", "yyfy_shanzhuan"}
+Fk:loadTranslationTable{
+  ["yyfy_ex_caoshuang"] = "界曹爽",
+  ["#yyfy_ex_caoshuang"] = "托孤辅政",
+  ["designer:yyfy_ex_caoshuang"] = "夜隐浮云，孤星似梦",
+  ["~yyfy_ex_caoshuang"] = "悔不该降了司马懿……",
+  ["$ex__biyue_yyfy_ex_caoshuang1"] = "失礼了～",
+  ["$ex__biyue_yyfy_ex_caoshuang2"] = "羡慕吧～",
+  ["illustrator:yyfy_ex_caoshuang"] = "君桓文化"
+}
+caoshuang:addRelatedSkill("ex__biyue")
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
