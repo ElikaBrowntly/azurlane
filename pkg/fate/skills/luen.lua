@@ -61,7 +61,7 @@ skill:addEffect(fk.EventPhaseEnd, {
       player:broadcastSkillInvoke(self.name, 1)
 
       for _, id in ipairs(result) do
-        room:moveCardTo(id, Player.Special,player, 0,skill.name, "符",false )
+        room:moveCardTo(id, Player.Special, player, 0, skill.name, "符", false, player)
       end
     end
   end,

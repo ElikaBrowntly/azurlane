@@ -179,6 +179,8 @@ yueCaocao:addSkills {"yyfy_yanjv", "yyfy_hejue"}
 Fk:loadTranslationTable{
   ["yyfy_yueCaocao"] = "乐曹操",
   ["designer:yyfy_yueCaocao"] = "幻矩",
+  ["illustrator:yyfy_yueCaocao"] = "新三国",
+  ["cv:yyfy_yueCaocao"] = "电视剧原声",
   ["$xixiang_yyfy_yueCaocao1"] = "但为，君故，沉吟，至今。",
   ["$xixiang_yyfy_yueCaocao2"] = "但为君故，沉吟至今。",
   ["$zhubei_yyfy_yueCaocao1"] = "我有，嘉宾，鼓瑟，吹笙。",
@@ -219,6 +221,24 @@ Fk:loadTranslationTable{
   ["illustrator:yyfy_ex_caoshuang"] = "君桓文化"
 }
 caoshuang:addRelatedSkill("ex__biyue")
+
+local end_jiaxu = General:new(extension, "yyfy_end_jiaxu", "qun", 3)
+end_jiaxu:addSkills {"yyfy_wansha", "yyfy_weimu", "yyfy_luanwu"}
+Fk:loadTranslationTable{
+  ["yyfy_end_jiaxu"] = "终贾诩",
+  ["#yyfy_end_jiaxu"] = " ",
+  ["designer:yyfy_end_jiaxu"] = "一维无限",
+  ["~yyfy_end_jiaxu"] = " ",
+}
+
+local god_zhangfei = General:new(extension, "yyfy_god_zhangfei", "god", 4)
+god_zhangfei:addSkills {"yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou"}
+Fk:loadTranslationTable{
+  ["yyfy_god_zhangfei"] = "神张飞",
+  ["#yyfy_god_zhangfei"] = "傲凌世间",
+  ["~yyfy_god_zhangfei"] = "与其独行天地，不如大醉一回。",
+  ["illustrator:yyfy_god_zhangfei"] = "鬼画府"
+}
 
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",

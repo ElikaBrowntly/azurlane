@@ -56,4 +56,47 @@ local JV_CARDS = {
   return JV_CARDS[card.name] or false
 end
 
+---用于终贾诩，
+---给目标贴帷幕牌。获取的牌如果不是，放到处理区，存到表里面，如果是，贴上去，然后把表里的逆序放回牌堆顶
+---@param player ServerPlayer
+---@param target ServerPlayer
+---@param color integer
+---@return Card | nil
+function functions.getWeimu(player, target, color)
+  local room = player.room
+  local temp = {}
+  while true do
+    if #room.draw_pile == 0 then break end
+    local card = Fk:getCardById(room:getNCards(1, "top")[1])
+    print(tostring(card))
+    if card.color == color then
+      room:moveCards({
+      ids = {card.id},
+      toArea = Card.PlayerSpecial,
+      to = target,
+      moveReason = fk.ReasonJustMove,
+      skillName = "yyfy_luanwu",
+      specialName = "yyfy_weimu-pile",
+      moveVisible = true,
+      proposer = player
+      })
+      local length = #temp
+      if length == 0 then return card end
+      for i = length, 1, -1 do
+        room:moveCards({
+        ids = {temp[i].id},
+        toArea = Card.DrawPile,
+        moveReason = fk.ReasonJustMove,
+        skillName = nil,
+        moveVisible = false
+      })
+      end
+      return card
+    end
+    room:moveCardTo(card, Card.Processing)
+    table.insert(temp, card)
+  end
+  return nil
+end
+
 return functions
