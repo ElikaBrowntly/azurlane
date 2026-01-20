@@ -20,6 +20,7 @@ local F = require("packages.hidden-clouds.functions")
 
 weimu:addEffect(fk.TurnStart, {
   anim_type = "control",
+  priority = 2,
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self.name) and player.rest == 0
   end,
@@ -37,9 +38,9 @@ weimu:addEffect(fk.TurnStart, {
     local choice = event:getCostData(self).choice
     local room = player.room
     if choice == "yyfy_weimu-red" then
-      F.getWeimu(player, target, Card.Red)
+      F.getWeimu(player, target, Card.Red, weimu.name)
     else
-      F.getWeimu(player, target, Card.Black)
+      F.getWeimu(player, target, Card.Black, weimu.name)
     end
     room:setPlayerRest(player, 1)
     room:addPlayerMark(player, "yyfy_weimu-rest")
@@ -53,6 +54,7 @@ weimu:addEffect(fk.TurnStart, {
 
 weimu:addEffect(fk.EventPhaseStart, {
   anim_type = "control",
+  priority = 2,
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self.name) and player.rest == 0
   end,
@@ -70,9 +72,9 @@ weimu:addEffect(fk.EventPhaseStart, {
     local choice = event:getCostData(self).choice
     local room = player.room
     if choice == "yyfy_weimu-red" then
-      F.getWeimu(player, target, Card.Red)
+      F.getWeimu(player, target, Card.Red, weimu.name)
     else
-      F.getWeimu(player, target, Card.Black)
+      F.getWeimu(player, target, Card.Black, weimu.name)
     end
     room:setPlayerRest(player, 1)
     room:addPlayerMark(player, "yyfy_weimu-rest")

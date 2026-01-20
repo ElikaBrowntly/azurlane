@@ -60,13 +60,13 @@ luanwu:addEffect(fk.HpChanged, {
         })
       end
       for i = 1, number, 1 do
-        F.getWeimu(player, target, Card.Black)
+        F.getWeimu(player, target, Card.Black, luanwu.name)
       end
     else -- 失去了体力，另外两项增加
       room:loseHp(target, number, luanwu.name, player)
       room:drawCards(target, number, luanwu.name)
       for i = 1, number, 1 do
-        F.getWeimu(player, target, Card.Red)
+        F.getWeimu(player, target, Card.Red, luanwu.name)
       end
     end
   end
@@ -103,7 +103,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
     room:drawCards(to, number, luanwu.name)
     room:loseHp(to, number, luanwu.name, player)
     for i = 1, number, 1 do
-      F.getWeimu(player, to, Card.Black)
+      F.getWeimu(player, to, Card.Black, luanwu.name)
     end
   end
 })
@@ -154,7 +154,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
       skillName = luanwu.name
     })
     for i = 1, number, 1 do
-      F.getWeimu(player, to, Card.Red)
+      F.getWeimu(player, to, Card.Red, luanwu.name)
     end
   end,
 })
@@ -191,7 +191,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
     local to = event:getCostData(self).tos[1]
     if not (to and to:isAlive()) then return end
     for i = 1, number, 1 do
-      F.getWeimu(player, to, color)
+      F.getWeimu(player, to, color, luanwu.name)
     end
     if color == Card.Red then
       room:loseHp(to, number, luanwu.name, player)

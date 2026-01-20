@@ -61,40 +61,29 @@ end
 ---@param player ServerPlayer
 ---@param target ServerPlayer
 ---@param color integer
+---@param skillName string
 ---@return Card | nil
-function functions.getWeimu(player, target, color)
+function functions.getWeimu(player, target, color, skillName)
   local room = player.room
-  local temp = {}
-  while true do
+  local num = #room.draw_pile
+  local i = 1
+  while i <= num do
     if #room.draw_pile == 0 then break end
-    local card = Fk:getCardById(room:getNCards(1, "top")[1])
-    print(tostring(card))
+    local card = Fk:getCardById(room.draw_pile[i])
     if card.color == color then
       room:moveCards({
       ids = {card.id},
       toArea = Card.PlayerSpecial,
       to = target,
       moveReason = fk.ReasonJustMove,
-      skillName = "yyfy_luanwu",
+      skillName = skillName,
       specialName = "yyfy_weimu-pile",
       moveVisible = true,
       proposer = player
       })
-      local length = #temp
-      if length == 0 then return card end
-      for i = length, 1, -1 do
-        room:moveCards({
-        ids = {temp[i].id},
-        toArea = Card.DrawPile,
-        moveReason = fk.ReasonJustMove,
-        skillName = nil,
-        moveVisible = false
-      })
-      end
       return card
     end
-    room:moveCardTo(card, Card.Processing)
-    table.insert(temp, card)
+    i = i + 1
   end
   return nil
 end

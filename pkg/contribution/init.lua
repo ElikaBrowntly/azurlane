@@ -239,6 +239,14 @@ Fk:loadTranslationTable{
   ["~yyfy_god_zhangfei"] = "桃花今又开，不见结义人。",
 }
 
+local god_machao = General:new(extension, "yyfy_god_machao", "god", 4)
+god_machao:addSkills {"yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu"}
+Fk:loadTranslationTable{
+  ["yyfy_god_machao"] = "神马超",
+  ["#yyfy_god_machao"] = "壮志凌云",
+  ["~yyfy_god_machao"] = "七情难掩，六欲难消，何谓之神？",
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
