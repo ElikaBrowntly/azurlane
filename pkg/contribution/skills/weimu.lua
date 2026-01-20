@@ -10,7 +10,10 @@ Fk:loadTranslationTable{
 
   ["yyfy_weimu-red"] = "红色（令其伤害+1）",
   ["yyfy_weimu-black"] = "黑色（令其伤害-1）",
-  ["yyfy_weimu-pile"] = "帷幕"
+  ["yyfy_weimu-pile"] = "帷幕",
+
+  ["$yyfy_weimu1"] = "施经布略由我，剩下的任由将军。",
+  ["$yyfy_weimu2"] = "兵以诈立，不如，任其来攻。"
 }
 
 local F = require("packages.hidden-clouds.functions")

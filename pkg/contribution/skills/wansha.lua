@@ -6,7 +6,10 @@ local skill = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["yyfy_wansha"] = "完杀",
   [":yyfy_wansha"] = "锁定技，其他角色进入濒死状态时，终止濒死结算与其他一切结算，"..
-  "并结束当前回合。然后你选择一名角色立即行动。"
+  "并结束当前回合。然后你选择一名角色立即行动。",
+
+  ["$yyfy_wansha1"] = "吾之所好，杀人诛心。",
+  ["$yyfy_wansha2"] = "汝可遣使相问，四下可有援军？"
 }
 
 skill:addEffect(fk.EnterDying, {

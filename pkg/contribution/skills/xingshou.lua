@@ -6,7 +6,9 @@ local xingshou = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_xingshou"] = "行狩",
-  [":yyfy_xingshou"] = "限定技，当你杀死一名角色后，你将体力回复至上限并升级〖厉勇〗。"
+  [":yyfy_xingshou"] = "限定技，当你杀死一名角色后，你将体力回复至上限并升级〖厉勇〗。",
+
+  ["$yyfy_xingshou"] = "巡环一甲子，嫉恶如仇雠！"
 }
 
 xingshou:addEffect(fk.Death, {

@@ -228,7 +228,7 @@ Fk:loadTranslationTable{
   ["yyfy_end_jiaxu"] = "终贾诩",
   ["#yyfy_end_jiaxu"] = " ",
   ["designer:yyfy_end_jiaxu"] = "一维无限",
-  ["~yyfy_end_jiaxu"] = " ",
+  ["~yyfy_end_jiaxu"] = "天下大定，某，亦得功成名就。",
 }
 
 local god_zhangfei = General:new(extension, "yyfy_god_zhangfei", "god", 4)
@@ -236,8 +236,7 @@ god_zhangfei:addSkills {"yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou"}
 Fk:loadTranslationTable{
   ["yyfy_god_zhangfei"] = "神张飞",
   ["#yyfy_god_zhangfei"] = "傲凌世间",
-  ["~yyfy_god_zhangfei"] = "与其独行天地，不如大醉一回。",
-  ["illustrator:yyfy_god_zhangfei"] = "鬼画府"
+  ["~yyfy_god_zhangfei"] = "桃花今又开，不见结义人。",
 }
 
 Fk:loadTranslationTable {

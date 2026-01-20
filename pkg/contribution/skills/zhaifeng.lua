@@ -4,15 +4,14 @@ local zhaifeng = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_zhaifeng"] = "摘锋",
-  [":yyfy_zhaifeng"] = "当你造成伤害时，你可选择一项：1.令此伤害-1；2.摸一张牌。"..
+  [":yyfy_zhaifeng"] = "当你造成伤害时，你可选择一项：1.令此伤害+1；2.摸一张牌。"..
   "背水：失去一点体力，本回合你使用【杀】的次数+1。",
 
   ["yyfy_zhaifeng-damage"] = "此伤害+1",
   ["yyfy_zhaifeng-draw"] = "摸1张牌",
   ["yyfy_zhaifeng-both"] = "背水",
   
-  ["$yyfy_zhaifeng1"] = "鸣鼓净街魑魅退，擂瓮升堂罪何人！",
-  ["$yyfy_zhaifeng2"] = "巡界奔走双甲子，归来两界又一秋。"
+  ["$yyfy_zhaifeng"] = "尔等魍魉鼠辈，安敢阻路不前！"
 }
 
 zhaifeng:addEffect(fk.DamageCaused, {

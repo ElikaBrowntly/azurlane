@@ -8,7 +8,10 @@ Fk:loadTranslationTable{
   [":yyfy_luanwu"] = "一名角色的：1.体力值；2.手牌数；3.<a href = 'yyfy_luanwu_3'>「帷幕」牌数</a>，"..
   "不因此技能而变化时，你可以弃置1张牌，令其对应数值向相同方向调整X，另外两项数值向相反方向调整X(X为此牌点数)。",
   
-  ["yyfy_luanwu_3"] = "获得红色牌视为增加，获得黑色牌视为减少。"
+  ["yyfy_luanwu_3"] = "获得红色牌视为增加，获得黑色牌视为减少。",
+
+  ["$yyfy_luanwu1"] = "汝等若心存隐忍，顷刻便尸骨无存！",
+  ["$yyfy_luanwu2"] = "在下所谋之法，唯恐天下不乱！"
 }
 
 local F = require("packages.hidden-clouds.functions")
