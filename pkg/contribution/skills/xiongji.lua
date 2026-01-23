@@ -35,7 +35,7 @@ xiongji:addEffect(fk.GameStart, {
     local num = event:getCostData(self).num
     local cards = {}
     local i = 1
-    while #cards < num do
+    while #cards < num and i < #room.draw_pile do
       local card = Fk:getCardById(room.draw_pile[i])
       if card.sub_type == Card.SubtypeOffensiveRide or card.sub_type == Card.SubtypeDefensiveRide then
         table.insert(cards, card)
@@ -71,13 +71,16 @@ xiongji:addEffect("viewas", {
         ids = p:getCardIds("e")
       end
       for _, id in ipairs(ids) do
-        local type = (p:getVirtualEquip(id) or Fk:getCardById(id)).sub_type
+        local type = Fk:getCardById(id).sub_type
         if type == Card.SubtypeOffensiveRide or type == Card.SubtypeDefensiveRide then
           table.insert(all_targets, p)
         end
       end
     end
-    if #all_targets == 0 then return nil end
+    if #all_targets == 0 then
+      horse = 0
+      return nil
+    end
     local target = room:askToChoosePlayers(player, {
       targets = all_targets,
       max_num = 1,
@@ -138,7 +141,7 @@ xiongji:addEffect("viewas", {
   enabled_at_response = Util.TrueFunc,
   enabled_at_nullification = Util.TrueFunc,
   before_use = function (self, player, use)
-    if horse == 0 then
+    if horse == 0 or use.card == nil then
       return "Cancel"
     end
     use.card:addSubcard(horse)
@@ -167,4 +170,5 @@ xiongji:addEffect(fk.CardUsing, {
     data.disresponsiveList = player.room:getAlivePlayers()
   end
 })
+
 return xiongji

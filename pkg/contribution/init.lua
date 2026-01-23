@@ -247,6 +247,14 @@ Fk:loadTranslationTable{
   ["~yyfy_god_machao"] = "七情难掩，六欲难消，何谓之神？",
 }
 
+local mingshen = General:new(extension, "yyfy_UnderworldGoddess", "evil", 5, 5, General.Female)
+mingshen:addSkills {"yyfy_shiri", "yyfy_mingshen", "yyfy_duixiang"}
+Fk:loadTranslationTable{
+  ["yyfy_UnderworldGoddess"] = "闭锁世界的冥神",
+  ["#yyfy_UnderworldGoddess"] = "必须娶为对象",
+  ["designer:yyfy_UnderworldGoddess"] = "夜隐浮云，孤星似梦"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

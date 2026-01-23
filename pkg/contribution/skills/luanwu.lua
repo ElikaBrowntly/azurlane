@@ -89,16 +89,16 @@ luanwu:addEffect(fk.AfterCardsMove, {
   on_cost = Util.TrueFunc,
   on_use = function (self, event, target, player, data)
     local room = player.room
+    local to = event:getCostData(self).tos[1]
     local card = player.room:askToCards(player, {
       min_num = 1,
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令其摸牌"
+      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位摸牌"
     })
     if #card == 0 then return false end
     local number = Fk:getCardById(card[1]).number
-    local to = event:getCostData(self).tos[1]
     if not (to and to:isAlive()) then return end
     room:moveCardTo(card, Card.DiscardPile, nil, 1, luanwu.name)
     room:drawCards(to, number, luanwu.name)
@@ -127,17 +127,17 @@ luanwu:addEffect(fk.AfterCardsMove, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    local to = event:getCostData(self).tos[1]
     local card = player.room:askToCards(player, {
       min_num = 1,
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令其弃牌"
+      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位弃牌"
     })
     if #card == 0 then return false end
     room:moveCardTo(card, Card.DiscardPile, nil, 1, luanwu.name)
     local number = Fk:getCardById(card[1]).number
-    local to = event:getCostData(self).tos[1]
     if not (to and to:isAlive()) then return end
     if #to:getCardIds("h") < number then
       room:throwCard(to:getCardIds("h"), luanwu.name, to, player)
@@ -178,6 +178,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
   on_use = function (self, event, target, player, data)
     local room = player.room
     local color = Fk:getCardById(event:getCostData(self).id).color
+    local to = event:getCostData(self).tos[1]
     local direction = "红色"
     if color == Card.Black then direction = "黑色" end
     local card = player.room:askToCards(player, {
@@ -185,12 +186,11 @@ luanwu:addEffect(fk.AfterCardsMove, {
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令其获得"..direction.."「帷幕」牌"
+      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位获得"..direction.."「帷幕」"
     })
     if #card == 0 then return false end
     local number = Fk:getCardById(card[1]).number
     if number <= 0 then return end
-    local to = event:getCostData(self).tos[1]
     if not (to and to:isAlive()) then return end
     for i = 1, number, 1 do
       F.getWeimu(player, to, color, luanwu.name)
