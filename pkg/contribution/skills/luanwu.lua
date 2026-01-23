@@ -50,13 +50,14 @@ luanwu:addEffect(fk.HpChanged, {
         recoverBy = player,
         skillName = luanwu.name
       })
-      if #target:getCardIds("h") < number then
+      if #target:getCardIds("h") <= number then
         room:throwCard(target:getCardIds("h"), luanwu.name, target, player)
       else
         room:askToDiscard(target, {
           min_num = number,
           max_num = number,
-          skill_name = luanwu.name
+          skill_name = luanwu.name,
+          cancelable = false,
         })
       end
       for i = 1, number, 1 do
@@ -144,7 +145,8 @@ luanwu:addEffect(fk.AfterCardsMove, {
       room:askToDiscard(to, {
         min_num = number,
         max_num = number,
-        skill_name = luanwu.name
+        skill_name = luanwu.name,
+        cancelable = false
       })
     end
     room:recover({
@@ -202,7 +204,8 @@ luanwu:addEffect(fk.AfterCardsMove, {
         room:askToDiscard(to, {
           min_num = number,
           max_num = number,
-          skill_name = luanwu.name
+          skill_name = luanwu.name,
+          cancelable = false
         })
       end
     else

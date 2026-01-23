@@ -13,6 +13,8 @@ Fk:loadTranslationTable {
   ["$yyfy_xiongji2"] = "长缨在手，百骥可降！"
 }
 
+local horse
+
 xiongji:addEffect(fk.GameStart, {
   can_trigger = function (self, event, target, player, data)
     return player and player:isAlive() and player:hasSkill(self.name)
@@ -46,6 +48,7 @@ xiongji:addEffect(fk.GameStart, {
 })
 
 xiongji:addEffect("viewas", {
+  mute = true,
   interaction = function(self, player)
     local all_choices = Fk:getAllCardNames("bt")
     if #all_choices == 0 then return end
@@ -55,16 +58,79 @@ xiongji:addEffect("viewas", {
       prompt = "雄骑：请选择要转化的牌"
     }
   end,
-  card_filter = function(self, player, to_select, selected)
-    local card = Fk:getCardById(to_select)
-    return #selected == 0 and (card.sub_type == Card.SubtypeOffensiveRide or card.sub_type == Card.SubtypeDefensiveRide)
+  card_filter = Util.FalseFunc,
+  prompt = "雄骑：请选择使用牌的目标",
+  on_cost = function (self, player, data, extra_data)
+    local room = player.room
+    local all_targets = {}
+    for _, p in ipairs(room:getAlivePlayers()) do
+      local ids = {}
+      if p == player then
+        ids = player:getCardIds("he")
+      else
+        ids = p:getCardIds("e")
+      end
+      for _, id in ipairs(ids) do
+        local type = (p:getVirtualEquip(id) or Fk:getCardById(id)).sub_type
+        if type == Card.SubtypeOffensiveRide or type == Card.SubtypeDefensiveRide then
+          table.insert(all_targets, p)
+        end
+      end
+    end
+    if #all_targets == 0 then return nil end
+    local target = room:askToChoosePlayers(player, {
+      targets = all_targets,
+      max_num = 1,
+      min_num = 1,
+      skill_name = xiongji.name,
+      prompt = "雄骑：要转化谁的坐骑牌？"
+    })
+    if #target == 0 then
+      horse = 0
+      return nil
+    end
+    target = target[1]
+    local cards = {}
+    if target == player then
+      cards = player:getCardIds("he")
+    else
+      cards = target:getCardIds("e")
+    end
+    if #cards == 0 then
+      horse = 0
+      return nil
+    end
+    local horses = {}
+    for _, c in ipairs(cards) do
+      local card_type = player:getVirtualEquip(c) or Fk:getCardById(c)
+      if card_type.type == Card.TypeEquip and (card_type.sub_type == Card.SubtypeOffensiveRide
+      or card_type.sub_type == Card.SubtypeDefensiveRide) then
+        table.insert(horses, c)
+      end
+    end
+    if #horses == 0 then
+      horse = 0
+      return nil
+    end
+    if #horses > 1 then
+      horses, _ = room:askToChooseCardsAndChoice(player, {
+      cards = horses,
+      skill_name = xiongji.name,
+      prompt = "雄骑：请选择用于转化的坐骑牌",
+      min_num = 1,
+      max_num = 1,
+      all_cards = cards,
+      })
+    end
+    if #horses == 0 then
+      horse = 0
+      return nil
+    end
+    horse = horses[1]
   end,
-  include_equip = true,
   view_as = function (self, player, cards)
-    if #cards ~= 1 then return end
     local card = Fk:cloneCard(self.interaction.data)
     card.skillName = self.name
-    card:addSubcard(cards[1])
     card:addMark("yyfy_xiongji-phase", 1)
     return card
   end,
@@ -72,8 +138,14 @@ xiongji:addEffect("viewas", {
   enabled_at_response = Util.TrueFunc,
   enabled_at_nullification = Util.TrueFunc,
   before_use = function (self, player, use)
+    if horse == 0 then
+      return "Cancel"
+    end
+    use.card:addSubcard(horse)
     player:drawCards(1, xiongji.name)
     use.extraUse = true
+    player:broadcastSkillInvoke(xiongji.name)
+    player.room:notifySkillInvoked(player, xiongji.name, "drawcard")
   end
 })
 

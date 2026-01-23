@@ -48,11 +48,11 @@ liyong:addEffect("targetmod", {
 liyong:addEffect(fk.CardUsing, {
   mute = true,
   on_cost = function(self, event, target, player, data)
-    if player:getMark("yyfy_liyong_update") > 0 then
-      return data.card.trueName == "slash" and data.card:getMark("yyfy_liyong-method") > 0
+    if player and player:getMark("yyfy_liyong_update") > 0 then
+      return data.card and data.card.trueName == "slash" and data.card:getMark("yyfy_liyong-method") > 0
     end
-    return player:hasSkill(self.name) and data.card.trueName == "slash"
-    and data.card.color == Card.Black
+    return player and player:hasSkill(self.name) and data.card
+    and data.card.color == Card.Black and data.card.trueName == "slash"
   end,
   on_use = function(self, event, target, player, data)
     data.disresponsiveList = data.disresponsiveList or {}
@@ -72,8 +72,8 @@ liyong:addEffect(fk.DamageCaused, {
       and data.card:getMark("yyfy_liyong-method") > 0
     end
     return
-      target == player and data.card and data.card.trueName == "slash" and
-      data.card.color == Card.Red and player.room.logic:damageByCardEffect()
+      target == player and player:hasSkill(self.name) and data.card and data.card.trueName == "slash"
+      and data.card.color == Card.Red and player.room.logic:damageByCardEffect()
   end,
   on_use = function(self, event, target, player, data)
     data:changeDamage(1)
