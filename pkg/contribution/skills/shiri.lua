@@ -110,6 +110,11 @@ shiri:addEffect("active", {
             end
           end
         end
+        t:addSkillUseHistory(skill.name, 9999999999999999999999999)
+        t:addSkillBranchUseHistory(skill.name, "", 9999999999999999999999999)
+        if t:hasSkill(skill.name) then
+          room:handleAddLoseSkills(t, "-"..skill.name, nil, false, true)
+        end
       end
       -- 对神人技能重拳出击
       for _, s in ipairs(skills_after_death) do

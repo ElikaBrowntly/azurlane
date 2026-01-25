@@ -9,6 +9,8 @@ Fk:loadTranslationTable{
   "不因此技能而变化时，你可以弃置1张牌，令其对应数值向相同方向调整X，另外两项数值向相反方向调整X(X为此牌点数)。",
   
   ["yyfy_luanwu_3"] = "获得红色牌视为增加，获得黑色牌视为减少。",
+  ["yyfy_luanwu-draw"] = "乱武：你可以弃置一张牌，根据点数令%dest摸牌",
+  ["#yyfy_luanwu-discard"] = "乱武：你可以弃置一张牌，根据点数令%dest弃牌",
 
   ["$yyfy_luanwu1"] = "汝等若心存隐忍，顷刻便尸骨无存！",
   ["$yyfy_luanwu2"] = "在下所谋之法，唯恐天下不乱！"
@@ -31,7 +33,7 @@ luanwu:addEffect(fk.HpChanged, {
       skill_name = luanwu.name,
       include_equip = false,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(target.id).."号位"..direction
+      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(target.seat).."号位"..direction
     })
     if #card > 0 then
       room:throwCard(card, luanwu.name, player, player)
@@ -95,7 +97,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位摸牌"
+      prompt = "#yyfy_luanwu-draw::"..to.id
     })
     if #card == 0 then return false end
     local number = Fk:getCardById(card[1]).number
@@ -133,7 +135,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位弃牌"
+      prompt = "#yyfy_luanwu-discard::"..to.id
     })
     if #card == 0 then return false end
     room:moveCardTo(card, Card.DiscardPile, nil, 1, luanwu.name)
@@ -186,7 +188,7 @@ luanwu:addEffect(fk.AfterCardsMove, {
       max_num = 1,
       skill_name = luanwu.name,
       cancelable = true,
-      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.id).."号位获得"..direction.."「帷幕」"
+      prompt = "乱武：你可以弃置一张牌，根据点数令"..tostring(to.seat).."号位获得"..direction.."「帷幕」"
     })
     if #card == 0 then return false end
     local number = Fk:getCardById(card[1]).number

@@ -7,9 +7,10 @@ local mingshen = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["yyfy_mingshen"] = "冥神",
   [":yyfy_mingshen"] = "永恒技，其他角色进入濒死状态时，你可以终止一切结算直接令其死亡，并结束当前回合。"..
-  "濒死/死亡/修整的角色不能使用牌或技能。",
+  "濒死/死亡/修整的角色不能使用牌或技能。其他角色复活后，你可以令其死亡。",
 
-  ["#yyfy_mingshen-invoke"] = "冥神：是否要终止一切结算，直接令 %dest 死亡？"
+  ["#yyfy_mingshen-invoke"] = "冥神：是否要终止一切结算，直接令 %dest 死亡？",
+  ["#yyfy_mingshen-kill"] = "冥神：%dest想要复活，是否要杀死他？"
 }
 
 mingshen:addLoseEffect(function(self, player, is_death)
@@ -67,6 +68,11 @@ mingshen:addEffect(fk.EnterDying, {
             end
           end
         end
+        t:addSkillUseHistory(skill.name, 9999999999999999999999999)
+        t:addSkillBranchUseHistory(skill.name, "", 9999999999999999999999999)
+        if t:hasSkill(skill.name) then
+          room:handleAddLoseSkills(t, "-"..skill.name, nil, false, true)
+        end
       end
       -- 对神人技能重拳出击
       for _, s in ipairs(skills_after_death) do
@@ -90,6 +96,22 @@ mingshen:addEffect("prohibit", {
   prohibit_func = function(self, player, card)
     return player.dead or player.rest > 0 or player.dying
   end,
+})
+
+mingshen:addEffect(fk.AfterPlayerRevived, {
+  can_trigger = function (self, event, target, player, data)
+    return player and player:hasSkill(self.name) and target ~= player
+    and player.room:askToSkillInvoke(player, {
+      skill_name = mingshen.name,
+      prompt = "#yyfy_mingshen-kill::"..target.id
+    })
+  end,
+  on_trigger = function (self, event, target, player, data)
+    player.room:killPlayer({
+      who = target,
+      killer = player
+    })
+  end
 })
 
 return mingshen
