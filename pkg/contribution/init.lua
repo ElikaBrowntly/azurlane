@@ -255,6 +255,14 @@ Fk:loadTranslationTable{
   ["designer:yyfy_UnderworldGoddess"] = "夜隐浮云，孤星似梦"
 }
 
+local gaoshou = General:new(extension, "yyfy_gaoshou", "god", 4)
+gaoshou:addSkills {"yyfy_konggou"}
+Fk:loadTranslationTable{
+  ["yyfy_gaoshou"] = "高手",
+  ["#yyfy_gaoshou"] = "",
+  ["designer:yyfy_gaoshou"] = "幻矩"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

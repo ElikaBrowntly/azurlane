@@ -5,7 +5,7 @@ local skill = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["yyfy_wusheng"] = "无声",
   [":yyfy_wusheng"] = "锁定技，敌方角色成为牌的目标后，若此牌可以被响应，"..
-  "则其响应方式改为弃置1张相同花色的手牌视为响应之。若其未响应，则减一点体力上限",
+  "则其响应方式改为用相同花色的手牌转化响应牌。若其未响应，则减一点体力上限",
 }
 local help_functions = require "packages/hidden-clouds/functions"
 
@@ -33,7 +33,7 @@ skill:addEffect(fk.PreCardEffect, {
     local result = room:askToChoice(to, {
       skill_name = self.name,
       choices = {"确定", "取消"},
-      prompt = "你仅能弃相同花色的手牌视为响应之，不响应则体力上限-1。是否响应？"
+      prompt = "你仅能转化相同花色的手牌来响应，不响应则体力上限-1。是否响应？"
     })
     if result == "取消" then
       data.disresponsive = true
@@ -41,25 +41,25 @@ skill:addEffect(fk.PreCardEffect, {
     return end
     local responseCard = "jink"
     if data.card:isCommonTrick() then responseCard = "nullification" end
-    local card_dis = room:askToDiscard(to, {
+    local card_sele = room:askToCards(to, {
       skill_name = self.name,
       max_num = 1,
       min_num = 1,
       include_equip = false,
       cancelable = false,
       pattern = ".|.|"..data.card:getSuitString(),
-      prompt = "请弃置1张相同花色的手牌，视为响应之"
+      prompt = "请用1张相同花色的手牌转化响应牌"
     })
     local use = {}
+    local card = Fk:cloneCard(responseCard)
+    card:addSubcard(card_sele[1])
     use = {
       from = to,
-      tos = to,
       skill_name = skill.name,
-      card = Fk:cloneCard(responseCard),
-      cancelable = false,
+      card = card,
       toCard = data.card,
+      responseToEvent = event
     }
-    
     to.room:useCard(use)
     data.isCancellOut = true
     data:setDisresponsive(to)

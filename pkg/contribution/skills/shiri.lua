@@ -10,6 +10,7 @@ Fk:loadTranslationTable {
   "不能发动其武将牌上的技能。" ,
 
   ["@@yyfy_shiri"] = "蚀日",
+  ["$yyfy_shiri"] = ""
 }
 
 shiri:addLoseEffect(function(self, player, is_death)
@@ -23,6 +24,7 @@ local skills_after_death = {
 }
 
 shiri:addEffect("active", {
+  mute = true,
   max_game_use_time = 3,
   can_use = function (self, player)
     if not (player and player:isAlive() and player:hasSkill(self.name) and
@@ -74,7 +76,9 @@ shiri:addEffect("active", {
   on_use = function (self, room, skillUseEvent)
     if skillUseEvent.cost_data == nil then return false end
     if not skillUseEvent.cost_data.cards or #skillUseEvent.cost_data.cards ~= 5 then return false end
+    room:doSuperLightBox("packages/hidden-clouds/qml/shiri.qml")
     local player = skillUseEvent.from
+    player:broadcastSkillInvoke(shiri.name)
     local targets = room:getOtherPlayers(player, false, false)
     if #targets == 0 then return false end
     targets = room:askToChoosePlayers(player, {

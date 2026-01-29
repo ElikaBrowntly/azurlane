@@ -9,7 +9,7 @@ Fk:loadTranslationTable{
   "不因此技能而变化时，你可以弃置1张牌，令其对应数值向相同方向调整X，另外两项数值向相反方向调整X(X为此牌点数)。",
   
   ["yyfy_luanwu_3"] = "获得红色牌视为增加，获得黑色牌视为减少。",
-  ["yyfy_luanwu-draw"] = "乱武：你可以弃置一张牌，根据点数令%dest摸牌",
+  ["#yyfy_luanwu-draw"] = "乱武：你可以弃置一张牌，根据点数令%dest摸牌",
   ["#yyfy_luanwu-discard"] = "乱武：你可以弃置一张牌，根据点数令%dest弃牌",
 
   ["$yyfy_luanwu1"] = "汝等若心存隐忍，顷刻便尸骨无存！",
