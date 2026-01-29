@@ -3,7 +3,7 @@ local qianlong = fk.CreateSkill {
   tags = { Skill.Permanent },
 }
 
-local D = require "packages.DR-system.record.DRRP"
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 Fk:loadTranslationTable{
   ["lan__qianlong"] = "潜龙",
@@ -170,14 +170,14 @@ qianlong:addEffect(fk.GameFinished, {
   global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    return player:getMark("lan__qianlong-achievements") >= 3
+    return player:getMark("lan__qianlong-achievements") >= 3 and ok
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
     local players = room.players
     local winners = data:split("+")
     for _, p in ipairs(players) do
-      if table.contains(winners, p.role) then
+      if table.contains(winners, p.role) and ok then
         D.updateAchievement(room, p, "lan__caomao", "lan__caomao_1", 1)
       end
     end

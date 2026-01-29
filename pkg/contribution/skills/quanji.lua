@@ -3,7 +3,7 @@ local quanji = fk.CreateSkill {
   derived_piles = "lan__zhonghui_quan",
 }
 
-local D = require "packages.DR-system.record.DRRP"
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 Fk:loadTranslationTable{
   ["lan__quanji"] = "权计",
@@ -81,14 +81,14 @@ quanji:addEffect(fk.GameFinished, {
   global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    return player:getMark("lan__quanji-achievements") >= 3
+    return player:getMark("lan__quanji-achievements") >= 3 and ok
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
     local players = room.players
     local winners = data:split("+")
     for _, p in ipairs(players) do
-      if table.contains(winners, p.role) then
+      if table.contains(winners, p.role) and ok then
         D.updateAchievement(room, p, "lan__zhonghui", "lan__zhonghui_1", 3)
       end
     end

@@ -3,7 +3,7 @@ local yyfy_shicao = fk.CreateSkill{
   anim_type = "drawcard",
 }
 
-local D = require "packages.DR-system.record.DRRP"
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 Fk:loadTranslationTable{
   ["yyfy_shicao"] = "识草",
@@ -27,7 +27,10 @@ yyfy_shicao:addEffect("active", {
     
     -- 牌堆底摸2，计入战功进度
     room:drawCards(player, 2, yyfy_shicao.name, "bottom")
-    D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+    if ok then
+      D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+    end
+    
     -- 记录已出现类型
     local existingTypes = {}
     
@@ -41,7 +44,9 @@ yyfy_shicao:addEffect("active", {
       
       room:obtainCard(player, card, false, fk.ReasonDraw)
       -- 计入战功进度
-      D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+      if ok then
+        D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+      end
       
       local isNewType = false
       for _, t in ipairs(existingTypes) do

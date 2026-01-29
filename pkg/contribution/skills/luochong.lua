@@ -2,7 +2,7 @@ local luochong = fk.CreateSkill{
   name = "lan__luochong",
 }
 
-local D = require "packages.DR-system.record.DRRP"
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 Fk:loadTranslationTable{
   ["lan__luochong"] = "落宠",
@@ -187,7 +187,7 @@ local function triggerLuochong(player, event)
       break
     end
     -- 计入战功进度
-    if count == 7 then
+    if count == 7 and ok then
       D.updateAchievement(room, player, "lan__tengfanglan", "lan__tengfanglan_1", 3)
     end
   end

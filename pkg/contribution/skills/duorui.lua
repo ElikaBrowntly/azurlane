@@ -2,7 +2,7 @@ local duorui = fk.CreateSkill {
   name = "yyfy_duorui",
 }
 
-local D = require "packages.DR-system.record.DRRP"
+local ok, D = pcall(require, "packages.DR-system.record.DRRP")
 
 Fk:loadTranslationTable{
   ["yyfy_duorui"] = "夺锐",
@@ -85,7 +85,7 @@ duorui:addEffect(fk.GameFinished, {
   global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    return player:getMark("exgod_zhangliao-achievements") >= 5 -- 至少获得了5个技能
+    return player:getMark("exgod_zhangliao-achievements") >= 5 and ok-- 至少获得了5个技能
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
