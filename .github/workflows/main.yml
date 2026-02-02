@@ -1,0 +1,43 @@
+name: Sync from Gitee
+
+on:
+  # 1. 手动触发：方便你在需要时随时点击运行
+  workflow_dispatch:
+  # 2. 定时触发：每天UTC时间0点（北京时间8点）自动运行一次
+  schedule:
+    - cron: '0 0 * * *'
+  # 3. 推送触发：当有代码推送到GitHub的main分支时也运行（可选，防止GitHub的修改被覆盖）
+  push:
+    branches: [ main ]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤一：签出（拉取）本仓库（GitHub）的代码
+      - name: Checkout GitHub Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取全部历史，这对git pull是必要的
+
+      # 步骤二：配置Git身份（用于后续提交）
+      - name: Setup Git Identity
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      # 步骤三：添加Gitee仓库为远程源并拉取最新代码
+      - name: Fetch from Gitee
+        run: |
+          # 将你的开源Gitee仓库地址添加为一个名为“gitee”的远程源
+          git remote add gitee https://gitee.com/hidden-clouds-at-night-fuxsm/hidden-clouds.git
+          # 从Gitee拉取所有分支的更新
+          git fetch gitee --tags
+          # 将Gitee的main分支合并到本地的main分支
+          # 使用`--allow-unrelated-histories`是为了防止因初始提交不同而产生的错误
+          git pull gitee main --allow-unrelated-histories --no-edit --strategy-option=theirs
+
+      # 步骤四：将合并后的代码强制推送到本仓库（GitHub）
+      - name: Push to GitHub
+        run: |
+          git push origin main --force
