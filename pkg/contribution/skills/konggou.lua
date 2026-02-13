@@ -39,7 +39,6 @@ konggou:addEffect("viewas", {
     if #player:getCardIds(Player.Hand) ~= 1 then
       table.insertTableIfNeed(choices, player:getTableMark("yyfy_konggou-hand"))
     end
-    table.removeOne(choices, "analeptic") -- 主动印牌不应该能印酒
     local all_choices = hand_change
     table.insertTableIfNeed(all_choices, hp_change)
     return UI.CardNameBox {
@@ -59,7 +58,7 @@ konggou:addEffect("viewas", {
   before_use = function (self, player, use)
     local name = self.interaction.data
     local pure_hand = {"dismantlement", "snatch", "ex_nihilo", "amazing_grace"} -- 只能通过调整手牌数印
-    local pure_hp = {"slash", "peach", "god_salvation"} -- 只能通过调整体力值印
+    local pure_hp = {"slash", "peach", "god_salvation", "analeptic"} -- 只能通过调整体力值印
     local in_common = {"savage_assault", "archery_attack", "fire_attack", "duel"} -- 共有的牌名
     local case = 0
     if table.contains(pure_hp, name) then case = 1
@@ -116,7 +115,8 @@ konggou:addEffect(fk.AskForCardUse, {
   can_trigger = function (self, event, target, player, data)
     local case = 0
     if table.contains(player:getTableMark("yyfy_konggou-hp"), "peach") then case = case + 1 end
-    if table.contains(player:getTableMark("yyfy_konggou-hp"), "analeptic") then case = case + 2 end
+    if table.contains(player:getTableMark("yyfy_konggou-hp"), "analeptic") and
+    Exppattern:Parse(data.pattern):matchExp("analeptic") then case = case + 2 end
     if not (target == player and player:hasSkill(self.name) and case ~= 0
     and Exppattern:Parse(data.pattern):matchExp("peach|analeptic") and player.hp ~= 1
     ) then return false end

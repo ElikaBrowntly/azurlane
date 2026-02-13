@@ -263,6 +263,14 @@ Fk:loadTranslationTable{
   ["designer:yyfy_gaoshou"] = "幻矩"
 }
 
+local woyeyaosima = General:new(extension, "yyfy_woyeyaosima", "god", 4, 4, General.Female)
+woyeyaosima:addSkills {"yyfy_woyeyaogeima", "yyfy_woyeyaosima"}
+Fk:loadTranslationTable{
+  ["yyfy_woyeyaosima"] = "我也要死吗",
+  ["#yyfy_woyeyaosima"] = "对！",
+  ["designer:yyfy_woyeyaosima"] = "夜隐浮云，孤星似梦"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
