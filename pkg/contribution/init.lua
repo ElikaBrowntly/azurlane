@@ -244,6 +244,7 @@ god_machao:addSkills {"yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu"}
 Fk:loadTranslationTable{
   ["yyfy_god_machao"] = "神马超",
   ["#yyfy_god_machao"] = "壮志凌云",
+  ["!yyfy_god_machao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
   ["~yyfy_god_machao"] = "七情难掩，六欲难消，何谓之神？",
 }
 
@@ -251,7 +252,7 @@ local mingshen = General:new(extension, "yyfy_UnderworldGoddess", "evil", 5, 5, 
 mingshen:addSkills {"yyfy_shiri", "yyfy_mingshen", "yyfy_duixiang"}
 Fk:loadTranslationTable{
   ["yyfy_UnderworldGoddess"] = "闭锁世界的冥神",
-  ["#yyfy_UnderworldGoddess"] = "必须娶为对象",
+  ["#yyfy_UnderworldGoddess"] = "牌佬指定对象",
   ["designer:yyfy_UnderworldGoddess"] = "夜隐浮云，孤星似梦"
 }
 
@@ -269,6 +270,14 @@ Fk:loadTranslationTable{
   ["yyfy_woyeyaosima"] = "我也要死吗",
   ["#yyfy_woyeyaosima"] = "对！",
   ["designer:yyfy_woyeyaosima"] = "夜隐浮云，孤星似梦"
+}
+
+local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
+puni:addSkills {"yyfy_shenglingfengyin"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni"] = "生命",
+  ["designer:yyfy_shenglingpuni"] = "一维无限"
 }
 
 Fk:loadTranslationTable {

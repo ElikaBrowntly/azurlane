@@ -9,8 +9,7 @@ Fk:loadTranslationTable {
   "基本牌或普通锦囊牌使用或打出并摸一张牌（无次数限制且不可被响应）。" ,
   ["#yyfy_xiongji-invoke"] = "雄骑：是否要获得 %arg 张坐骑牌？",
 
-  ["$yyfy_xiongji1"] = "赤骊骋疆，巡狩八荒！",
-  ["$yyfy_xiongji2"] = "长缨在手，百骥可降！"
+  ["$yyfy_xiongji"] = "枪起风雷吟，长鬃曳电裂玄穹，关山十万重！",
 }
 
 local horse

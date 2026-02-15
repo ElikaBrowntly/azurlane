@@ -7,8 +7,7 @@ Fk:loadTranslationTable {
   [":yyfy_hengwu"] = "每名角色各限一次，出牌阶段，你可以将一张坐骑牌置入一名其他角色的装备区并声明一张牌名"..
   "（本轮你不能成为该角色使用此牌名的目标）。" ,
 
-  ["$yyfy_hengwu1"] = "横枪立马，独啸秋风！",
-  ["$yyfy_hengwu2"] = "世皆彳亍，唯我纵横！"
+  ["$yyfy_hengwu"] = "神驹巡八荒，雷铸骨、云织裳，倒提银河洗锋芒！"
 }
 
 hengwu:addEffect("active", {
