@@ -273,10 +273,10 @@ Fk:loadTranslationTable{
 }
 
 local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
-puni:addSkills {"yyfy_shenglingfengyin"}
+puni:addSkills {"yyfy_shenglingfengyin", "yyfy_xuwu"}
 Fk:loadTranslationTable{
   ["yyfy_shenglingpuni"] = "圣灵谱尼",
-  ["#yyfy_shenglingpuni"] = "生命",
+  ["#yyfy_shenglingpuni"] = "传说",
   ["designer:yyfy_shenglingpuni"] = "一维无限"
 }
 
