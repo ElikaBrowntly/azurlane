@@ -79,7 +79,7 @@ yyfy_toutu_caichuan:addEffect("active",{
       
       -- 添加到私人武将牌堆
       local caichuanGenerals = player:getTableMark("@&yyfy_toutu_caichuan") or {}
-      table.insert(caichuanGenerals, generalName)
+      table.insertIfNeed(caichuanGenerals, generalName)
       room:setPlayerMark(player, "@&yyfy_toutu_caichuan", caichuanGenerals)
     end
     

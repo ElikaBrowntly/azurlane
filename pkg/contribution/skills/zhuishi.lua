@@ -11,8 +11,7 @@ Fk:loadTranslationTable {
 
   ["yyfy_has-horse"] = "有坐骑牌",
 
-  ["$yyfy_zhuishi1"] = "马踏祁连山河动，兵起玄黄奈何天！",
-  ["$yyfy_zhuishi2"] = "一骑破霄汉，饮马星河、醉卧广寒！"
+  ["$yyfy_zhuishi"] = "腾云峙龙庭，十万雷纹铭新符，一骑绝尘去！",
 }
 
 zhuishi:addEffect("prohibit", {
