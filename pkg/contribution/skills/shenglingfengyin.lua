@@ -77,8 +77,8 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     if player.deputyGeneral == "yyfy_shenglingpuni" then
       isDeputy = true
     end
-    room:changeHero(player, "yyfy_shenglingpuni", true, isDeputy)
     room:setPlayerMark(player, "@&yyfy_shengling", generals)
+    room:changeHero(player, "yyfy_shenglingpuni", true, isDeputy)
     -- 继承所有技能
     for _, skill in ipairs(skills) do
       if not player:hasSkill(skill, true, true) then
@@ -90,7 +90,6 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
       local e = logic:getCurrentEvent()
       logic:breakEvent(e)
     end
-    
   end
 })
 

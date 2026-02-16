@@ -5,7 +5,7 @@ local xuwu = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_xuwu"] = "虚无",
-  [":yyfy_xuwu"] = "锁定技，当你受到伤害时，终止一切结算并立即结束此回合。你出场时，终止一切结算并立即行动。",
+  [":yyfy_xuwu"] = "锁定技，当你受到伤害时，终止一切结算并立即结束此回合。你出场时，终止一切结算并立即行动。"
 }
 
 xuwu:addEffect(fk.DamageInflicted, {
