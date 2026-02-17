@@ -6,7 +6,7 @@ local fengyin = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["yyfy_shenglingfengyin"] = "圣灵封印",
   [":yyfy_shenglingfengyin"] = "永恒技，锁定技，共鸣技，游戏开始时，你获得七张“圣灵谱尼”武将牌并选择一张出场。"
-  .."你死亡时，若存在有未出场的武将，则选择一个武将出场并继承此前所有技能。",
+  .."你死亡时，若存在未出场的武将，则选择一个武将出场并继承此前所有技能。",
 
   ["@&yyfy_shengling"] = "圣灵",
 }
@@ -14,7 +14,7 @@ Fk:loadTranslationTable{
 fengyin:addLoseEffect(function(self, player, is_death)
   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
 end)
---TODO:把标记系统换成tag系统
+
 fengyin:addEffect(fk.GameStart, {
   mute = true,
   can_refresh = function(self, event, target, player, data)
@@ -77,12 +77,18 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     if player.deputyGeneral == "yyfy_shenglingpuni" then
       isDeputy = true
     end
+    room:setPlayerMark(player, "@&yyfy_shengling", generals)
     room:changeHero(player, "yyfy_shenglingpuni", true, isDeputy)
     -- 继承所有技能
     for _, skill in ipairs(skills) do
       if not player:hasSkill(skill, true, true) then
         room:handleAddLoseSkills(player, skill.name, fengyin.name)
       end
+    end
+    if #player:getTableMark("@&yyfy_shengling") > 0 then
+      local logic = player.room.logic
+      local e = logic:getCurrentEvent()
+      logic:breakEvent(e)
     end
   end
 })
