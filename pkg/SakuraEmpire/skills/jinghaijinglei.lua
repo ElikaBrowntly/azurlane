@@ -6,15 +6,15 @@ local skill = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["jinghaijinglei"] = "静海惊雷",
-  [":jinghaijinglei"] = "每回合限一次，你使用【杀】指定目标后，可召唤7道落雷"..
-  "（每道落雷可对一名其他角色造成1点雷电伤害，有50%概率暴击）；"..
-  "然后你可令被落雷击中的角色本回合受到的伤害+1",
+  [":jinghaijinglei"] = "每回合限一次，你使用【杀】指定目标后，可召唤7道"..
+  "<a href = 'jinghaijinglei-luolei'>落雷</a>，然后你可令被落雷击中的角色本回合受到的伤害+1。",
   
   ["#jinghaijinglei-ask"] = "静海惊雷：是否召唤7道落雷？",
   ["#jinghaijinglei-choose"] = "静海惊雷：请选择本次落雷的目标",
   ["#jinghaijinglei-ask2"] = "静海惊雷：是否令落雷击中角色本回合受伤+1？",
   ["#jinghaijinglei-add"] = "由于「静海惊雷」的效果，%from 受到的伤害+%arg2",
   ["@@jinghaijinglei_debuff"] = "破甲",
+  ["jinghaijinglei-luolei"] = "每道落雷可对一名其他角色造成1点雷电伤害，有50%概率暴击。",
 
   ["$jinghaijinglei1"] = "时机已至！",
   ["$jinghaijinglei2"] = "分段射击，御敌绸缪。",
