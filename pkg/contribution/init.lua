@@ -273,13 +273,13 @@ Fk:loadTranslationTable{
 }
 
 local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
-puni:addSkills {"yyfy_shenglingfengyin", }
+puni:addSkills {"yyfy_shenglingfengyin", "yyfy_luofangtianhua", "yyfy_guangrongzhimeng", "yyfy_jiushishenling"}
 Fk:loadTranslationTable{
   ["yyfy_shenglingpuni"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni"] = "传说",
   ["designer:yyfy_shenglingpuni"] = "一维无限"
 }
-puni:addRelatedSkills({"yyfy_xuwu", "yyfy_yuansu", "yyfy_nengliang"})
+puni:addRelatedSkills({"yyfy_xuwu", "yyfy_yuansu", "yyfy_nengliang", "yyfy_shengming", "yyfy_lunhui", "yyfy_yongheng", "yyfy_shengjie"})
 
 local puni1 = General:new(extension, "yyfy_shenglingpuni1", "god", 1)
 puni1:addSkills {"yyfy_xuwu"}
@@ -307,6 +307,42 @@ Fk:loadTranslationTable{
   ["designer:yyfy_shenglingpuni3"] = "一维无限"
 }
 puni3.total_hidden = true
+
+local puni4 = General:new(extension, "yyfy_shenglingpuni4", "god", 1)
+puni4:addSkills {"yyfy_shengming"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni4"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni4"] = "生命",
+  ["designer:yyfy_shenglingpuni4"] = "一维无限"
+}
+puni4.total_hidden = true
+
+local puni5 = General:new(extension, "yyfy_shenglingpuni5", "god", 1)
+puni5:addSkills {"yyfy_lunhui"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni5"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni5"] = "轮回",
+  ["designer:yyfy_shenglingpuni5"] = "一维无限"
+}
+puni5.total_hidden = true
+
+local puni6 = General:new(extension, "yyfy_shenglingpuni6", "god", 1)
+puni6:addSkills {"yyfy_yongheng"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni6"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni6"] = "永恒",
+  ["designer:yyfy_shenglingpuni6"] = "一维无限"
+}
+puni6.total_hidden = true
+
+local puni7 = General:new(extension, "yyfy_shenglingpuni7", "god", 1)
+puni7:addSkills {"yyfy_shengjie"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni7"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni7"] = "圣洁",
+  ["designer:yyfy_shenglingpuni7"] = "一维无限"
+}
+puni7.total_hidden = true
 
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
