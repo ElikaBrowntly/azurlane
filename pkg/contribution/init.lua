@@ -273,12 +273,40 @@ Fk:loadTranslationTable{
 }
 
 local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
-puni:addSkills {"yyfy_shenglingfengyin", "yyfy_xuwu", "yyfy_yuansu"}
+puni:addSkills {"yyfy_shenglingfengyin", }
 Fk:loadTranslationTable{
   ["yyfy_shenglingpuni"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni"] = "传说",
   ["designer:yyfy_shenglingpuni"] = "一维无限"
 }
+puni:addRelatedSkills({"yyfy_xuwu", "yyfy_yuansu", "yyfy_nengliang"})
+
+local puni1 = General:new(extension, "yyfy_shenglingpuni1", "god", 1)
+puni1:addSkills {"yyfy_xuwu"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni1"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni1"] = "虚无",
+  ["designer:yyfy_shenglingpuni1"] = "一维无限"
+}
+puni1.total_hidden = true
+
+local puni2 = General:new(extension, "yyfy_shenglingpuni2", "god", 1)
+puni2:addSkills {"yyfy_yuansu"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni2"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni2"] = "元素",
+  ["designer:yyfy_shenglingpuni2"] = "一维无限"
+}
+puni2.total_hidden = true
+
+local puni3 = General:new(extension, "yyfy_shenglingpuni3", "god", 1)
+puni3:addSkills {"yyfy_nengliang"}
+Fk:loadTranslationTable{
+  ["yyfy_shenglingpuni3"] = "圣灵谱尼",
+  ["#yyfy_shenglingpuni3"] = "能量",
+  ["designer:yyfy_shenglingpuni3"] = "一维无限"
+}
+puni3.total_hidden = true
 
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",

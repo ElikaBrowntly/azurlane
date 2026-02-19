@@ -6,7 +6,7 @@ local skill = fk.CreateSkill{
 Fk:loadTranslationTable({
   ["wuyingrenhao"] = "舞樱刃豪",
   [":wuyingrenhao"] = "锁定技，你对其他角色造成伤害时，若大于1点，则你可令该伤害+1。"..
-  "若你装备了武器牌，你的【杀】不可被响应，出牌阶段可使用杀的次数+1",
+  "若你装备了武器牌，你的【杀】不可被响应，出牌阶段可使用杀的次数+1。",
   
   ["$wuyingrenhao"] = "我就在这里，无需怯战，不要冒进，出击吧——",
   ["#wuyingrenhao-ask"] = "舞樱刃豪：是否令此伤害+1？",
