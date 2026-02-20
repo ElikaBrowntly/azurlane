@@ -37,21 +37,31 @@ fengyin:addEffect(fk.GameStart, {
     local room = player.room
     local i = 1
     local generals = {}
-    while i <= 3 do
+    while i <= 7 do
       table.insert(generals, "yyfy_shenglingpuni"..tostring(i))
       i = i + 1
     end
     player.tag["yyfy_shengling"] = generals
-    local choice = room:askToChooseGeneral(player, {
-      generals = generals,
-      n = 1,
-      no_convert = true,
-      skill_name = fengyin.name,
-      prompt = "圣灵封印：请选择一张武将牌出战",
-    })
-    if type(choice) == "table" then
-      choice = choice[1]
+
+    -- 使用自定义对话框选择出场武将
+    local choice
+    if player.id < 0 then
+      -- AI自动随机选择
+      choice = generals[math.random(#generals)]
+    else
+      local result = room:askToCustomDialog(player, {
+        skill_name = fengyin.name,
+        qml_path = "packages/hidden-clouds/qml/ShengLingSelectBox.qml",
+        extra_data = { generals }
+      })
+      if result ~= "" and result.general then
+        choice = result.general
+      else
+        -- 若取消或出错，默认选第一个
+        choice = generals[1]
+      end
     end
+
     local isDeputy = false
     if player.deputyGeneral == "yyfy_shenglingpuni" then
       isDeputy = true
@@ -64,6 +74,7 @@ fengyin:addEffect(fk.GameStart, {
 
 fengyin:addEffect(fk.BeforeGameOverJudge, {
   anim_type = "support",
+  priority = 2,
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self, true, true) and player.tag['yyfy_puni'] > 0
     and target == player
@@ -82,26 +93,34 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     player.tag["yyfy_puni_jicheng"] = skills_snapshot
     room:revivePlayer(player, false)
     local generals = player.tag["yyfy_shengling"]
-    local choice = room:askToChooseGeneral(player, {
-      generals = generals,
-      n = 1,
-      no_convert = true,
-      skill_name = fengyin.name,
-      prompt = "圣灵封印：请选择一张武将牌出战",
-    })
+    -- 使用自定义对话框选择出场武将
+    local choice
+    if player.id < 0 then
+      choice = generals[math.random(#generals)]
+    else
+      local result = room:askToCustomDialog(player, {
+        skill_name = fengyin.name,
+        qml_path = "packages/hidden-clouds/qml/ShengLingSelectBox.qml",
+        extra_data = { generals }
+      })
+      if result ~= "" and result.general then
+        choice = result.general
+      else
+        choice = generals[1]
+      end
+    end
+
     local isDeputy = false
     if table.contains(all_generals, player.deputyGeneral) then
       isDeputy = true
     end
     table.removeOne(generals, choice)
     player.tag["yyfy_shengling"] = generals
-    if type(choice) == "table" then
-      choice = choice[1]
-    end
     if #generals == 0 then
       room:doBroadcastNotify("ShowToast", "请注意，这是最后一张圣灵谱尼武将牌了......")
     end
     room:changeHero(player, choice, true, isDeputy)
+
     -- 继承所有技能
     for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do
       if not player:hasSkill(s, true, true) then
