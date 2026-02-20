@@ -245,7 +245,7 @@ Fk:loadTranslationTable{
   ["yyfy_god_machao"] = "神马超",
   ["#yyfy_god_machao"] = "壮志凌云",
   ["!yyfy_god_machao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
-  ["~yyfy_god_machao"] = "七情难掩，六欲难消，何谓之神？",
+  ["~yyfy_god_machao"] = "汉升！人间新酒如何？",
 }
 
 local mingshen = General:new(extension, "yyfy_UnderworldGoddess", "evil", 5, 5, General.Female)
