@@ -54,7 +54,7 @@ lilu:addEffect(fk.EventPhaseEnd, {
       prompt = "#lan__lilu-give",
       cancelable = true,
     })
-    if not confirm then return false end
+    if not confirm or #to == 0 then return false end
     room:moveCardTo(cards, Card.PlayerHand, to[1], fk.ReasonGive, lilu.name, nil, false, player)
     if player.dead then return end
     player.room:changeMaxHp(player, 1)

@@ -76,6 +76,7 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
   anim_type = "support",
   priority = 2,
   can_trigger = function (self, event, target, player, data)
+    if player.tag['yyfy_puni'] == nil then return false end
     return player and player:hasSkill(self, true, true) and player.tag['yyfy_puni'] > 0
     and target == player
   end,
