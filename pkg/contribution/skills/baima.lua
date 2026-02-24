@@ -17,7 +17,7 @@ baima:addEffect(fk.DamageFinished, {
   on_cost = function (self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
       skill_name = self.name,
-      prompt = "#yyfy_baima-invoke:"..data.from.id..":"..tostring(data.damage)
+      prompt = "#yyfy_baima-invoke::"..data.from.id..":"..data.damage
     })
   end,
   on_use = function(self, event, target, player, data)
@@ -25,6 +25,7 @@ baima:addEffect(fk.DamageFinished, {
       from = player,
       to = data.from,
       damage = data.damage,
+      damageType = fk.FireDamage,
       skillName = self.name,
     }
   end
