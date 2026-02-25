@@ -5,13 +5,14 @@ local woyeyaogeima = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_woyeyaogeima"] = "我也要给吗",
-  [":yyfy_woyeyaogeima"] = "一名角色不因此技能而获得手牌后，你可以令其获得牌堆顶的牌直到点数总和＞149.38。",
+  [":yyfy_woyeyaogeima"] = "每阶段限一次，一名角色不因此技能而获得手牌后，你可以令其获得牌堆顶的牌直到点数总和＞149.38。",
 
   ["#yyfy_woyeyaogeima-invoke"] = "我也要给吗：是否要令%dest获得牌堆顶的牌,直到点数＞149.38"
 }
 
 woyeyaogeima:addEffect(fk.AfterCardsMove, {
   can_trigger = function (self, event, target, player, data)
+    if player:usedSkillTimes(woyeyaogeima.name, Player.HistoryPhase) > 0 then return false end
     for _, move in ipairs(data) do
       if move.to and move.toArea == Player.Hand and move.skillName ~= woyeyaogeima.name
       and player and player:hasSkill(self) then
