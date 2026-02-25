@@ -7,7 +7,7 @@ Fk:loadTranslationTable{
   ["yyfy_toutu"] = "偷图",
   [":yyfy_toutu"] = "出牌阶段限一次，你可以随机获得以下每种图纸0~1张，并获得对应效果（X为该类图纸的数量）："..
   "<br>\n①<font color='red'>主炮</font>：你使用牌可以多结算X次；"..
-  "<br>\n②<font color='orange'>副炮</font>：你使用杀造成伤害后，可令受伤角色获得【燃殇】然后对其造成X点火焰伤害；"..
+  "<br>\n②<font color='orange'>副炮</font>：你使用杀造成伤害后，可令受伤角色获得〖燃殇〗然后对其造成X点火焰伤害；"..
   "<br>\n③<font color='green'>战斗机</font>：你受到的伤害-X；"..
   "<br>\n④<font color='cyan'>轰炸机</font>：你使用牌可以额外指定至多X个目标；"..
   "<br>\n⑤<font color='blue'>鱼雷</font>：你不因此技能造成伤害时，可令此伤害+X；"..
@@ -109,7 +109,7 @@ yyfy_toutu:addEffect(fk.Damage, {
     player:broadcastSkillInvoke(self.name, 2)
     player:chat("赢啦，亲爱的，我们赢啦！耶~！")
     -- 获得燃殇
-    room:handleAddLoseSkills(to, "ranshang", yyfy_toutu.name, true)
+    room:handleAddLoseSkills(to, "ranshang", yyfy_toutu.name)
     
     -- 火焰伤害
     if from == nil then return end
