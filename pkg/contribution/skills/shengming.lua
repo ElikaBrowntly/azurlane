@@ -6,7 +6,7 @@ local shengming = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["yyfy_shengming"] = "生命",
   [":yyfy_shengming"] = "锁定技，你的体力上限不能被减少。你登场时加1点体力上限。"..
-  "当场上有角色回复体力时，你回复等量体力，若此时体力值等于体力上限，你增加一点体力上限。"
+  "当场上有角色回复体力时，你回复等量体力，若此时体力值等于体力上限，你增加一点体力上限（每阶段最多+5）。"
 }
 
 local all_generals = {"yyfy_shenglingpuni"}
@@ -19,9 +19,9 @@ end
 shengming:addEffect(fk.HpRecover,{
   anim_type = "support",
   can_trigger = function (self, event, target, player, data)
-    return player and player:hasSkill(self)
+    return player and player:hasSkill(self) and (player.tag[shengming.name] or 0) < 5
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_use = function (self, event, target, player, data)
     local room = player.room
     room:recover({
       num = data.num,
@@ -31,7 +31,17 @@ shengming:addEffect(fk.HpRecover,{
     })
     if player.hp == player.maxHp then
       room:changeMaxHp(player, 1)
+      player.tag[shengming.name] = (player.tag[shengming.name] or 0) + 1
     end
+  end
+})
+
+shengming:addEffect(fk.EventPhaseChanging, {
+  can_refresh = function (self, event, target, player, data)
+    return player and player:hasSkill(self, true, true) and (player.tag[shengming.name] or 0) ~= 0
+  end,
+  on_refresh = function (self, event, target, player, data)
+    player.tag[shengming.name] = 0
   end
 })
 
@@ -40,7 +50,7 @@ shengming:addEffect(fk.BeforeMaxHpChanged, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and data.num < 0
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_use = function (self, event, target, player, data)
     data:preventMaxHpChange()
   end
 })
@@ -52,7 +62,7 @@ shengming:addEffect(fk.AfterPropertyChange, {
     and (table.contains(all_generals, data.general) or
     data.deputyGeneral and table.contains(all_generals, data.deputyGeneral))
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_use = function (self, event, target, player, data)
     player.room:changeMaxHp(player, 1)
   end
 })

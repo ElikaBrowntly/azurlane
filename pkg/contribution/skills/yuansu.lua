@@ -5,7 +5,7 @@ local yuansu = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_yuansu"] = "元素",
-  [":yyfy_yuansu"] = "锁定技，当你即将造成属性伤害时，令目标获得“元素”标记，拥有此标记的角色发动技能时取消之，直到伤害结算。",
+  [":yyfy_yuansu"] = "锁定技，当你即将造成属性伤害时，令目标获得“元素”标记，拥有此标记的角色发动技能时取消之，且不能使用牌，直到伤害结算。",
 
   ["@@yyfy_yuansu"] = "元素"
 }
@@ -34,6 +34,12 @@ yuansu:addEffect(fk.SkillEffect, {
       room.logic:breakEvent(e)
     end
   end,
+})
+
+yuansu:addEffect("prohibit", {
+  prohibit_use = function(self, player, card)
+    return player and player:getMark("@@yyfy_yuansu") > 0
+  end
 })
 
 yuansu:addEffect(fk.DamageFinished, {

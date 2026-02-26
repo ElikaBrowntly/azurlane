@@ -5,7 +5,7 @@ local zhanshi = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_zhanshi"] = "战士",
-  [":yyfy_zhanshi"] = "获得此技能时，你可以令一名其他角色失去所有技能直到你的回合结束。",
+  [":yyfy_zhanshi"] = "获得此化身时，你可以令一名其他角色失去所有技能直到你的回合结束。",
   ["yyfy_zhanshi_skills"] = "技能",
   ["yyfy_zhanshi_target"] = "目标"
 }
