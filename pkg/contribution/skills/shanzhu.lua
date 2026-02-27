@@ -5,7 +5,7 @@ local shanzhu = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_shanzhu"] = "山猪",
-  [":yyfy_shanzhu"] = "获得此技能时，令一名其他角色失去所有体力。若其死亡，视为你杀死了该角色。",
+  [":yyfy_shanzhu"] = "获得此化身时，令一名其他角色失去所有体力。若其死亡，视为你杀死了该角色。",
 }
 
 shanzhu:addAcquireEffect(function (self, player, is_start)

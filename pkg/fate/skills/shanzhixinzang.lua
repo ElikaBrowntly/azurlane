@@ -175,12 +175,4 @@ fate_shanzhixinzang:addEffect(fk.DamageCaused, {
   end,
 })
 
--- 技能失去时清理标记
-fate_shanzhixinzang:addLoseEffect(function(self, player, is_death)
-  local room = player.room
-  room:setPlayerMark(player, "@fate_yili", 0)
-  room:setPlayerMark(player, "fate_shanzhixinzang_yili_turns", 0)
-  room:setPlayerMark(player, "fate_shanzhixinzang_damage-turn", 0)
-end)
-
 return fate_shanzhixinzang
