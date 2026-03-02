@@ -6,13 +6,13 @@ local duixiang = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_duixiang"] = "对象",
-  [":yyfy_duixiang"] = "永恒技，你无法被其他角色控制；你的武将牌无法被变更；多目标牌对你无效。",
+  [":yyfy_duixiang"] = "持恒技，你无法被其他角色控制；你的武将牌无法被变更；多目标牌对你无效。",
 }
 
-duixiang:addLoseEffect(function(self, player, is_death)
-  local room = player.room
-  room:handleAddLoseSkills(player, duixiang.name, nil, false, true)
-end)
+-- duixiang:addLoseEffect(function(self, player, is_death)
+--   local room = player.room
+--   room:handleAddLoseSkills(player, duixiang.name, nil, false, true)
+-- end)
 
 duixiang:addEffect(fk.AfterSkillEffect, {
   can_refresh = function (self, event, target, player, data)

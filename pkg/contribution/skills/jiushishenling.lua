@@ -5,13 +5,13 @@ local jiushishenling = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_jiushishenling"] = "救世神灵",
-  [":yyfy_jiushishenling"] = "永恒技，出牌阶段限一次或其他角色死亡时，"..
+  [":yyfy_jiushishenling"] = "持恒技，出牌阶段限一次或其他角色死亡时，"..
   "你可以使〖轮回〗中的数字+1，然后复活任意名角色，若如此做，你失去所有体力。"
 }
 
-jiushishenling:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- jiushishenling:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 ---@param player ServerPlayer
 local function doFuhuo(player)

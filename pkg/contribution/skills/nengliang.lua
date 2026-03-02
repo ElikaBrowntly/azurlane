@@ -5,7 +5,7 @@ local nengliang = fk.CreateSkill {
 Fk:loadTranslationTable{
   ["yyfy_nengliang"] = "能量",
   [":yyfy_nengliang"] = "锁定技，你使用牌无次数和距离限制，你造成的伤害等同于你的技能数量；"..
-  "当你受到其他角色的伤害时，你对其造成一点伤害。"
+  "当你受到其他角色的伤害时，你可以对其造成一点伤害。"
 }
 
 nengliang:addEffect(fk.PreCardUse, {
@@ -39,7 +39,11 @@ nengliang:addEffect(fk.DetermineDamageCaused, {
 nengliang:addEffect(fk.DamageInflicted, {
   anim_type = "masochism",
   can_trigger = function (self, event, target, player, data)
-    return target == player and player:hasSkill(self) and data.from and data.from ~= player
+    if not (target == player and player:hasSkill(self) and data.from
+     and data.from ~= player and (player.tag[nengliang.name] or 0) < 20) then return false end
+    local n = player.tag[nengliang.name] or 0
+    player.tag[nengliang.name] = n + 1
+    return true
   end,
   on_trigger = function (self, event, target, player, data)
     player.room:damage({
@@ -48,6 +52,16 @@ nengliang:addEffect(fk.DamageInflicted, {
       damage = 1,
       skillName = nengliang.name
     })
+  end
+})
+
+nengliang:addEffect(fk.EventTurnChanging, {
+  is_delay_effect = true,
+  can_refresh = function (self, event, target, player, data)
+    return player and player:hasSkill(self) and player.tag[nengliang.name] ~= 0
+  end,
+  on_refresh = function (self, event, target, player, data)
+    player.tag[nengliang.name] = 0
   end
 })
 

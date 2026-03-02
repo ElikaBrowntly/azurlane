@@ -5,13 +5,12 @@ local huiliuli = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_hui"] = "灰流丽",
-  [":yyfy_hui"] = "永恒技，其他角色在摸牌阶段外，即将从牌堆或处理区获得牌时，你可以取消之。"
+  [":yyfy_hui"] = "持恒技，其他角色在摸牌阶段外，即将从牌堆或处理区获得牌时，你可以取消之。"
 }
 
--- 永恒技：失去此技能时重新添加
-huiliuli:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- huiliuli:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 huiliuli:addEffect(fk.BeforeCardsMove, {
   anim_type = "control",

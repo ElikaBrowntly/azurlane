@@ -6,17 +6,17 @@ local shiri = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_shiri"] = "蚀日",
-  [":yyfy_shiri"] = "永恒技，每局游戏限3次，出牌阶段你可以弃置5张牌（其中1张可以来自其他角色），令任意名其他角色本局游戏中"..
-  "不能发动其武将牌上的技能。" ,
+  [":yyfy_shiri"] = "持恒技，每局游戏限3次，出牌阶段，你可以弃置5张牌（其中1张可以来自其他角色），"..
+  "令任意名其他角色本局游戏中不能发动其武将牌上的技能。" ,
 
   ["@@yyfy_shiri"] = "蚀日",
   ["$yyfy_shiri"] = ""
 }
 
-shiri:addLoseEffect(function(self, player, is_death)
-  local room = player.room
-  room:handleAddLoseSkills(player, shiri.name, nil, false, true)
-end)
+-- shiri:addLoseEffect(function(self, player, is_death)
+--   local room = player.room
+--   room:handleAddLoseSkills(player, shiri.name, nil, false, true)
+-- end)
 
 -- 不检查玩家存活性和技能失效性的神人技能
 local skills_after_death = {

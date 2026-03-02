@@ -5,13 +5,13 @@ local luofangtianhua = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_luofangtianhua"] = "落芳天华",
-  [":yyfy_luofangtianhua"] = "永恒技，游戏/每轮/回合开始时，你可以令任意名角色获得技能"..
+  [":yyfy_luofangtianhua"] = "持恒技，游戏/每轮/回合开始时，你可以令任意名角色获得技能"..
   "〖<a href = ':yyfy_fusu'>复苏</a>〗。"
 }
 
-luofangtianhua:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- luofangtianhua:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 ---@param player ServerPlayer
 local function getFusu(player)

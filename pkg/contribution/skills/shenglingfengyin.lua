@@ -5,7 +5,7 @@ local fengyin = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_shenglingfengyin"] = "圣灵封印",
-  [":yyfy_shenglingfengyin"] = "永恒技，锁定技，共鸣技，游戏开始时，你获得七张“圣灵谱尼”武将牌并"..
+  [":yyfy_shenglingfengyin"] = "持恒技，锁定技，共鸣技，游戏开始时，你获得七张“圣灵谱尼”武将牌并"..
   "<a href = 'yyfy_shenglingfengyin-chuchang'>选择一张出场</a>。"..
   "你死亡时，若存在未出场的武将，则选择一个武将出场并继承此前所有技能。",
 
@@ -15,9 +15,9 @@ Fk:loadTranslationTable{
   "<br>选择哪张武将，就拥有哪张武将的技能（具体效果见首页）"
 }
 
-fengyin:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- fengyin:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 local all_generals = {"yyfy_shenglingpuni"}
 local j = 1
