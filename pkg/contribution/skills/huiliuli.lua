@@ -16,7 +16,7 @@ huiliuli:addEffect(fk.BeforeCardsMove, {
   anim_type = "control",
   can_trigger = function (self, event, target, player, datas)
     if not (player and player:hasSkill(self.name)) then return false end
-    local current = player.room:getCurrent()
+    local current = player.room.current
     if current and current.phase == Player.Draw then return false end
     local ids = {}
     for _, data in ipairs(datas) do

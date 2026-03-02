@@ -193,22 +193,6 @@ Fk:loadTranslationTable{
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
 
-local zengzhideG = General:new(extension, "yyfy_zengzhideG", "evil", 2)
-zengzhideG:addSkill("yyfy_zengzhi")
-Fk:loadTranslationTable{
-  ["yyfy_zengzhideG"] = "增殖的G",
-  ["#yyfy_zengzhideG"] = "王牌怪兽",
-  ["designer:yyfy_zengzhideG"] = "夜隐浮云，孤星似梦",
-}
-
-local huiliuli = General:new(extension, "yyfy_huiliuli", "evil", 3, 3, General.Female)
-huiliuli:addSkill("yyfy_hui")
-Fk:loadTranslationTable{
-  ["yyfy_huiliuli"] = "灰流丽",
-  ["#yyfy_huiliuli"] = "王牌怪兽の宿敌",
-  ["designer:yyfy_huiliuli"] = "夜隐浮云，孤星似梦",
-}
-
 local caoshuang = General:new(extension, "yyfy_ex_caoshuang", "wei", 4)
 caoshuang:addSkills {"yyfy_tuogu", "yyfy_shanzhuan"}
 Fk:loadTranslationTable{
@@ -246,14 +230,6 @@ Fk:loadTranslationTable{
   ["#yyfy_god_machao"] = "壮志凌云",
   ["!yyfy_god_machao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
   ["~yyfy_god_machao"] = "汉升！人间新酒如何？",
-}
-
-local mingshen = General:new(extension, "yyfy_UnderworldGoddess", "evil", 5, 5, General.Female)
-mingshen:addSkills {"yyfy_shiri", "yyfy_mingshen", "yyfy_duixiang"}
-Fk:loadTranslationTable{
-  ["yyfy_UnderworldGoddess"] = "闭锁世界的冥神",
-  ["#yyfy_UnderworldGoddess"] = "牌佬指定对象",
-  ["designer:yyfy_UnderworldGoddess"] = "夜隐浮云，孤星似梦"
 }
 
 local gaoshou = General:new(extension, "yyfy_gaoshou", "god", 4)
