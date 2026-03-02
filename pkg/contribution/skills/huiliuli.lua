@@ -15,32 +15,44 @@ Fk:loadTranslationTable{
 huiliuli:addEffect(fk.BeforeCardsMove, {
   anim_type = "control",
   can_trigger = function (self, event, target, player, datas)
+    if not (player and player:hasSkill(self.name)) then return false end
+    local current = player.room:getCurrent()
+    if current and current.phase == Player.Draw then return false end
     local ids = {}
-    if player and player:hasSkill(self.name) and player.room:getCurrent().phase ~= Player.Draw then
-      for _, data in ipairs(datas) do
+    for _, data in ipairs(datas) do
+      if data.to and data.to ~= player then
         for _, info in ipairs(data.moveInfo) do
-          if data.to and data.to ~= player and
-          (info.fromArea == Card.DrawPile or info.fromArea == Card.Processing) then
+          if info.fromArea == Card.DrawPile or info.fromArea == Card.Processing then
             table.insertIfNeed(ids, info.cardId)
-            event:setCostData(self, {tos = {data.to}})
-          return true end
+            if not event:getCostData(self) then
+              event:setCostData(self, {tos = {data.to}})
+            end
+          end
         end
       end
     end
-    if ids ~= nil then
-      event:setCostData(self, {cards = ids})
+    if #ids > 0 then
+      local cost = event:getCostData(self) or {}
+      cost.cards = ids
+      event:setCostData(self, cost)
       return true
     end
+    return false
   end,
   on_cost = function (self, event, target, player, data)
-    if event:getCostData(self).tos == nil then return false end
+    local cost = event:getCostData(self)
+    if not cost or not cost.tos then return false end
+    local to = cost.tos[1]
     return player.room:askToSkillInvoke(player, {
       skill_name = self.name,
-      prompt = "灰流丽： %dest 即将从牌堆获得牌，是否取消之？::"..event:getCostData(self).tos[1].id
+      prompt = "灰流丽：%dest 即将从牌堆获得牌，是否取消之？::"..event:getCostData(self).tos[1].id
     })
   end,
   on_use = function (self, event, target, player, data)
-    player.room:cancelMove(data, event:getCostData(self).cards)
+    local cost = event:getCostData(self)
+    if cost and cost.cards then
+      player.room:cancelMove(data, cost.cards)
+    end
   end
 })
 
