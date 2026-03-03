@@ -5,7 +5,8 @@ local yyfy_toutu = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_toutu"] = "偷图",
-  [":yyfy_toutu"] = "出牌阶段限一次，你可以随机获得以下每种图纸0~1张，并获得对应效果（X为该类图纸的数量）："..
+  [":yyfy_toutu"] = "出牌阶段限一次，你可以随机获得以下每种图纸0~1张，并获得对应效果（X为该类图纸的数量，"..
+  "<font color='red'>首抽必出彩船！</font>）："..
   "<br>\n①<font color='red'>主炮</font>：你使用牌可以多结算X次；"..
   "<br>\n②<font color='orange'>副炮</font>：你使用杀造成伤害后，可令受伤角色获得〖燃殇〗然后对其造成X点火焰伤害；"..
   "<br>\n③<font color='green'>战斗机</font>：你受到的伤害-X；"..
@@ -64,7 +65,8 @@ yyfy_toutu:addEffect("active", {
     end
     
     -- 彩船
-    if table.contains(obtained, "caichuan") and not player:hasSkill("yyfy_caichuan") then
+    if table.contains(obtained, "caichuan") and not player:hasSkill("yyfy_caichuan")
+    or player:usedSkillTimes(self.name, Player.HistoryGame) <= 1 then
       room:handleAddLoseSkills(player, "yyfy_caichuan", yyfy_toutu.name, true, true)
     end
   end,

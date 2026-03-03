@@ -5,13 +5,12 @@ local shishen = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_shishen"] = "弑神",
-  [":yyfy_shishen"] = "永恒技，当你杀死其他角色时，你篡夺其所有技能、体力上限和所有牌。",
+  [":yyfy_shishen"] = "持恒技，当你杀死其他角色时，你篡夺其所有技能、体力上限和所有牌。",
 }
 
--- 永恒技：失去此技能时重新添加
-shishen:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- shishen:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 shishen:addEffect(fk.Death, {
   anim_type = "offensive",

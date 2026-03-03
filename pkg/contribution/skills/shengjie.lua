@@ -6,7 +6,7 @@ local shengjie = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_shengjie"] = "圣洁",
-  [":yyfy_shengjie"] = "永恒技，锁定技，你武将牌上的技能即将失去或失效时，取消之。"..
+  [":yyfy_shengjie"] = "持恒技，锁定技，你武将牌上的技能即将失去或失效时，取消之。"..
   "你无法被翻面/横置/操控/替换武将牌。你的阶段不能被跳过。有角色发动技能时，清除你武将牌上的所有标记。",
 }
 
@@ -17,9 +17,9 @@ while j <= 7 do
   j = j + 1
 end
 
-shengjie:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- shengjie:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 -- 获得此技能时，把玩家当前所有技能变成持恒技
 shengjie:addAcquireEffect(function (self, player, is_start, src)

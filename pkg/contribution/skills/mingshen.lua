@@ -6,17 +6,17 @@ local mingshen = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_mingshen"] = "冥神",
-  [":yyfy_mingshen"] = "永恒技，其他角色进入濒死状态时，你可以终止一切结算直接令其死亡，并结束当前回合。"..
+  [":yyfy_mingshen"] = "持恒技，其他角色进入濒死状态时，你可以终止一切结算直接令其死亡，并结束当前回合。"..
   "濒死/死亡/修整的角色不能使用牌或技能。其他角色复活后，你可以令其死亡。",
 
   ["#yyfy_mingshen-invoke"] = "冥神：是否要终止一切结算，直接令 %dest 死亡？",
   ["#yyfy_mingshen-kill"] = "冥神：%dest想要复活，是否要杀死他？"
 }
 
-mingshen:addLoseEffect(function(self, player, is_death)
-  local room = player.room
-  room:handleAddLoseSkills(player, mingshen.name, nil, false, true)
-end)
+-- mingshen:addLoseEffect(function(self, player, is_death)
+--   local room = player.room
+--   room:handleAddLoseSkills(player, mingshen.name, nil, false, true)
+-- end)
 
 -- 不检查玩家存活性和技能失效性的神人技能
 local skills_after_death = {

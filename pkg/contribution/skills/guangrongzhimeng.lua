@@ -5,7 +5,7 @@ local guangrongzhimeng = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_guangrongzhimeng"] = "光荣之梦",
-  [":yyfy_guangrongzhimeng"] = "永恒技，当你出场时，你可以选择执行任意项："..
+  [":yyfy_guangrongzhimeng"] = "持恒技，当你出场时，你可以选择执行任意项："..
   "1.一名角色获得你武将牌上的一个技能；2.你获得其他角色武将牌上的一个技能。当你死亡时，你可以令一名角色死亡。"
 }
 
@@ -16,9 +16,9 @@ while j <= 7 do
   j = j + 1
 end
 
-guangrongzhimeng:addLoseEffect(function(self, player, is_death)
-  player.room:handleAddLoseSkills(player, self.name, nil, false, true)
-end)
+-- guangrongzhimeng:addLoseEffect(function(self, player, is_death)
+--   player.room:handleAddLoseSkills(player, self.name, nil, false, true)
+-- end)
 
 guangrongzhimeng:addEffect(fk.AfterPropertyChange, {
   anim_type = "support",
