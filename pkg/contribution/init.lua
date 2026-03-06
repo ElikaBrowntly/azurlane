@@ -320,6 +320,16 @@ Fk:loadTranslationTable{
 }
 puni7.total_hidden = true
 
+local yoshino = General:new(extension, "yyfy_TomotakeYoshino", "moe", 3, 3, General.Female)
+yoshino:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
+Fk:loadTranslationTable{
+  ["yyfy_TomotakeYoshino"] = "朝武芳乃",
+  ["#yyfy_TomotakeYoshino"] = "穗织的巫女",
+  ["designer:yyfy_TomotakeYoshino"] = "夜隐浮云，孤星似梦",
+  ["~yyfy_TomotakeYoshino"] = "",
+  ["illustrator:yyfy_TomotakeYoshino"] = ""
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
