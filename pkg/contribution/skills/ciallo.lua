@@ -16,7 +16,7 @@ ciallo:addEffect(fk.TurnStart, {
     local room = player.room
     local tos = room:askToChoosePlayers(player, {
       targets = room:getAlivePlayers(),
-      min_num = 0,
+      min_num = 1,
       max_num = 999,
       skill_name = ciallo.name,
       prompt = "Ciallo：你可以令任意名角色将体力值回满或增加体力上限"
