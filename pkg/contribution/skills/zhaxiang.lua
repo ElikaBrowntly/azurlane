@@ -85,10 +85,10 @@ zhaxiang:addEffect("targetmod", {
 
 -- 出牌阶段结束时清除标记
 zhaxiang:addEffect(fk.EventPhaseEnd, {
-  can_trigger = function(self, event, target, player, data)
-    return target == player and player.phase == Player.Play
+  can_refresh = function(self, event, target, player, data)
+    return target == player and player.phase == Player.Play and player:getMark("@lan__zhaxiang-phase") > 0
   end,
-  on_use = function(self, event, target, player, data)
+  on_refresh = function(self, event, target, player, data)
     player.room:setPlayerMark(player, "@lan__zhaxiang-phase", 0)
   end,
 })
