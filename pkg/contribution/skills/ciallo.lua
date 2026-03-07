@@ -31,6 +31,7 @@ ciallo:addEffect(fk.TurnStart, {
     local tos = event:getCostData(self).tos
     if tos == nil or #tos == 0 then return end
     room:doBroadcastNotify("ShowToast", "Ciallo ～ (∠・ω< ) ⌒ ☆")
+    player.room:setEmotion(player, "./packages/hidden-clouds/image/anim/ciallo")
     for _, t in ipairs(tos) do
       if not t:isWounded() then
         room:changeMaxHp(t, 1)

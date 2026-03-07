@@ -5,15 +5,18 @@ local skill = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_0721"] = "0721",
-  [":yyfy_0721"] = "限定技，出牌阶段你可以进行一次0721，根据得分摸等量的牌。"
-  .."你以此法摸到的牌无距离次数限制，若你得到了21分，此技能下回合视为未发动过。",
+  [":yyfy_0721"] = "限定技，出牌阶段你可以进行一次<a href = 'yyfy_0721_ganme'>0721</a>，"
+  .."每得到2分便摸1张牌。你以此法摸到的牌无距离次数限制，若你得到了21分，此技能下回合视为未发动过。",
 
   ["@@yyfy_0721"] = "0721",
+  ["yyfy_0721_ganme"] = "<br><b>0721</b>小游戏：<br><br>在3秒钟之内点击按钮尽可能多次！"..
+  "<br>每点击1次得1分，满分21分。",
   ["$yyfy_07211"] = "请收下我的贞洁吧！",
   ["$yyfy_07212"] = "请看看我的0721吧！"
 }
 
 skill:addEffect("active", {
+  mute = true,
   can_use = function (self, player)
     return player and player:hasSkill(skill.name) and player:usedSkillTimes(self.name, Player.HistoryGame) == 0
   end,
@@ -26,8 +29,10 @@ skill:addEffect("active", {
     local random = math.random(2)
     if random == 1 then
       player:chat("请收下我的贞洁吧！")
+      player:broadcastSkillInvoke(skill.name, 1)
     else
       player:chat("请看看我的0721吧！")
+      player:broadcastSkillInvoke(skill.name, 2)
     end
     -- 调用自定义对话框
     local result = room:askToCustomDialog(player, {
@@ -40,8 +45,8 @@ skill:addEffect("active", {
       count = result.count
     end
     if count > 0 then
-      room:doBroadcastNotify("ShowToast", player._splayer:getScreenName().."在5秒钟内0721了"..tostring(count).."次！！")
-      player:drawCards(count, skill.name, "top", "@@yyfy_0721")
+      room:doBroadcastNotify("ShowToast", player._splayer:getScreenName().."在3秒钟内0721了"..tostring(count).."次！！")
+      player:drawCards(math.floor(count / 2), skill.name, "top", "@@yyfy_0721")
     end
     if count == 21 then
       room:setPlayerMark(player, "@@yyfy_0721", 1)
