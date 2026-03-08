@@ -16,8 +16,11 @@ GraphicsBox {
   property string imagePath: ""
   property int clickCount: 0
   property int targetCount: 21
-  property int timeLeft: 5
+  property int timeLeft: 3
   property bool gameFinished: false
+  // 准备阶段相关属性
+  property int readyCountdown: 3
+  property bool readyPhase: true
 
   function loadData(data) {
     if (data && data.imagePath) {
@@ -25,11 +28,28 @@ GraphicsBox {
     }
   }
 
+  // 准备阶段倒计时定时器
+  Timer {
+    id: readyTimer
+    interval: 1000
+    repeat: true
+    running: readyPhase
+    onTriggered: {
+      readyCountdown -= 1
+      if (readyCountdown <= 0) {
+        readyPhase = false
+        readyTimer.stop()
+        timer.start()   // 开始游戏计时
+      }
+    }
+  }
+
+  // 游戏阶段计时器
   Timer {
     id: timer
     interval: 1000
     repeat: true
-    running: !gameFinished
+    running: !gameFinished && !readyPhase
     onTriggered: {
       timeLeft -= 1
       if (timeLeft <= 0 && !gameFinished) {
@@ -47,7 +67,7 @@ GraphicsBox {
   }
 
   onClickCountChanged: {
-    if (clickCount >= targetCount && !gameFinished) {
+    if (clickCount >= targetCount && !gameFinished && !readyPhase) {
       finishGame()
     }
   }
@@ -62,9 +82,9 @@ GraphicsBox {
   function closeAndReturn() {
     if (closeDelayTimer.running) closeDelayTimer.stop()
     timer.stop()
+    readyTimer.stop()
     roomScene.state = "notactive"
     ClientInstance.replyToServer("", { count: clickCount })
-    // 使用 Qt.callLater 延迟调用 close，确保上下文正确
     Qt.callLater(function() {
       root.close()
     })
@@ -73,7 +93,7 @@ GraphicsBox {
   Component.onCompleted: {
     x = (roomScene.width - width) / 2
     y = (roomScene.height - height) / 3
-    timer.start()
+    readyTimer.start()
   }
 
   ColumnLayout {
@@ -136,14 +156,23 @@ GraphicsBox {
       Layout.preferredWidth: 200
       Layout.preferredHeight: 200
       Layout.alignment: Qt.AlignHCenter
-      text: gameFinished ? "完成" : "点我"
+      // 按钮文字：准备阶段显示数字，游戏阶段显示“点我”或“完成”
+      text: {
+        if (gameFinished) return "完成"
+        if (readyPhase) return readyCountdown.toString()
+        return "点我"
+      }
       font.pixelSize: 40
       font.bold: true
       radius: width / 2
-      enabled: !gameFinished
+      enabled: !readyPhase && !gameFinished
       background: Rectangle {
         radius: parent.radius
-        color: gameFinished ? "#CCCCCC" : "#D8B4E2"
+        color: {
+          if (gameFinished) return "#CCCCCC"  // 结束后灰色
+          if (readyPhase) return "#66CCFF"   // 准备阶段蓝色
+          return "#D8B4E2" // 开始紫色
+        }
         border.color: "white"
         border.width: 4
       }
@@ -155,7 +184,7 @@ GraphicsBox {
         verticalAlignment: Text.AlignVCenter
       }
       onClicked: {
-        if (!gameFinished) {
+        if (!gameFinished && !readyPhase) {
           clickCount++
         }
       }
@@ -163,7 +192,7 @@ GraphicsBox {
 
     Text {
       Layout.alignment: Qt.AlignHCenter
-      text: "在5秒内尽可能点击按钮！达到21次自动结束。"
+      text: "在3秒内尽可能点击按钮！达到21次自动结束。"
       color: "white"
       font.pixelSize: 18
     }
