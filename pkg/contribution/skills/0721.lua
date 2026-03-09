@@ -9,6 +9,7 @@ Fk:loadTranslationTable{
   .."每得到2分便摸1张牌。你以此法摸到的牌无距离次数限制，若你得到了21分，此技能下回合视为未发动过。",
 
   ["@@yyfy_0721"] = "0721",
+  ["@@yyfy_0721-inhand"] = "0721",
   ["yyfy_0721_ganme"] = "<br><b>0721</b>小游戏：<br><br>在3秒钟之内点击按钮尽可能多次！"..
   "<br>每点击1次得1分，满分21分。",
   ["$yyfy_07211"] = "请收下我的贞洁吧！",
@@ -46,7 +47,7 @@ skill:addEffect("active", {
     end
     if count > 0 then
       room:doBroadcastNotify("ShowToast", player._splayer:getScreenName().."在3秒钟内0721了"..tostring(count).."次！！")
-      player:drawCards(math.floor(count / 2), skill.name, "top", "@@yyfy_0721")
+      player:drawCards(math.floor(count / 2), skill.name, "top", "@@yyfy_0721-inhand")
     end
     if count == 21 then
       room:setPlayerMark(player, "@@yyfy_0721", 1)
@@ -57,10 +58,10 @@ skill:addEffect("active", {
 skill:addEffect("targetmod", {
   bypass_times = function(self, player, skillObj, scope, card)
     return player and player:hasSkill(skill.name) and scope == Player.HistoryPhase and
-      card and card:getMark("@@yyfy_0721") > 0
+      card and card:getMark("@@yyfy_0721-inhand") > 0
   end,
   bypass_distances = function (self, player, skillObj, card, to)
-    return player and player:hasSkill(skill.name) and card and card:getMark("@@yyfy_0721") > 0
+    return player and player:hasSkill(skill.name) and card and card:getMark("@@yyfy_0721-inhand") > 0
   end
 })
 

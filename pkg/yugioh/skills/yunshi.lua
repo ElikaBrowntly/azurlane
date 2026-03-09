@@ -12,9 +12,11 @@ Fk:loadTranslationTable {
   ["@yyfy_yunshi-turn"] = "陨石",
   ["@@yyfy_yunshitoken"] = "已被砸",
   ["#yyfy_yunshi-invoke"] = "陨石：是否要令%dest将武将牌替换为陨石衍生物？",
-  ["yyfy_yunshi-details"] = "<b>陨石衍生物</b><br><b>守表 </b>你出场后的第一个自己回合结束前，"..
+  ["yyfy_yunshi-details"] = "<b>陨石衍生物 群 11/11</b><br><b>守表 </b>你出场后的第一个自己回合结束前，"..
   "不能使用伤害类牌。<br><br>若目标存在副将，将会移除其副将，将主将变更为陨石衍生物。"
 }
+
+local ok, U = pcall(require, "packages.offline.ofl_util")
 
 yunshi:addEffect(fk.AfterSkillEffect, {
   anim_type = "control",
@@ -41,10 +43,9 @@ yunshi:addEffect(fk.AfterSkillEffect, {
     room:setPlayerMark(to, "@@yyfy_yunshitoken", 1)
     room:notifySkillInvoked(player, yunshi.name, "big", {to})
     if to.deputyGeneral then
-      to.deputyGeneral = ""
+      room:removeDeputy(to, {})
     end
     room:changeHero(to, "yyfy_yunshitoken", false, false)
-    room:broadcastProperty(to, "deputyGeneral")
     room:addPlayerMark(player, "@yyfy_yunshi", 1)
     room:setPlayerMark(to, "@yyfy_yunshi-turn", 0)
   end
