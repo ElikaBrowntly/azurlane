@@ -366,6 +366,13 @@ yoshino3.total_hidden = true
 yoshino4.total_hidden = true
 yoshino5.total_hidden = true
 
+local AdamSmith = General:new(extension, "yyfy_AdamSmith", "west", 3)
+AdamSmith:addSkills {"yyfy_kanbujiandeshou"}
+Fk:loadTranslationTable{
+  ["yyfy_AdamSmith"] = "亚当·斯密",
+  ["#yyfy_AdamSmith"] = "古典经济学之父",
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
