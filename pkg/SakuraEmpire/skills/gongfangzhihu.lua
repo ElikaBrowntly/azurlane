@@ -80,7 +80,6 @@ skill:addEffect(fk.Death, {
 
 -- 转移伤害
 skill:addEffect(fk.DamageInflicted, {
-  global = true,
   can_trigger = function(self, event, target, player, data)
     if target == player then return false end
     

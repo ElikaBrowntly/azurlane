@@ -153,7 +153,8 @@ konggou:addEffect(fk.AskForCardUse, {
       end
     end
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local choice = event:getCostData(self).choice
     player.hp = 1
     player.room:broadcastProperty(player, "hp")

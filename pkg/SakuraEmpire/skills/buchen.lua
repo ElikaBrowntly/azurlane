@@ -20,7 +20,8 @@ buchen:addEffect(fk.DetermineDamageInflicted, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     if math.random() < 0.25 then
       data:preventDamage()
     else
@@ -33,7 +34,8 @@ buchen:addEffect(fk.BeforeHpChanged, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and data.num < 0 and player.hp + data.num <= 0
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local room = player.room
     data.prevented = true
     data.preventDying = true
@@ -64,7 +66,8 @@ buchen:addEffect(fk.DetermineDamageInflicted, {
     return target == player and player:hasSkill(self) and
     (player:getMark("@@yyfy_buchen-turn") > 0 or player:getMark("@yyfy_buchen") > 0)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     data:preventDamage()
   end
 })
@@ -75,7 +78,8 @@ buchen:addEffect(fk.BeforeHpChanged, {
     return target == player and player:hasSkill(self) and data.num < 0
     and player:getMark("@yyfy_buchen") > 0
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     data.prevented = true
     data.preventDying = true
   end

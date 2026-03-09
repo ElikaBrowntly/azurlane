@@ -16,7 +16,8 @@ yuansu:addEffect(fk.TargetSpecified, {
     return data.from and data.from == player and player:hasSkill(self) and data.to ~= player
     and data.card and table.contains({"fire__slash", "thunder__slash", "fire_attack"}, data.card.name)
   end,
-  on_trigger = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     player.room:setPlayerMark(data.to, "@@yyfy_yuansu", 1)
   end,
 })
@@ -32,7 +33,8 @@ yuansu:addEffect(fk.SkillEffect, {
       return true
     end
   end,
-  on_trigger = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     local room = player.room
     local e = room.logic:getCurrentEvent():findParent(GameEvent.SkillEffect)
     if e then
@@ -58,7 +60,8 @@ yuansu:addEffect(fk.CardUseFinished, {
       end
     end
   end,
-  on_trigger = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     for _, to in ipairs(data.tos) do
       if to:getMark("@@yyfy_yuansu") > 0 then
         player.room:setPlayerMark(to, "@@yyfy_yuansu", 0)

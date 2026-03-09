@@ -167,7 +167,7 @@ qianlong:addEffect(fk.Damaged or fk.Damage, {
 
 --战功：大魏君王
 qianlong:addEffect(fk.GameFinished, {
-  global = true,
+  --global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
     return player:getMark("lan__qianlong-achievements") >= 3 and ok

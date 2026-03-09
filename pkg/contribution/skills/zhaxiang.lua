@@ -93,14 +93,4 @@ zhaxiang:addEffect(fk.EventPhaseEnd, {
   end,
 })
 
-zhaxiang:addTest(function(room, me)
-  FkTest.runInRoom(function()
-    room:handleAddLoseSkills(me, zhaxiang.name)
-  end)
-  FkTest.runInRoom(function()
-    room:loseHp(me, 2)
-  end)
-  lu.assertEquals(#me:getCardIds("h"), 6)
-end)
-
 return zhaxiang

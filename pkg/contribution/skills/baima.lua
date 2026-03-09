@@ -21,7 +21,7 @@ baima:addEffect(fk.DamageFinished, {
     })
   end,
   on_use = function(self, event, target, player, data)
-      player.room:damage{
+    player.room:damage{
       from = player,
       to = data.from,
       damage = data.damage,

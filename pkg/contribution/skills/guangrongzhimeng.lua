@@ -41,7 +41,8 @@ guangrongzhimeng:addEffect(fk.AfterPropertyChange, {
       end
     end
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local room = player.room
     local choices = event:getCostData(self).choices ---@type string[]
     if table.contains(choices, "其他角色获得你一个技能") then
@@ -113,7 +114,8 @@ guangrongzhimeng:addEffect(fk.Death, {
       return true
     end
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.room:killPlayer({
       who = event:getCostData(self).tos[1],
       killer = player

@@ -5,12 +5,26 @@ local ok, CS = pcall(require, "packages.coins-system.csfs")
 
 Fk:loadTranslationTable{
   ["yyfy_kanbujiandeshou"] = "看不见的手",
-  [":yyfy_kanbujiandeshou"] = "每天限一次，<a href = 'yyfy_kanbujiandeshou-gamemode'>游戏结束</a>后，你获得5%的已拥有金币。",
+  [":yyfy_kanbujiandeshou"] = "每天限一次，<a href = 'yyfy_kanbujiandeshou-gamemode'>"..
+  "游戏结束</a>后，你获得5%的已拥有金币。",
   ["$yyfy_kanbujiandeshou"] = "叮~",
-  ["yyfy_kanbujiandeshou-gamemode"] = "除了“机关造物”和“后浪模式”以外，不允许存在人机。"
+  ["yyfy_kanbujiandeshou-gamemode"] = "除了白名单模式以外，不允许存在人机。<br>白名单模式：机关造物，"..
+  "后浪模式，虎牢关1v3，虎牢关2022，虎牢关炼狱。<br><br><br><font color='blue'><i>&nbsp;&nbsp;"..
+  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的晚餐并非来自屠宰商、酿酒师和面包师的恩惠，而是来自"..
+  "他们对自身利益的关切。<div style = 'text-align:right;'>———亚当·斯密《国富论》</div></i></font>"
 }
 
 if not ok then return shou end
+
+local function whitelist(room)
+  local list = {"houlang_mode", "jiguanzaowu_mode", "m_1v3_mode", "hx__1v3_mode", "hulaoguan"}
+  for _, mode in ipairs(list) do
+    if room:isGameMode(mode) then
+      return true
+    end
+  end
+  return false
+end
 
 shou:addEffect(fk.GameFinished, {
   priority = 0.0001,
@@ -25,7 +39,7 @@ shou:addEffect(fk.GameFinished, {
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
-    if not (room:isGameMode("houlang_mode") or room:isGameMode("jiguanzaowu_mode")) then
+    if not whitelist(room) then
       for _, p in ipairs(room:getAllPlayers()) do
         if p.id < 0 then
           room:doBroadcastNotify("ShowToast", "由于存在人机，看不见的手无法获得金币。")

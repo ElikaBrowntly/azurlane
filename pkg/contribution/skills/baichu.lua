@@ -45,7 +45,7 @@ baichu:addEffect(fk.CardUseFinished, {
 
 --战功：十二奇策
 baichu:addEffect(fk.GameFinished, {
-  global = true,
+  --global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
     return player:getMark("lan__baichu-achievements") >= 12 and ok
