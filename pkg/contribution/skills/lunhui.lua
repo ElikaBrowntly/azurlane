@@ -31,7 +31,8 @@ lunhui:addEffect(fk.BeforeGameOverJudge, {
       and #player.tag["yyfy_shengling"] == 0
      end
     end,
-  on_trigger = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     local room = player.room
     room:setTag("SkipGameRule", true)
     room:revivePlayer(player, true, lunhui.name)

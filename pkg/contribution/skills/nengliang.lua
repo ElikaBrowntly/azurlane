@@ -31,7 +31,8 @@ nengliang:addEffect(fk.DetermineDamageCaused, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self) and target == player
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     data.damage = #player.player_skills
   end
 })
@@ -45,7 +46,8 @@ nengliang:addEffect(fk.DamageInflicted, {
     player.tag[nengliang.name] = n + 1
     return true
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.room:damage({
       from = player,
       to = data.from,

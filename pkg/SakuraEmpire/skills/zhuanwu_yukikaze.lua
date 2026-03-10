@@ -18,7 +18,8 @@ zhuanwu:addEffect(fk.Damage, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and data.card and data.card.trueName == "slash"
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.room:setPlayerMark(data.to, "@yyfy_jinshui", 10)
   end
 })

@@ -20,7 +20,8 @@ xuwu:addEffect(fk.Damaged, {
   can_trigger = function (self, event, target, player, data)
     return player and target == player and player:hasSkill(self)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.room.logic:breakTurn()
   end
 })
@@ -32,7 +33,8 @@ xuwu:addEffect(fk.AfterPropertyChange, {
     and (table.contains(all_generals, data.general) or
     data.deputyGeneral and table.contains(all_generals, data.deputyGeneral))
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local room = player.room
     local skills = player.tag["yyfy_puni_jicheng"]
     if type(skills) ~= "table" then

@@ -14,7 +14,8 @@ yongheng:addEffect(fk.AfterCardsMove, {
   can_trigger = function(self, event, target, player, data)
     return player:hasSkill(self) and player:getHandcardNum() < player.maxHp
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local num = player.maxHp - player:getHandcardNum()
     if num > 0 then
       player:drawCards(num, yongheng.name)
@@ -27,7 +28,8 @@ yongheng:addEffect(fk.MaxHpChanged, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and data.num > 0
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local room = player.room
     local to = room:askToChoosePlayers(player, {
       targets = room:getAlivePlayers(),

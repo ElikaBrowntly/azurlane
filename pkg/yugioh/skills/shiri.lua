@@ -142,7 +142,8 @@ shiri:addEffect(fk.SkillEffect, {
     return target and player and player:hasSkill(self, true, true) and target:getMark("@@yyfy_shiri") > 0
     and data.skill:isPlayerSkill(target) and target:hasSkill(data.skill:getSkeleton().name, true, true)
   end,
-  on_trigger = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     local room = player.room
     local e = room.logic:getCurrentEvent():findParent(GameEvent.SkillEffect)
     if e then

@@ -50,7 +50,8 @@ shengjie:addEffect(fk.EventLoseSkill, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self, true, true) and target == player
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.room:handleAddLoseSkills(player, data.skill.name, nil, false, true)
   end
 })
@@ -61,7 +62,8 @@ shengjie:addEffect(fk.BeforeTurnOver, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and player.faceup
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     data.prevented = true
   end
 })
@@ -71,7 +73,8 @@ shengjie:addEffect(fk.BeforeChainStateChange, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(self) and not player.chained
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     data.prevented = true
   end
 })
@@ -121,7 +124,8 @@ shengjie:addEffect(fk.SkillEffect, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local marks = player:getMarkNames()
     for _, mark in ipairs(marks) do
       player.room:setPlayerMark(player, mark, 0)

@@ -32,7 +32,8 @@ fengyin:addEffect(fk.GameStart, {
     return player and player:hasSkill(self) and
     (player.general == "yyfy_shenglingpuni" or player.deputyGeneral == "yyfy_shenglingpuni")
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     player.tag['yyfy_puni'] = 1 -- 共鸣技
     local room = player.room
     local i = 1
@@ -80,7 +81,8 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     return player and player:hasSkill(self, true, true) and player.tag['yyfy_puni'] > 0
     and target == player
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local room = player.room
     if #player.tag["yyfy_shengling"] == 0 then
       room:setTag("SkipGameRule", nil)

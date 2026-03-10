@@ -82,7 +82,7 @@ duorui:addEffect(fk.Damage, {
 
 --战功：闻风丧胆
 duorui:addEffect(fk.GameFinished, {
-  global = true,
+  --global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
     return player:getMark("exgod_zhangliao-achievements") >= 5 and ok-- 至少获得了5个技能

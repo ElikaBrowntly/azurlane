@@ -38,7 +38,8 @@ luofangtianhua:addEffect(fk.GameStart, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     getFusu(player)
   end
 })
@@ -47,7 +48,8 @@ luofangtianhua:addEffect(fk.RoundStart, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self)
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     getFusu(player)
   end
 })
@@ -56,7 +58,8 @@ luofangtianhua:addEffect(fk.TurnStart, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self) and target == player
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     getFusu(player)
   end
 })

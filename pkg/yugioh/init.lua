@@ -35,4 +35,21 @@ Fk:loadTranslationTable{
   ["designer:yyfy_zhenhongyanlongqishi"] = "牢天师（Ark）"
 }
 
+local yunshi = General:new(extension, "yyfy_yuanshishengmingtai", "qun", 11)
+yunshi:addSkill("yyfy_yunshi")
+Fk:loadTranslationTable{
+  ["yyfy_yuanshishengmingtai"] = "原始生命态",
+  ["#yyfy_yuanshishengmingtai"] = "5步了是吧",
+  ["designer:yyfy_yuanshishengmingtai"] = "夜隐浮云，孤星似梦"
+}
+
+local yunshitoken = General:new(extension, "yyfy_yunshitoken", "qun", 11)
+yunshitoken:addSkill("yyfy_shoubiao")
+Fk:loadTranslationTable{
+  ["yyfy_yunshitoken"] = "陨石衍生物",
+  ["#yyfy_yunshitoken"] = "衍生物杀人事件",
+  ["designer:yyfy_yunshitoken"] = "夜隐浮云，孤星似梦"
+}
+yunshitoken.hidden = true
+
 return extension

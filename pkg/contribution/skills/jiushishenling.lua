@@ -50,7 +50,8 @@ jiushishenling:addEffect(fk.Death, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self, true) and target ~= player
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     doFuhuo(player)
   end
 })

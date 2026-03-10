@@ -31,7 +31,8 @@ fusu:addEffect(fk.SkillEffect, {
       return true
     end
   end,
-  on_trigger = function (self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
     local targets = event:getCostData(self).tos
     local to
     local room = player.room
