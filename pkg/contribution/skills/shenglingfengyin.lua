@@ -63,13 +63,30 @@ fengyin:addEffect(fk.GameStart, {
       end
     end
 
+    local skills_snapshot = {}
+    for _, s in ipairs(player.player_skills) do
+      table.insert(skills_snapshot, s)
+    end
+    player.tag["yyfy_puni_jicheng"] = skills_snapshot
+    
     local isDeputy = false
-    if player.deputyGeneral == "yyfy_shenglingpuni" then
+    if table.contains(all_generals, player.deputyGeneral) then
       isDeputy = true
     end
     table.removeOne(generals, choice)
     player.tag["yyfy_shengling"] = generals
+    if #generals == 0 then
+      room:doBroadcastNotify("ShowToast", "请注意，这是最后一张圣灵谱尼武将牌了......")
+    end
     room:changeHero(player, choice, true, isDeputy)
+
+    -- 继承所有技能
+    for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do
+      print(s.name)
+      if not player:hasSkill(s, true, true) then
+        room:handleAddLoseSkills(player, s.name, fengyin.name)
+      end
+    end
   end
 })
 
@@ -126,6 +143,7 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
 
     -- 继承所有技能
     for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do
+      print(s.name)
       if not player:hasSkill(s, true, true) then
         room:handleAddLoseSkills(player, s.name, fengyin.name)
       end
