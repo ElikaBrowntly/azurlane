@@ -47,6 +47,7 @@ shengjie:addEffect(fk.EventAcquireSkill, {
 -- 到此为止，实现了无法被失效
 
 shengjie:addEffect(fk.EventLoseSkill, {
+  is_delay_effect = true,
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self, true, true) and target == player
   end,
@@ -122,7 +123,11 @@ shengjie:addEffect(fk.EventPhaseSkipping, {
 -- 清楚所有标记
 shengjie:addEffect(fk.SkillEffect, {
   can_trigger = function (self, event, target, player, data)
-    return player and player:hasSkill(self)
+    if player and player:hasSkill(self) and (player.tag[shengjie.name] or 0) < 20 then
+      local n = player.tag[shengjie.name] or 0
+      player.tag[shengjie.name] = n + 1
+      return true
+    end
   end,
   on_cost = Util.TrueFunc,
   on_use = function (self, event, target, player, data)

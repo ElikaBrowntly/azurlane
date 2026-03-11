@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
 
   ["#lan__fangzhu-choose"] = "放逐：请选择一名其他角色",
   ["#lan__fangzhu-type"] = "放逐：请选择一种牌类型",
-  ["@@lan__fangzhu_nullify"] = "放逐 技能失效",
+  ["@@lan__fangzhu_nullify"] = "技能失效",
 
   ["@@lan__fangzhu_basic"] = "放逐 限基本",
   ["@@lan__fangzhu_trick"] = "放逐 限锦囊",
@@ -47,20 +47,22 @@ lan__fangzhu:addEffect("active", {
       choices = choices,
       skill_name = self.name,
       prompt = "#lan__fangzhu-type",
+      cancelable = true
     })
+    if choice == true then
+      return false
+    end
     
-    -- 设置技能失效标记
     room:setPlayerMark(to, "@@lan__fangzhu_nullify", 1)
+    room:setPlayerMark(to, choice, 1)
     
-    -- 翻面
     to:turnOver()
     
     -- 弃置所有手牌
     if not to:isKongcheng() then
       room:throwCard(to:getCardIds("h"), self.name, to, to)
     end
-    
-    -- 失去一点体力
+
     room:loseHp(to, 1, self.name)
   end,
 })
@@ -99,20 +101,22 @@ lan__fangzhu:addEffect(fk.Damaged, {
       choices = choices,
       skill_name = self.name,
       prompt = "#lan__fangzhu-type",
+    cancelable = true
     })
+    if choice == true then
+      return false
+    end
     
-    -- 设置技能失效标记
     room:setPlayerMark(to, "@@lan__fangzhu_nullify", 1)
+    room:setPlayerMark(to, choice, 1)
     
-    -- 翻面
     to:turnOver()
     
     -- 弃置所有手牌
     if not to:isKongcheng() then
       room:throwCard(to:getCardIds("h"), self.name, to, to)
     end
-    
-    -- 失去一点体力
+
     room:loseHp(to, 1, self.name)
   end,
 })
@@ -139,22 +143,22 @@ lan__fangzhu:addEffect(fk.TurnEnd, {
 -- 限牌型
 lan__fangzhu:addEffect("prohibit", {
   prohibit_use = function(self, player, card) 
-    if player:getMark("@@lan__fangzhu_basic") > 0 then -- 基本牌
-      return card.type ~= Card.TypeBasic
-    elseif player:getMark("@@lan__fangzhu_trick") > 0 then -- 锦囊牌
-      return card.type ~= Card.TypeTrick
-    elseif player:getMark("@@lan__fangzhu_equip") > 0 then -- 装备牌
-      return card.type ~= Card.TypeEquip
+    if card.type == Card.TypeBasic then -- 基本牌
+      return player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+    elseif card.type == Card.TypeTrick then -- 锦囊牌
+      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+    elseif card.type == Card.TypeEquip then -- 装备牌
+      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
     end
     return false
   end,
   prohibit_response = function(self, player, card)
-        if player:getMark("@@lan__fangzhu_basic") > 0 then -- 基本牌
-      return card.type ~= Card.TypeBasic
-    elseif player:getMark("@@lan__fangzhu_trick") > 0 then -- 锦囊牌
-      return card.type ~= Card.TypeTrick
-    elseif player:getMark("@@lan__fangzhu_equip") > 0 then -- 装备牌
-      return card.type ~= Card.TypeEquip
+    if card.type == Card.TypeBasic then -- 基本牌
+      return player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+    elseif card.type == Card.TypeTrick then -- 锦囊牌
+      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+    elseif card.type == Card.TypeEquip then -- 装备牌
+      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
     end
     return false
   end,

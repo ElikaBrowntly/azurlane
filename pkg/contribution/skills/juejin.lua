@@ -14,11 +14,12 @@ Fk:loadTranslationTable{
   ["$lan__juejin2"] = "朕安可坐受废辱，今日当与卿自出讨之！",
 }
 
+-- 桃酒
 lan__juejin:addEffect(fk.CardUsing, {
   can_trigger = function(self, event, target, player, data)
     local cardName = data.card.trueName
     return player and player:hasSkill(self.name) and target ~= player and
-           (cardName == "jink" or cardName == "peach" or cardName == "analeptic")
+           (cardName == "peach" or cardName == "analeptic")
   end,
   on_cost = function(self, event, target, player, data)    
     return player.room:askToSkillInvoke(player, {
@@ -36,6 +37,21 @@ lan__juejin:addEffect(fk.CardUsing, {
     }
     data.nullifiedTargets = room:getAlivePlayers()
     return true
+  end,
+})
+
+lan__juejin:addEffect(fk.CardEffectCancelledOut, {
+  can_trigger = function(self, event, target, player, data)
+    return player:hasSkill(lan__juejin.name) and data.card.trueName == "slash" and not data.to.dead
+  end,
+  on_cost = function(self, event, target, player, data)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = lan__juejin.name,
+      prompt = "决进：是否令【闪】的使用无效？",
+    })
+  end,
+  on_use = function(self, event, target, player, data)
+    data.isCancellOut = false
   end,
 })
 
