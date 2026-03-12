@@ -65,7 +65,9 @@ fengyin:addEffect(fk.GameStart, {
 
     local skills_snapshot = {}
     for _, s in ipairs(player.player_skills) do
-      table.insert(skills_snapshot, s)
+      if s:isPlayerSkill(player) then
+        table.insert(skills_snapshot, s)
+      end
     end
     player.tag["yyfy_puni_jicheng"] = skills_snapshot
     
@@ -108,7 +110,9 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     room:setTag("SkipGameRule", true)
     local skills_snapshot = {}
     for _, s in ipairs(player.player_skills) do
-      table.insert(skills_snapshot, s)
+      if s:isPlayerSkill(player) then
+        table.insert(skills_snapshot, s)
+      end
     end
     player.tag["yyfy_puni_jicheng"] = skills_snapshot
     room:revivePlayer(player, false)

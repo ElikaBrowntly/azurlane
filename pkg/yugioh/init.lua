@@ -52,4 +52,12 @@ Fk:loadTranslationTable{
 }
 yunshitoken.hidden = true
 
+local dacaoreshe = General:new(extension, "yyfy_dacaoreshe", "evil", 4)
+dacaoreshe:addSkill("yyfy_dacao")
+Fk:loadTranslationTable{
+  ["yyfy_dacaoreshe"] = "打草惹蛇",
+  ["#yyfy_dacaoreshe"] = "炸自己没用哦",
+  ["designer:yyfy_dacaoreshe"] = "夜隐浮云，孤星似梦"
+}
+
 return extension
