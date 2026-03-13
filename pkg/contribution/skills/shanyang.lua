@@ -35,18 +35,35 @@ shanyang:addEffect(fk.SkillEffect, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local to = event:getCostData(self).tos[1]
+    local players = room:getAlivePlayers()
+    local targets = {}
+    for _, p in ipairs(players) do
+      if p:getMark("yyfy_shanyang-autoAgree") == 0 then
+        table.insertIfNeed(targets, p)
+      end
+    end
     local choices = room:askToJointChoice(player, {
-      players = room:getAlivePlayers(),
-      choices = {"yyfy_shanyang_agree", "yyfy_shanyang_disagree"},
+      players = targets,
+      choices = {"yyfy_shanyang_agree", "yyfy_shanyang_disagree", "自动同意此发动者"},
       prompt = "山羊："..tostring(player.seat).."号位想要令"..tostring(to.seat).."号位失去体力，你同意吗？"
     })
     local agreeCount = 0
     for _, p in ipairs(room:getAlivePlayers()) do
-      if choices[p] == "yyfy_shanyang_agree" then
-        room:notifySkillInvoked(p, choices[p], "support")
+      local autoAgree = p:getTableMark("yyfy_shanyang-autoAgree")
+      if table.contains(autoAgree, player.id) then
+        room:notifySkillInvoked(p, "yyfy_shanyang_agree", "support")
         agreeCount = agreeCount + 1
       else
-        room:notifySkillInvoked(p, choices[p], "negative")
+        if choices[p] == "yyfy_shanyang_agree" then
+          room:notifySkillInvoked(p, choices[p], "support")
+          agreeCount = agreeCount + 1
+        elseif choices[p] == "yyfy_shanyang_disagree" then
+          room:notifySkillInvoked(p, choices[p], "negative")
+        else
+          room:addTableMark(p, "yyfy_shanyang-autoAgree", player.id)
+          room:notifySkillInvoked(p, "yyfy_shanyang_agree", "support")
+          agreeCount = agreeCount + 1
+        end
       end
     end
     -- 失去体力
