@@ -6,13 +6,15 @@ local yyfy_fangkong = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_fangkong"] = "防空",
-  [":yyfy_fangkong"] = "锁定技，你成为其他角色使用牌的目标后，若其至你的距离大于1，你可令此牌无效。",
+  [":yyfy_fangkong"] = "锁定技，其他角色与你的距离+X（X为友方角色数）。你成为其他角色使用牌的目标后，若其至你的距离大于1，你可令此牌无效。",
   
   ["#yyfy_fangkong-ask"] = "防空：是否令此牌无效？",
   ["#yyfy_fangkong-invalid"] = "%from 发动「防空」，使 %arg 无效",
   ["$yyfy_fangkong1"] = "这是爱的一击哦！",
   ["$yyfy_fangkong2"] = "啊疼疼疼！……但是，为了亲爱的，我是不会输的！",
 }
+
+local F = require("packages.hidden-clouds.functions")
 
 yyfy_fangkong:addEffect(fk.TargetConfirmed, {
   on_cost = function(self, event, target, player, data)
@@ -31,8 +33,15 @@ yyfy_fangkong:addEffect(fk.TargetConfirmed, {
       from = player.id,
       arg = data.card:toLogString(),
     }
-    
     return true
+  end,
+})
+
+yyfy_fangkong:addEffect("distance", {
+  correct_func = function(self, from, to)
+    if to:hasSkill(self.name) then
+      return F.teammatesNum(to, Fk:currentRoom())
+    end
   end,
 })
 

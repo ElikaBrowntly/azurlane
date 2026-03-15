@@ -21,25 +21,29 @@ yunshi:addEffect(fk.AfterSkillEffect, {
   is_delay_effect = true,
   can_trigger = function (self, event, target, player, data)
     local to = data.who
-    return player and player:hasSkill(self.name) and to ~= player and to and to:isAlive()
+    if player and player:hasSkill(self.name) and to ~= player and to and to:isAlive()
     and player:getMark("@yyfy_yunshi") < 3 and to:getMark("@@yyfy_yunshitoken") == 0
-    and to:getMark("yyfy_yunshi_nomore-turn") == 0
+    and to:getMark("yyfy_yunshi_nomore-turn") == 0 and table.contains(to:getSkillNameList(), data.skill.name)then
+      player.room:addPlayerMark(to, "@yyfy_yunshi-turn", 1)
+      return to:getMark("@yyfy_yunshi-turn") >= 5
+    end
   end,
-  on_cost = Util.TrueFunc,
-  on_use = function (self, event, target, player, data)
+  on_cost = function (self, event, target, player, data)
     local room = player.room
     local to = data.who
-    room:addPlayerMark(to, "@yyfy_yunshi-turn", 1)
-    if to:getMark("@yyfy_yunshi-turn") < 5 then
-      return false
-    end
     if not room:askToSkillInvoke(player, {
       skill_name = yunshi.name,
       prompt = "#yyfy_yunshi-invoke::"..to.id
     }) then
       room:setPlayerMark(to, "yyfy_yunshi_nomore-turn", 1)
       return false
+    else
+      return true
     end
+  end,
+  on_use = function (self, event, target, player, data)
+    local room = player.room
+    local to = data.who
     room:setPlayerMark(to, "@@yyfy_yunshitoken", 1)
     room:notifySkillInvoked(player, yunshi.name, "big", {to})
     if to.deputyGeneral then
@@ -49,6 +53,14 @@ yunshi:addEffect(fk.AfterSkillEffect, {
     room:addPlayerMark(player, "@yyfy_yunshi", 1)
     room:setPlayerMark(to, "@yyfy_yunshi-turn", 0)
   end
+})
+
+yunshi:addAI(Fk.Ltk.AI.newInvokeStrategy{
+  think = function (self, ai)
+    local player = ai.player
+    local data = ai.room.logic:getCurrentEvent().data
+    return data and data.who and ai:isEnemy(data.who)
+  end,
 })
 
 return yunshi

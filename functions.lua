@@ -9,7 +9,7 @@ function functions.isEnemy(from, to)
   
   if from.role == "lord" or from.role == "loyalist" then
     return (to.role ~= "lord" and to.role ~= "loyalist")
-  elseif from.role == "rebel" then
+  elseif from.role == "rebel" then -- 反贼没必要敌视内奸
     return (to.role == "lord" or to.role == "loyalist")
   elseif from.role == "renegade" then
     return true -- 内奸视所有其他角色为敌人
@@ -18,6 +18,19 @@ function functions.isEnemy(from, to)
   return false -- 默认不是敌人
 end
 
+--- 获取 player 的存活队友数量
+---@param player Player|ServerPlayer 主视角
+---@param room Room|AbstractRoom 所在房间
+---@return integer --队友数量
+function functions.teammatesNum(player, room)
+  local count = 0
+  for _, p in ipairs(room.alive_players) do
+    if not (functions.isEnemy(p, player) or p.role == "renegade" or player.role == "renegade") then
+      count = count + 1
+    end
+  end
+  return count
+end
 -- 从技能名提取卡牌名的泛用函数
 -- 支持以下格式：
 -- 1. 装备技能直接返回关联装备，确保正确
