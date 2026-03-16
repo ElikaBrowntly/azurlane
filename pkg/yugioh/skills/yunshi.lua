@@ -57,7 +57,6 @@ yunshi:addEffect(fk.AfterSkillEffect, {
 
 yunshi:addAI(Fk.Ltk.AI.newInvokeStrategy{
   think = function (self, ai)
-    local player = ai.player
     local data = ai.room.logic:getCurrentEvent().data
     return data and data.who and ai:isEnemy(data.who)
   end,

@@ -90,7 +90,7 @@ qianlong:addEffect(fk.GameStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local num = 20
-    if player:hasSkill("lan__weitong") and table.find(room.alive_players, function(p)
+    if player:hasSkill("lan__weitong") and player.role == "lord" and table.find(room.alive_players, function(p)
       return p ~= player and p.kingdom == "wei"
     end)
     then
