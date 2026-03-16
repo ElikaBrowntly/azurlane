@@ -371,6 +371,15 @@ AdamSmith:addSkills {"yyfy_kanbujiandeshou"}
 Fk:loadTranslationTable{
   ["yyfy_AdamSmith"] = "亚当·斯密",
   ["#yyfy_AdamSmith"] = "古典经济学之父",
+  ["designer:yyfy_AdamSmith"] = "夜隐浮云，孤星似梦"
+}
+
+local maoyidawang = General:new(extension, "yyfy_maoyidawang", "qun", 3)
+maoyidawang:addSkills {"yyfy_market"}
+Fk:loadTranslationTable{
+  ["yyfy_maoyidawang"] = "贸易大王",
+  ["#yyfy_maoyidawang"] = "",
+  ["designer:yyfy_maoyidawang"] = "曹宪咬我"
 }
 
 Fk:loadTranslationTable {

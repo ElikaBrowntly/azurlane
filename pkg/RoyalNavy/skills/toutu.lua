@@ -48,7 +48,8 @@ yyfy_toutu:addEffect("active", {
     
     -- 随机获得每种图纸0~1张
     for _, markType in ipairs(MARK_TYPES) do
-      if math.random() < 0.5 then
+      if math.random() < 0.5 or markType == "caichuan"
+      and player:getMark("yyfy_toutu-shouchou") == 0 then
         local markName = "@yyfy_toutu_" .. markType
         room:addPlayerMark(player, markName, 1)
         table.insert(obtained, markType)
@@ -66,9 +67,10 @@ yyfy_toutu:addEffect("active", {
     
     -- 彩船
     if table.contains(obtained, "caichuan") and not player:hasSkill("yyfy_caichuan")
-    or player:usedSkillTimes(self.name, Player.HistoryGame) <= 1 then
+    or player:getMark("yyfy_toutu-shouchou") == 0 then
       room:handleAddLoseSkills(player, "yyfy_caichuan", yyfy_toutu.name, true, true)
     end
+    room:addPlayerMark(player, "yyfy_toutu-shouchou")
   end,
 })
 

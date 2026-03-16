@@ -1,7 +1,6 @@
 local yyfy_fangkong = fk.CreateSkill{
   name = "yyfy_fangkong",
   tags = {Skill.Compulsory},
-  anim_type = "defensive",
 }
 
 Fk:loadTranslationTable{
@@ -17,6 +16,7 @@ Fk:loadTranslationTable{
 local F = require("packages.hidden-clouds.functions")
 
 yyfy_fangkong:addEffect(fk.TargetConfirmed, {
+  anim_type = "defensive",
   on_cost = function(self, event, target, player, data)
     if data.from == player then return false end
     if data.from:distanceTo(player) <= 1 then return false end
