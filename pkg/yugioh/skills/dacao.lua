@@ -51,7 +51,9 @@ dacao:addEffect(fk.Damaged, {
       local inputReq = Request:new(player, "CustomDialog")
       inputReq:setData(player, {
         path = "packages/hidden-clouds/qml/InputSearch.qml",
-        data = {},
+        data = {
+          num = #generalNames
+        },
       })
       inputReq:setDefaultReply(player, "")
       local input = inputReq:getResult(player)

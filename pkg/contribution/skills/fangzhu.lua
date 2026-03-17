@@ -144,21 +144,21 @@ lan__fangzhu:addEffect(fk.TurnEnd, {
 lan__fangzhu:addEffect("prohibit", {
   prohibit_use = function(self, player, card) 
     if card.type == Card.TypeBasic then -- 基本牌
-      return player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0)
     elseif card.type == Card.TypeTrick then -- 锦囊牌
-      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0)
     elseif card.type == Card.TypeEquip then -- 装备牌
-      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_trick") == 0)
     end
     return false
   end,
   prohibit_response = function(self, player, card)
     if card.type == Card.TypeBasic then -- 基本牌
-      return player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0)
     elseif card.type == Card.TypeTrick then -- 锦囊牌
-      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0)
     elseif card.type == Card.TypeEquip then -- 装备牌
-      return player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_equip") == 0
+      return not (player:getMark("@@lan__fangzhu_basic") == 0 and player:getMark("@@lan__fangzhu_trick") == 0)
     end
     return false
   end,

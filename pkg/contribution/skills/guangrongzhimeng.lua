@@ -46,11 +46,7 @@ guangrongzhimeng:addEffect(fk.AfterPropertyChange, {
     local room = player.room
     local choices = event:getCostData(self).choices ---@type string[]
     if table.contains(choices, "其他角色获得你一个技能") then
-      local skills = player.player_skills
-      local names = {}
-      for _, skill in ipairs(skills) do
-        table.insert(names, skill.name)
-      end
+      local names = player:getSkillNameList()
       local to = room:askToChoosePlayers(player, {
         targets = room:getAlivePlayers(),
         min_num = 1,

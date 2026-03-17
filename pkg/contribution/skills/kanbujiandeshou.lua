@@ -1,6 +1,7 @@
 local shou = fk.CreateSkill {
   name = "yyfy_kanbujiandeshou",
 }
+
 local ok, CS = pcall(require, "packages.coins-system.csfs")
 
 Fk:loadTranslationTable {
