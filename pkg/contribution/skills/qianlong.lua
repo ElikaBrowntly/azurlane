@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   "50点-<a href=':lan__qingzheng'>〖清正〗</a>；60点-<a href=':lan__jiushi'>〖酒诗〗</a>；"..
   "70点-<a href=':lan__fangzhu'>〖放逐〗</a>；80点-<a href=':lan__huituo'>〖恢拓〗</a>；"..
   "90点-<a href=':zhimin'>〖置民〗</a>；100点-<a href=':lan__juejin'>〖决进〗</a>。"..
-  "当你获得以上所有技能后，每造成或受到伤害共计2次，则随机获得一个<a href='lord_of_wei'>大胃菌王</a>技能。",
+  "当你获得以上所有技能后，每造成或受到伤害共计2次，则选择一个<a href='lord_of_wei'>大胃菌王</a>技能获得。",
 
   ["@lan__qianlong_daoxin"] = "道心值",
 
@@ -32,6 +32,12 @@ Fk:loadTranslationTable{
   ["$lan__qianlong5"] = "权臣震主，竟视天子于无物！",
   ["$lan__qianlong6"] = "朕行之决矣！正使死又何惧？",
 }
+
+local wei_lord_skills = {"lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
+"lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
+"lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
+"lan__jiangchi", "mingjian", "lan__zhaotu", "jingju"}
+
 -- 由于道心值变化而动态获得技能的函数
 local function daoxin_handle_skills(player)
     local room = player.room
@@ -99,6 +105,9 @@ qianlong:addEffect(fk.GameStart, {
       room:notifySkillInvoked(player, "weitong", "support")
     end
     ChangeDaoxin(player, num)
+    for _, skill in ipairs(wei_lord_skills) do
+      room:addTableMark(player, "lan__qianlong_skills", skill)
+    end
   end,
 })
 
@@ -137,18 +146,41 @@ qianlong:addEffect(fk.AfterCardsMove, {
   end,
 })
 
-local wei_lord_skills = {"lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
-"lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
-"lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
-"lan__jiangchi", "mingjian", "lan__zhaotu", "jingju"}
--- 获得大魏君王的技能
+--- 获得大魏君王的技能
+--- @param player ServerPlayer
 local function get_wei_lord_skills(player)
-  local randomIndex = math.random(#wei_lord_skills) -- 获取一个随机索引
-  local removedSkill = table.remove(wei_lord_skills, randomIndex)
-  player.room:handleAddLoseSkills(player, removedSkill)
+  local room = player.room
+  local result = room:askToCustomDialog(player, {
+    skill_name = qianlong.name,
+    qml_path = "packages/utility/qml/ChooseSkillBox.qml",
+    extra_data = { player:getTableMark("lan__qianlong_skills"), 1, 1, "潜龙：请选择一个大胃菌王技能获得" }
+  })
+  if result == "" then return end
+  if type(result) == "table" then
+    result = result[1]
+  end
+  room:removeTableMark(player, "lan__qianlong_skills", result)
+  player.room:handleAddLoseSkills(player, result)
 end
 
-qianlong:addEffect(fk.Damaged or fk.Damage, {
+qianlong:addEffect(fk.Damaged, {
+  can_trigger = function (self, event, target, player, data)
+    return target == player and player:hasSkill(qianlong.name) and
+    player:getMark("@lan__qianlong_daoxin") == 100 and #wei_lord_skills > 0
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    room:addPlayerMark(player, "lan__qianlong__weilord")
+    if player:getMark("lan__qianlong__weilord") == 2 then
+      get_wei_lord_skills(player)
+      room:addPlayerMark(player, "lan__qianlong-achievements") -- 用于统计战功
+      room:setPlayerMark(player, "lan__qianlong__weilord", 0)
+    end
+  end,
+})
+
+qianlong:addEffect(fk.Damage, {
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(qianlong.name) and
     player:getMark("@lan__qianlong_daoxin") == 100 and #wei_lord_skills > 0

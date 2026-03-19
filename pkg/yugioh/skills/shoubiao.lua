@@ -4,7 +4,7 @@ local shoubiao = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_shoubiao"] = "守表",
-  [":yyfy_shoubiao"] = "你出场后的第一个自己回合结束前，不能使用伤害类牌。",
+  [":yyfy_shoubiao"] = "你登场后的第一个自己回合结束前，不能使用伤害类牌。",
 
   ["@@yyfy_shoubiao"] = "守备表示"
 }
