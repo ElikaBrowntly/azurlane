@@ -4,7 +4,7 @@ local yyfy_duanti = fk.CreateSkill {
   anim_type = "support",
 }
 
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["yyfy_duanti"] = "锻体",
@@ -15,6 +15,12 @@ Fk:loadTranslationTable{
   ["$yyfy_duanti2"] = "兽长于野，餐风露，循作息，无病以扰。",
 }
 
+--- 执行锻体效果
+---@param self any
+---@param event any
+---@param target any
+---@param player ServerPlayer
+---@param data any
 local function handleDuantiEffect(self, event, target, player, data)
   local room = player.room
   
@@ -25,8 +31,6 @@ local function handleDuantiEffect(self, event, target, player, data)
       num = 1,
       skillName = self.name,
     }
-    
-    
   else
     -- 阴状态
     room:changeMaxHp(player, 1)
@@ -37,8 +41,10 @@ local function handleDuantiEffect(self, event, target, player, data)
     if yangCount >= 5 and not player:hasSkill("wuling") then
       room:handleAddLoseSkills(player, "wuling")
       -- 计入战功进度
-      if ok then
-        D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_1", 3)
+      local save = player:getGlobalSaveState("glory_days_Achieve")
+      local saveAchieve = save["医脉相承"] or {}
+      if saveAchieve == {} or not saveAchieve.num or saveAchieve.num == 0 then
+        room:addPlayerMark(player, "yyfy_duanti_achievement")
       end
     end
   end
@@ -58,6 +64,17 @@ yyfy_duanti:addEffect(fk.CardRespondFinished, {
     return target == player and player:hasSkill(self.name)
   end,
   on_use = handleDuantiEffect,
+})
+
+--战功：医脉相承
+yyfy_duanti:addEffect(fk.GameFinished, {
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    return player:getMark("yyfy_duanti_achievement") > 0
+  end,
+  on_refresh = function(self, event, target, player, data)
+    F.addAchievement(player.room, nil, nil, nil, "医脉相承", nil, nil, {player}, false, "夜隐浮云")
+  end
 })
 
 return yyfy_duanti

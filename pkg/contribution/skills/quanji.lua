@@ -3,7 +3,7 @@ local quanji = fk.CreateSkill {
   derived_piles = "lan__zhonghui_quan",
 }
 
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["lan__quanji"] = "权计",
@@ -78,20 +78,13 @@ quanji:addEffect("maxcards", {
 
 --战功：今日起兵
 quanji:addEffect(fk.GameFinished, {
-  global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    return player:getMark("lan__quanji-achievements") >= 3 and ok
+    local winners = data:split("+")
+    return player:getMark("lan__quanji-achievements") >= 3 and table.contains(winners, player.role)
   end,
   on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    local players = room.players
-    local winners = data:split("+")
-    for _, p in ipairs(players) do
-      if table.contains(winners, p.role) and ok then
-        D.updateAchievement(room, p, "lan__zhonghui", "lan__zhonghui_1", 3)
-      end
-    end
+    F.addAchievement(player.room, nil, nil, nil, "今日起兵", nil, nil, {player}, false, "夜隐浮云")
   end
 })
 

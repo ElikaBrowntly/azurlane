@@ -2,7 +2,7 @@ local luochong = fk.CreateSkill{
   name = "lan__luochong",
 }
 
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["lan__luochong"] = "落宠",
@@ -30,6 +30,9 @@ Fk:loadTranslationTable{
   ["$lan__luochong6"] = "西宫夜静百花香，欲卷珠帘春恨长。"
 }
 
+--- 触发落宠
+---@param player ServerPlayer
+---@param event any
 local function triggerLuochong(player, event)
   local room = player.room
   local usedOptions = {}
@@ -96,7 +99,6 @@ local function triggerLuochong(player, event)
       end)
       
       if #validTargets == 0 then
-        room:sendlog("没有有效目标")
         table.remove(usedOptions)
         goto continue
       end
@@ -165,14 +167,18 @@ local function triggerLuochong(player, event)
         end)
         
         if #cardIds == 0 then
-          room:sendMessage(target.general .. "没有可弃置的牌")
           goto discard_continue
         end
         
-        local discardCard = room:askForCardChosen(player, target, "hej", luochong.name, false, "#lan__luochong-discard-card")
+        local discardCard = room:askToChooseCard(player, {
+          target = target,
+          flag = "hej",
+          skill_name = luochong.name,
+          prompt = "#lan__luochong-discard-card"
+        })
         if discardCard < 0 then break end
 
-        room:throwCard({discardCard}, luochong.name, target, player)
+        room:throwCard(discardCard, luochong.name, target, player)
         discardCount = discardCount + 1
         count = count + 1
 
@@ -186,9 +192,17 @@ local function triggerLuochong(player, event)
     if #choices <= 1 then
       break
     end
+    print(count)
     -- 计入战功进度
-    if count == 7 and ok then
-      D.updateAchievement(room, player, "lan__tengfanglan", "lan__tengfanglan_1", 3)
+    if count == 7 then
+      local save = player:getGlobalSaveState("hidden-clouds")
+      local achieve = save["lan__luochong_achievement"] or {}
+      local total = achieve.achieved_count or 0
+      if total < 3 then
+        achieve.achieved_count = total + 1
+        save["lan__luochong_achievement"] = achieve
+        player:saveGlobalState("hidden-clouds", save)
+      end
     end
   end
 end
@@ -228,6 +242,25 @@ luochong:addEffect(fk.RoundStart, {
   on_use = function(self, event, target, player, data)
     triggerLuochong(player, event)
   end,
+})
+
+--战功：一时之宠
+luochong:addEffect(fk.GameFinished, {
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    local temp = player:getGlobalSaveState("hidden-clouds")
+    local tempAchieve = temp["lan__luochong_achievement"] or {}
+    local save = player:getGlobalSaveState("glory_days_Achieve")
+    local saveAchieve = save["一时之宠"] or {}
+    return tempAchieve.achieved_count == 3 and --hidden-clouds存档满三，向战功存档进一，不可重复
+    (saveAchieve == {} or not saveAchieve.num or saveAchieve.num == 0)
+  end,
+  on_refresh = function(self, event, target, player, data)
+    F.addAchievement(player.room, nil, nil, nil, "一时之宠", nil, nil, {player}, false, "夜隐浮云")
+    local temp = player:getGlobalSaveState("hidden-clouds")
+    temp["lan__luochong_achievement"] = nil -- 清空hidden-clouds的落宠存档
+    player:saveGlobalState("hidden-clouds", temp)
+  end
 })
 
 return luochong

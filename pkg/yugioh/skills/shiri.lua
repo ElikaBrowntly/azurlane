@@ -278,4 +278,62 @@ shiri:addEffect(fk.SkillEffect, {
   end,
 })
 
+-- shiri:addAI({
+--   class = Fk.Ltk.AI.InvokeStrategy.class,
+--   skill_name = shiri.name,
+--   think = function (self, ai)
+--     local data = ai.room.logic:getCurrentEvent().data
+--     local player = ai.player
+--     local room = player.room
+--     local min = 5
+--     for _, p in ipairs(room:getOtherPlayers(player)) do
+--       if ai:isEnemy(p) and not p:isAllNude() then
+--         min = 4
+--       end
+--     end
+--     local cards , benefit = ai:askToChooseCards({
+--       cards = player:getCardIds("he"),
+--       skill_name = shiri.name,
+--       data = {
+--         min = min,
+--         max = 5,
+--         to_place = Card.DiscardPile,
+--         reason = fk.ReasonDiscard,
+--         proposer = player
+--       }
+--     })
+--     return {cards} , benefit
+--   end,
+--   think_card_chosen = function(self, ai, target, flag, prompt)
+--     local ret, benefit = ai:askToChooseCards({
+--       cards = target:getCardIds("he"),
+--       skill_name = self.skill.name,
+--       min = 1,
+--       max = 1,
+--       data = {
+--         to_place = Card.DiscardPile,
+--         reason = fk.ReasonDiscard,
+--         proposer = ai.player,
+--       },
+--     })
+--     return ret[1], benefit
+--   end,
+-- })
+
+-- shiri:addAI({
+--   class = Fk.Ltk.AI.InvokeStrategy.class,
+--   skill_name = shiri.name,
+--   think = function (self, ai)
+--     local player = ai.player
+--     local room = player.room
+--     local targets = {}
+--     for _, p in ipairs(room:getOtherPlayers(player)) do
+--       if ai:isEnemy(p) then
+--         table.insert(targets, p)
+--       end
+--     end
+--     return {targets}, #targets
+--   end
+-- })
+
 return shiri
