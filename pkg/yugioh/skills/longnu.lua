@@ -126,4 +126,20 @@ longnu:addEffect(fk.EventTurnChanging, {
   end
 })
 
+longnu:addAI(Fk.Ltk.AI.newInvokeStrategy{
+  think = function (self, ai)
+    local data = ai.room.logic:getCurrentEvent().data
+    return data and data.who and ai:isEnemy(data.who)
+  end,
+})
+
+longnu:addAI(Fk.Ltk.AI.newDiscardStrategy{
+  choose_cards = function (self, ai)
+    local player = ai.player
+    local cards = player:getCardIds("he")
+    local card = cards[math.random(#cards)]
+    return {card}, 10000
+  end,
+})
+
 return longnu

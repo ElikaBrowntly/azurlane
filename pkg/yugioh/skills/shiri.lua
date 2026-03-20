@@ -278,11 +278,8 @@ shiri:addEffect(fk.SkillEffect, {
   end,
 })
 
--- shiri:addAI({
---   class = Fk.Ltk.AI.InvokeStrategy.class,
---   skill_name = shiri.name,
---   think = function (self, ai)
---     local data = ai.room.logic:getCurrentEvent().data
+-- shiri:addAI(Fk.Ltk.AI.newInvokeStrategy{
+--   think = function(self, ai)
 --     local player = ai.player
 --     local room = player.room
 --     local min = 5
@@ -291,49 +288,67 @@ shiri:addEffect(fk.SkillEffect, {
 --         min = 4
 --       end
 --     end
---     local cards , benefit = ai:askToChooseCards({
---       cards = player:getCardIds("he"),
---       skill_name = shiri.name,
---       data = {
---         min = min,
---         max = 5,
---         to_place = Card.DiscardPile,
---         reason = fk.ReasonDiscard,
---         proposer = player
---       }
---     })
---     return {cards} , benefit
+--     print("触发AI")
+--     -- local cards , benefit = ai:askToChooseCards({
+--     --   cards = player:getCardIds("he"),
+--     --   skill_name = shiri.name,
+--     --   data = {
+--     --     min = min,
+--     --     max = 4,
+--     --     to_place = Card.DiscardPile,
+--     --     reason = fk.ReasonDiscard,
+--     --     proposer = player
+--     --   }
+--     -- })
+--     return true
 --   end,
---   think_card_chosen = function(self, ai, target, flag, prompt)
---     local ret, benefit = ai:askToChooseCards({
---       cards = target:getCardIds("he"),
---       skill_name = self.skill.name,
---       min = 1,
---       max = 1,
---       data = {
---         to_place = Card.DiscardPile,
---         reason = fk.ReasonDiscard,
---         proposer = ai.player,
---       },
---     })
---     return ret[1], benefit
---   end,
+--   -- think_card_chosen = function(self, ai, target, flag, prompt)
+--   --   local ret, benefit = ai:askToChooseCards({
+--   --     cards = target:getCardIds("he"),
+--   --     skill_name = shiri.name,
+--   --     min = 1,
+--   --     max = 1,
+--   --     data = {
+--   --       to_place = Card.DiscardPile,
+--   --       reason = fk.ReasonDiscard,
+--   --       proposer = ai.player,
+--   --     },
+--   --   })
+--   --   return ret[1], 2
+--   -- end,
 -- })
 
--- shiri:addAI({
---   class = Fk.Ltk.AI.InvokeStrategy.class,
---   skill_name = shiri.name,
---   think = function (self, ai)
---     local player = ai.player
---     local room = player.room
---     local targets = {}
---     for _, p in ipairs(room:getOtherPlayers(player)) do
---       if ai:isEnemy(p) then
---         table.insert(targets, p)
---       end
---     end
---     return {targets}, #targets
---   end
--- })
+shiri:addAI(Fk.Ltk.AI.newChoosePlayersStrategy{
+  choose_cards = function (self, ai)
+    return {}, 0
+  end,
+  choose_players = function (self, ai)
+    local player = ai.player
+    local targets = {}
+    for _, p in ipairs(player.room:getOtherPlayers(player)) do
+      if ai:isEnemy(p) then
+        table.insert(targets, p)
+      end
+    end
+    return targets
+  end
+})
 
+shiri:addAI(Fk.Ltk.AI.newInvokeStrategy{
+  think = Util.TrueFunc
+})
+
+shiri:addAI(Fk.Ltk.AI.newCardsStrategy{
+  choose_cards = function (self, ai)
+    local cards = ai.player:getCardIds("he")
+    if #cards < 5 then return {}, 0 end
+    local selected = {}
+    for _, c in ipairs(cards) do
+      table.insert(selected, c)
+      if #selected == 5 then
+        return selected , 10000
+      end
+    end
+  end,
+})
 return shiri

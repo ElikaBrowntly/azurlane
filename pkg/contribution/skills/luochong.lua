@@ -192,7 +192,6 @@ local function triggerLuochong(player, event)
     if #choices <= 1 then
       break
     end
-    print(count)
     -- 计入战功进度
     if count == 7 then
       local save = player:getGlobalSaveState("hidden-clouds")
