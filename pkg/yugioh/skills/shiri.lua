@@ -1,13 +1,13 @@
 local shiri = fk.CreateSkill {
   name = "yyfy_shiri",
   anim_type = "control",
-  tags = {Skill.Permanent}
+  tags = { Skill.Permanent }
 }
 
 Fk:loadTranslationTable {
   ["yyfy_shiri"] = "蚀日",
-  [":yyfy_shiri"] = "持恒技，每局游戏限3次，出牌阶段，你可以弃置5张牌（其中1张可以来自其他角色），"..
-  "令任意名其他角色本局游戏中不能发动其武将牌上的技能。" ,
+  [":yyfy_shiri"] = "持恒技，你登场时或出牌阶段，你可以弃置5张牌（其中1张可以来自其他角色），" ..
+      "令任意名其他角色本局游戏中不能发动其武将牌上的技能。每局游戏限3次。",
 
   ["@@yyfy_shiri"] = "蚀日",
   ["$yyfy_shiri"] = ""
@@ -23,22 +23,195 @@ local skills_after_death = {
   "Luaputi", "emo__guangguang", "emo__xinyang"
 }
 
+---执行蚀日的函数
+---@param player ServerPlayer
+---@return any
+local function doShiri(player)
+  local room = player.room
+  room:doSuperLightBox("packages/hidden-clouds/qml/shiri.qml")
+  player:broadcastSkillInvoke(shiri.name)
+  local targets = room:getOtherPlayers(player, false, false)
+  if #targets == 0 then return false end
+  targets = room:askToChoosePlayers(player, {
+    targets = targets,
+    min_num = 1,
+    max_num = 999,
+    skill_name = shiri.name,
+    prompt = "蚀日：请选择任意名其他角色，这些角色无法再发动技能"
+  })
+  for _, t in ipairs(targets) do
+    room:addPlayerMark(t, "@@yyfy_shiri")
+    for _, skill in ipairs(t.player_skills) do
+      if skill:isPlayerSkill(t, true) then
+        skill.skeleton.max_game_use_time = 0
+        skill.times = 0
+        if skill.skeleton.max_branches_use_time ~= nil then
+          -- 如果是函数，获取其返回值
+          local branch_times = skill.skeleton.max_branches_use_time
+          if type(branch_times) == "function" then
+            branch_times = branch_times(skill.skeleton, t)
+          end
+          -- 遍历并修改分支次数
+          if branch_times and type(branch_times) == "table" then
+            for branch_name, times_table in pairs(branch_times) do
+              if times_table and type(times_table) == "table" then
+                for history_type, max_times in pairs(times_table) do
+                  times_table[history_type] = 0
+                end
+              end
+            end
+            -- 重新赋值
+            skill.skeleton.max_branches_use_time = branch_times
+          end
+        end
+      end
+      t:addSkillUseHistory(skill.name, 9999999999999999999999999)
+      t:addSkillBranchUseHistory(skill.name, "", 9999999999999999999999999)
+      if t:hasSkill(skill.name) then
+        room:handleAddLoseSkills(t, "-" .. skill.name, nil, false, true)
+      end
+    end
+    -- 对神人技能重拳出击
+    for _, s in ipairs(skills_after_death) do
+      if t:hasSkill(s, true, true) then
+        room:handleAddLoseSkills(t, "-" .. s, nil, false, true)
+      end
+    end
+  end
+end
+
+shiri:addEffect(fk.GameStart, {
+  mute = true,
+  priority = 2,
+  can_trigger = function(self, event, target, player, data)
+    return player and player:hasSkill(self, true, true) and #player:getCardIds("he") >= 4
+    and (player.general == "yyfy_UnderworldGoddess" or player.deputyGeneral == "yyfy_UnderworldGoddess")
+  end,
+  on_cost = function(self, event, target, player, data)
+    local room = player.room
+    local min = 5
+    for _, p in ipairs(room:getOtherPlayers(player, false, false)) do
+      if not p:isAllNude() then
+        min = 4
+        break
+      end
+    end
+    local cards = room:askToCards(player, {
+      min_num = min,
+      max_num = 5,
+      skill_name = shiri.name,
+      cancelable = true
+    })
+    if #cards == 0 then return false end
+    if #cards == 5 then
+      room:throwCard(cards, shiri.name, player, player)
+      return true
+    end
+    local targets = {}
+    for _, t in ipairs(room:getOtherPlayers(player, false, false)) do
+      if not t:isNude() then
+        table.insert(targets, t)
+      end
+    end
+    local to = room:askToChoosePlayers(player, {
+      targets = targets,
+      min_num = 1,
+      max_num = 1,
+      skill_name = shiri.name,
+      prompt = "蚀日：请选择一名角色，弃置其一张牌作为代替",
+      cancelable = true
+    })
+    if #to == 0 then return false end
+    local plus = room:askToChooseCard(player, {
+      target = to[1],
+      flag = "he",
+      skill_name = shiri.name,
+      prompt = "蚀日：请弃置该角色的一张牌作为代替"
+    })
+    room:throwCard(cards, shiri.name, player, player)
+    room:throwCard(plus, shiri.name, to[1], player)
+    return true
+  end,
+  on_use = function(self, event, target, player, data)
+    doShiri(player)
+  end
+})
+
+shiri:addEffect(fk.AfterPropertyChange, {
+  mute = true,
+  priority = 2,
+  can_trigger = function(self, event, target, player, data)
+    return player and target == player and player:hasSkill(self, true, true) and #player:getCardIds("he") >= 4
+    and (data.general == "yyfy_UnderworldGoddess" or data.deputyGeneral == "yyfy_UnderworldGoddess")
+  end,
+  on_cost = function(self, event, target, player, data)
+    local room = player.room
+    local min = 5
+    for _, p in ipairs(room:getOtherPlayers(player, false, false)) do
+      if not p:isAllNude() then
+        min = 4
+        break
+      end
+    end
+    local cards = room:askToCards(player, {
+      min_num = min,
+      max_num = 5,
+      skill_name = shiri.name,
+      cancelable = true
+    })
+    if #cards == 0 then return false end
+    if #cards == 5 then
+      room:throwCard(cards, shiri.name, player, player)
+      return true
+    end
+    local targets = {}
+    for _, t in ipairs(room:getOtherPlayers(player, false, false)) do
+      if not t:isNude() then
+        table.insert(targets, t)
+      end
+    end
+    local to = room:askToChoosePlayers(player, {
+      targets = targets,
+      min_num = 1,
+      max_num = 1,
+      skill_name = shiri.name,
+      prompt = "蚀日：请选择一名角色，弃置其一张牌作为代替",
+      cancelable = true
+    })
+    if #to == 0 then return false end
+    local plus = room:askToChooseCard(player, {
+      target = to[1],
+      flag = "he",
+      skill_name = shiri.name,
+      prompt = "蚀日：请弃置该角色的一张牌作为代替"
+    })
+    room:throwCard(cards, shiri.name, player, player)
+    room:throwCard(plus, shiri.name, to[1], player)
+    return true
+  end,
+  on_use = function(self, event, target, player, data)
+    doShiri(player)
+  end
+})
+
 shiri:addEffect("active", {
   mute = true,
   max_game_use_time = 3,
-  can_use = function (self, player)
+  can_use = function(self, player)
     if not (player and player:isAlive() and player:hasSkill(self.name) and
-      Fk:currentRoom():getCurrent() == player and player.phase == Player.Play) then return false end
+          Fk:currentRoom():getCurrent() == player and player.phase == Player.Play) then
+      return false
+    end
     return #player:getCardIds("he") >= 4
   end,
-  card_filter = function (self, player, to_select, selected, selected_targets)
+  card_filter = function(self, player, to_select, selected, selected_targets)
     return #selected <= 4
   end,
-  feasible = function (self, player, selected, selected_cards, card)
+  feasible = function(self, player, selected, selected_cards, card)
     return #selected_cards == 4 or #selected_cards == 5
   end,
   prompt = "蚀日：请弃置4~5张牌",
-  on_cost = function (self, player, data, extra_data)
+  on_cost = function(self, player, data, extra_data)
     local room = player.room
     local dis = data.cards
     if #dis == 0 then return nil end
@@ -56,7 +229,8 @@ shiri:addEffect("active", {
         min_num = 1,
         max_num = 1,
         skill_name = shiri.name,
-        prompt = "蚀日：请选择一名角色，弃置其一张牌作为代替"
+        prompt = "蚀日：请选择一名角色，弃置其一张牌作为代替",
+        cancelable = true
       })
       if #target == 0 then return nil end
       local plus = room:askToChooseCard(player, {
@@ -73,60 +247,11 @@ shiri:addEffect("active", {
     room:throwCard(dis, shiri.name, player, player)
     return { cards = dis }
   end,
-  on_use = function (self, room, skillUseEvent)
+  on_use = function(self, room, skillUseEvent)
     if skillUseEvent.cost_data == nil then return false end
     if not skillUseEvent.cost_data.cards or #skillUseEvent.cost_data.cards ~= 5 then return false end
-    room:doSuperLightBox("packages/hidden-clouds/qml/shiri.qml")
     local player = skillUseEvent.from
-    player:broadcastSkillInvoke(shiri.name)
-    local targets = room:getOtherPlayers(player, false, false)
-    if #targets == 0 then return false end
-    targets = room:askToChoosePlayers(player, {
-      targets = targets,
-      min_num = 1,
-      max_num = 999,
-      skill_name = shiri.name,
-      prompt = "蚀日：请选择任意名其他角色，这些角色无法再发动技能"
-    })
-    for _, t in ipairs(targets) do
-      room:addPlayerMark(t, "@@yyfy_shiri")
-      for _, skill in ipairs(t.player_skills) do
-        if skill:isPlayerSkill(t, true) then
-          skill.skeleton.max_game_use_time = 0
-          skill.times = 0
-          if skill.skeleton.max_branches_use_time ~= nil then
-          -- 如果是函数，获取其返回值
-            local branch_times = skill.skeleton.max_branches_use_time
-              if type(branch_times) == "function" then
-                branch_times = branch_times(skill.skeleton, t)
-              end
-            -- 遍历并修改分支次数
-            if branch_times and type(branch_times) == "table" then
-              for branch_name, times_table in pairs(branch_times) do
-                if times_table and type(times_table) == "table" then
-                  for history_type, max_times in pairs(times_table) do
-                    times_table[history_type] = 0
-                  end
-                end
-              end
-              -- 重新赋值
-              skill.skeleton.max_branches_use_time = branch_times
-            end
-          end
-        end
-        t:addSkillUseHistory(skill.name, 9999999999999999999999999)
-        t:addSkillBranchUseHistory(skill.name, "", 9999999999999999999999999)
-        if t:hasSkill(skill.name) then
-          room:handleAddLoseSkills(t, "-"..skill.name, nil, false, true)
-        end
-      end
-      -- 对神人技能重拳出击
-      for _, s in ipairs(skills_after_death) do
-        if t:hasSkill(s, true, true) then
-          room:handleAddLoseSkills(t, "-"..s, nil, false, true)
-        end
-      end
-    end
+    doShiri(player)
   end
 })
 
@@ -138,9 +263,10 @@ shiri:addEffect("invalidity", {
 
 shiri:addEffect(fk.SkillEffect, {
   anim_type = "control",
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return target and player and player:hasSkill(self, true, true) and target:getMark("@@yyfy_shiri") > 0
-    and data.skill:isPlayerSkill(target) and target:hasSkill(data.skill:getSkeleton().name, true, true)
+        and data.skill:isPlayerSkill(target) and target:hasSkill(data.skill:getSkeleton().name, true, true)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
