@@ -6,7 +6,7 @@ local dacao = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["yyfy_dacao"] = "打草",
   [":yyfy_dacao"] = "持恒技，你受到其他角色的伤害后，可以变更为全扩任意武将并保留当前技能。" ..
-    "累计使用3次后，你失去此技能。",
+      "累计使用3次后，你失去此技能。",
 
   ["@yyfy_dacao"] = "打草"
 }
@@ -45,66 +45,68 @@ dacao:addEffect(fk.Damaged, {
 
     if #generalNames == 0 then return end
 
-    -- -- 如果武将数量太多（>100），先让玩家输入搜索词过滤
-    -- local finalGenerals = generalNames
-    -- if #generalNames > 100 then
-    --   local inputReq = Request:new(player, "CustomDialog")
-    --   inputReq:setData(player, {
-    --     path = "packages/hidden-clouds/qml/InputSearch.qml",
-    --     data = {
-    --       num = #generalNames
-    --     },
-    --   })
-    --   inputReq:setDefaultReply(player, "")
-    --   local input = inputReq:getResult(player)
-    --   if input == nil or input == "" then
-    --     return -- 取消或未输入，结束技能
-    --   end
-    --   local keyword = input:lower()
-    --   local filtered = {}
-    --   for _, gen in ipairs(generalNames) do
-    --     local translated = Fk:translate(gen):lower()
-    --     if translated:find(keyword, 1, true) then
-    --       table.insert(filtered, gen)
-    --     end
-    --   end
-    --   if #filtered == 0 then
-    --     room:doBroadcastNotify("ShowToast", "打草惹蛇：没有符合宣言的武将")
-    --     return
-    --   end
-    --   finalGenerals = filtered
-    -- end
-
-    -- -- 弹出武将选择对话框
-    -- local req = Request:new(player, "CustomDialog")
-    -- req:setData(player, {
-    --   path = "packages/hidden-clouds/qml/GeneralChoice.qml",
-    --   data = {
-    --     generals = finalGenerals,
-    --     freeAssign = true
-    --   },
-    -- })
-    -- req:setDefaultReply(player, "")
-    -- local choice = req:getResult(player)
-    -- if choice == nil or choice == "" then
-    --   return -- 取消选择
-    -- end
-    player.room.settings._mode.enableFreeAssign = true
-    player.room.settings._game.enableFreeAssign = true
-    local sum = #generalNames
-    local randomNames = {}
-    if #generalNames > 16 then
-      while #randomNames < 16 do
-        local index = math.random(sum)
-        local one = table.remove(generalNames, index)
-        table.insertIfNeed(randomNames, one)
+    local choice
+    if room:getSettings('enableFreeAssign') then
+      local sum = #generalNames
+      local randomNames = {}
+      if #generalNames > 16 then
+        while #randomNames < 16 do
+          local index = math.random(sum)
+          local one = table.remove(generalNames, index)
+          table.insertIfNeed(randomNames, one)
+        end
+      else
+        randomNames = generalNames
       end
+      choice = room:askToChooseGeneral(player, {
+        generals = randomNames,
+      })
     else
-      randomNames = generalNames
+      -- 如果武将数量太多（>100），先让玩家输入搜索词过滤
+      local finalGenerals = generalNames
+      if #generalNames > 100 then
+        local inputReq = Request:new(player, "CustomDialog")
+        inputReq:setData(player, {
+          path = "packages/hidden-clouds/qml/InputSearch.qml",
+          data = {
+            num = #generalNames
+          },
+        })
+        inputReq:setDefaultReply(player, "")
+        local input = inputReq:getResult(player)
+        if input == nil or input == "" then
+          return -- 取消或未输入，结束技能
+        end
+        local keyword = input:lower()
+        local filtered = {}
+        for _, gen in ipairs(generalNames) do
+          local translated = Fk:translate(gen):lower()
+          if translated:find(keyword, 1, true) then
+            table.insert(filtered, gen)
+          end
+        end
+        if #filtered == 0 then
+          room:doBroadcastNotify("ShowToast", "打草惹蛇：没有符合宣言的武将")
+          return
+        end
+        finalGenerals = filtered
+      end
+
+      -- 弹出武将选择对话框
+      local req = Request:new(player, "CustomDialog")
+      req:setData(player, {
+        path = "packages/hidden-clouds/qml/GeneralChoice.qml",
+        data = {
+          generals = finalGenerals,
+          freeAssign = true
+        },
+      })
+      req:setDefaultReply(player, "")
+      choice = req:getResult(player)
+      if choice == nil or choice == "" then
+        return -- 取消选择
+      end
     end
-    local choice = room:askToChooseGeneral(player, {
-      generals = randomNames,
-    })
     -- 换将
     local isDeputy = false
     if player.deputyGeneral == "yyfy_dacaoreshe" then
