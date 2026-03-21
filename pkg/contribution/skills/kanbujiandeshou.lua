@@ -2,7 +2,7 @@ local shou = fk.CreateSkill {
   name = "yyfy_kanbujiandeshou",
 }
 
-local ok, CS = pcall(require, "packages.coins-system.csfs")
+local ok, CS = pcall(require, "packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_kanbujiandeshou"] = "看不见的手",
@@ -67,7 +67,8 @@ shou:addEffect(fk.GameFinished, {
     save.last_date = os.date("%Y-%m-%d")
     --仅存储一个 last_date 字段，记录最后一次触发日期。如果当天已触发则跳过。
     state["yyfy_kanbujiandeshou"] = save
-    player:saveGlobalState("yyfy_kanbujiandeshou", state)
+    player:saveGlobalState("hidden-clouds", state)
+    player:saveGlobalState("yyfy_kanbujiandeshou", {})
   end
 })
 

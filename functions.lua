@@ -172,4 +172,50 @@ function functions.addAchievement(room, type, width, height, title, context, img
   }, viewPlayers)
 end
 
+---获取金币数据
+---@param player ServerPlayer|TaskPlayer @ 玩家
+---@param task? boolean @ 是否判断taskplayer
+---@return table @ 数据
+function functions.GetcoinsData(player, task)
+  if player.id < 0 then return { gold = 0 } end
+  local globalData = player:getGlobalSaveState("CS_System_Data") or {}
+  if next(globalData) == nil then
+    local data = player:getGlobalSaveState("DR_System_Data") or {}
+    globalData.gold = data.gold and data.gold or 0
+    globalData.todayReward = 0
+    globalData.history = {}
+    player:saveGlobalState("CS_System_Data", globalData)
+  end
+  return globalData
+end
+
+--- 改变玩家金币
+--- @param player ServerPlayer|TaskPlayer @ 玩家
+--- @param num integer @ 变更值
+--- @param task? boolean @ 是否判断taskplayer
+--- @return integer @ 返回改变后的金币
+function functions.ChangePlayerMoney(player, num, task)
+  if player.id < 0 then return 0 end
+  num = num or 0
+  local globalData = player:getGlobalSaveState("CS_System_Data") or {}
+  if next(globalData) == nil then
+    local data = player:getGlobalSaveState("DR_System_Data") or {}
+    globalData.gold = data.gold and data.gold or 0
+  end
+  globalData.gold = globalData.gold + num
+  if num ~= 0 then
+    player:saveGlobalState("CS_System_Data", globalData)
+    if not task then
+      player.room:sendLog {
+        type = "#CS_gold_Change_Log",
+        arg = player._splayer:getScreenName(),
+        arg2 = num > 0 and "获得" or "失去",
+        arg3 = math.abs(num),
+        toast = true,
+      }
+    end
+  end
+  return globalData.gold
+end
+
 return functions

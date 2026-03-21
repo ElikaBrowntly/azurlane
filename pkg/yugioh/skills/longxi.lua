@@ -26,4 +26,25 @@ longxi:addEffect("active", {
   end
 })
 
+longxi:addAI(Fk.Ltk.AI.newActiveStrategy{
+  think = function (self, ai)
+    local player = ai.player
+    local targets = {}
+    local lowest = nil
+    local line = 99999
+    for _, p in ipairs(player.room:getOtherPlayers(player)) do
+      if ai:isEnemy(p) then
+        table.insert(targets, p)
+        if p.hp <= line then
+          lowest = p
+          line = p.hp
+        end
+      end
+    end
+    if #targets == 0 then return {}, 0 end
+    if not lowest then return {{}, {targets[1]}, nil}, 6 end
+    return {{}, {lowest}, nil}, 6 -- 可以加伤和集火残血，比一滴血的收益要高一些
+  end
+})
+
 return longxi

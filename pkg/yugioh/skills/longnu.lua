@@ -38,7 +38,7 @@ longnu:addEffect(fk.SkillEffect, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local e = room.logic:getCurrentEvent():findParent(GameEvent.SkillEffect)
+    local e = room.logic:getCurrentEvent():findParent(GameEvent.SkillEffect, false)
     local skill = data.skill:getSkeleton()
     local name
     if skill == nil then
@@ -138,6 +138,19 @@ longnu:addAI(Fk.Ltk.AI.newDiscardStrategy{
     local player = ai.player
     local cards = player:getCardIds("he")
     local card = cards[math.random(#cards)]
+    local data = ai.room.logic:getCurrentEvent().data
+    if not (data and data.who and ai:isEnemy(data.who)) then
+      return {}, 0
+    end
+    cards = ai:askToChooseCards({
+      cards = cards,
+      skill_name = longnu.name,
+      data = {
+        to_place = Card.DiscardPile,
+        reason = fk.ReasonDiscard,
+        proposer = player
+      }
+    })
     return {card}, 10000
   end,
 })

@@ -11,6 +11,14 @@ Fk:loadTranslationTable{
   ["designer:yyfy_zengzhideG"] = "夜隐浮云，孤星似梦",
 }
 
+local duoduomibao = General:new(extension, "yyfy_duoduomibao", "qun", 4)
+duoduomibao:addSkill("yyfy_shanque")
+Fk:loadTranslationTable{
+  ["yyfy_duoduomibao"] = "多多迷宝",
+  ["#yyfy_duoduomibao"] = "鸟G",
+  ["designer:yyfy_duoduomibao"] = "夜隐浮云，孤星似梦",
+}
+
 local huiliuli = General:new(extension, "yyfy_huiliuli", "evil", 3, 3, General.Female)
 huiliuli:addSkill("yyfy_hui")
 Fk:loadTranslationTable{

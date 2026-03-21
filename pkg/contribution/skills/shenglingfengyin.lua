@@ -84,7 +84,6 @@ fengyin:addEffect(fk.GameStart, {
 
     -- 继承所有技能
     for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do
-      print(s.name)
       if not player:hasSkill(s, true, true) then
         room:handleAddLoseSkills(player, s.name, fengyin.name)
       end
@@ -147,7 +146,6 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
 
     -- 继承所有技能
     for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do
-      print(s.name)
       if not player:hasSkill(s, true, true) then
         room:handleAddLoseSkills(player, s.name, fengyin.name)
       end

@@ -3,7 +3,7 @@ local skill = fk.CreateSkill({
   tags = { Skill.Permanent },
 })
 
-local ok, CS = pcall(require, "packages.coins-system.csfs")
+local ok, CS = pcall(require, "packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_market"] = "市场",
