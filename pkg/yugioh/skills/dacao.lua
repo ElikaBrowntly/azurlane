@@ -38,7 +38,7 @@ dacao:addEffect(fk.Damaged, {
       table.insertIfNeed(generalNames, g)
     end
     for _, pack in ipairs(Fk:currentRoom().disabled_packs) do
-      for _, g in ipairs(Fk.packages[pack].generals) do
+      for _, g in ipairs((Fk.packages[pack] or {}).generals or {}) do
         table.insertIfNeed(generalNames, g.name)
       end
     end

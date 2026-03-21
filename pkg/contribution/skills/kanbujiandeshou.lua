@@ -38,7 +38,8 @@ shou:addEffect(fk.GameFinished, {
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
     if not player or not player:hasSkill(self) then return false end
-    local save = player:getGlobalSaveState("yyfy_kanbujiandeshou") or {}
+    local state = player:getGlobalSaveState("hidden-clouds")
+    local save = state["yyfy_kanbujiandeshou"] or {}
     local today = os.date("%Y-%m-%d")
     if save.last_date == today then
       return false
@@ -61,10 +62,12 @@ shou:addEffect(fk.GameFinished, {
     if reward > 0 then
       CS.ChangePlayerMoney(player, reward)
     end
-    local save = player:getGlobalSaveState("yyfy_kanbujiandeshou") or {}
+    local state = player:getGlobalSaveState("hidden-clouds")
+    local save = state["yyfy_kanbujiandeshou"] or {}
     save.last_date = os.date("%Y-%m-%d")
     --仅存储一个 last_date 字段，记录最后一次触发日期。如果当天已触发则跳过。
-    player:saveGlobalState("yyfy_kanbujiandeshou", save)
+    state["yyfy_kanbujiandeshou"] = save
+    player:saveGlobalState("yyfy_kanbujiandeshou", state)
   end
 })
 

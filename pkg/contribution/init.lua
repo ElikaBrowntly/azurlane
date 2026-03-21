@@ -1,20 +1,20 @@
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local ok, U = pcall(require, "packages.glory_days.utility")
 
 local extension = Package:new("contribution")
 extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/contribution/skills")
 
-local exgod_zhangliao = General:new(extension, "exgod_zhangliao", "god", 4, 5)
+local exgod_zhangliao = General:new(extension, "yyfy_exgod_zhangliao", "god", 4, 5)
 exgod_zhangliao:addSkills { "yyfy_duorui", "yyfy_zhiti" }
 exgod_zhangliao:addRelatedSkill("yyfy_wangxi")
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
   ["contribution"] = "夜隐浮云-投稿",
-  ["exgod_zhangliao"] = "界神张辽",
-  ["#exgod_zhangliao"] = "美食家",
-  ["designer:exgod_zhangliao"] = "投稿者",
-  ["~exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
+  ["yyfy_exgod_zhangliao"] = "界神张辽",
+  ["#yyfy_exgod_zhangliao"] = "美食家",
+  ["designer:yyfy_exgod_zhangliao"] = "投稿者",
+  ["~yyfy_exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
 local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4)
@@ -401,14 +401,15 @@ Fk:loadTranslationTable {
 
 local achievements_data = {
   {
-    id = "exgod_zhangliao",
+    id = "yyfy_exgod_zhangliao",
     name = "界神张辽",
     achievements = {
       {
-        id = "exgod_zhangliao_1",
+        id = "yyfy_exgod_zhangliao_1",
         target = 1,
         name = "闻风丧胆",
-        desc = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。"
+        desc = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
+        context = "张辽虽病，不可挡也，慎之！ ——孙权"
       },
     },
   },
@@ -418,15 +419,17 @@ local achievements_data = {
     achievements = {
       {
         id = "yyfy_mou_wupu_1",
-        target = 3,
+        target = 1,
         name = "医脉相承",
-        desc = "累计3次通过〖锻体〗获得技能〖五灵〗。"
+        desc = "通过〖锻体〗获得技能〖五灵〗。",
+        context = "人同于兽，奇经八脉、吐息参合，不宜异同。"
       },
       {
         id = "yyfy_mou_wupu_2",
         target = 100,
         name = "遍尝百草",
-        desc = "通过〖识草〗累计获得100张牌。"
+        desc = "通过〖识草〗累计获得100张牌。",
+        context = "此药名白术，形如栉草，可解热清毒。"
       }
     },
   },
@@ -438,7 +441,8 @@ local achievements_data = {
         id = "lan__tengfanglan_1",
         target = 3,
         name = "一时之宠",
-        desc = "累计3次，在一次〖落宠〗中发动所有效果的最大次数。"
+        desc = "累计3次，在一次〖落宠〗中发动所有效果的最大次数。",
+        context = "宠至莫言非，恩移难恃貌。"
       },
     },
   },
@@ -451,6 +455,7 @@ local achievements_data = {
         target = 1,
         name = "十二奇策",
         desc = "通过〖百出〗在一局游戏中获得至少12张牌，并取得胜利。",
+        context = "公达前后凡画十二奇策，唯繇知之。繇撰集未就，会薨，故世不得以尽闻也。"
       },
     },
   },
@@ -460,9 +465,10 @@ local achievements_data = {
     achievements = {
       {
         id = "lan__zhonghui_1",
-        target = 3,
+        target = 1,
         name = "今日起兵",
-        desc = "累计3次，在一局游戏中获得3张「权」并取得胜利。",
+        desc = "在一局游戏中获得3张「权」并取得胜利。",
+        context = "时机已到，今日起兵！"
       },
     },
   },
@@ -475,13 +481,22 @@ local achievements_data = {
         target = 1,
         name = "大魏君王",
         desc = "通过〖潜龙〗在一局游戏中获得3个“大胃菌王”技能，并取得胜利。",
+        context = "朕为太祖子孙，大魏君王!"
       },
     },
   },
 }
 
-if ok and D and type(D.RegisterAchievementPackage) == "function" then
-  D.RegisterAchievementPackage("夜隐浮云", achievements_data, "hidden-clouds/image/generals")
+if ok and U and type(U.RegisterAchievement) == "function" then
+  for _, a in ipairs(achievements_data) do
+    local data = a.achievements
+    for _, achievement in ipairs(data) do
+      local title = achievement.name
+      local desc = achievement.desc
+      local context = achievement.context or ""
+      U.RegisterAchievement("夜隐浮云", title, context, desc, "general:"..a.id, false, {}, true)
+    end
+  end
 end
 
 return extension

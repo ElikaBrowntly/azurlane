@@ -95,10 +95,14 @@ skill:addEffect("active", {
 
       -- 价格（人机自动 1000）
       local price = 1000
+      if not ok then
+        room:doBroadcastNotify("ShowToast", "未开启金币系统，无法购买")
+        return
+      end
       local coinsData = CS.GetcoinsData(player)
       local gold = coinsData.gold or 0
       -- 扣费
-      if not ok or gold < price then
+      if gold < price then
         room:doBroadcastNotify("ShowToast", "金币不足，无法购买")
         return
       end

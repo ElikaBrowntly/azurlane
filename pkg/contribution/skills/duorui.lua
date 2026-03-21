@@ -2,7 +2,7 @@ local duorui = fk.CreateSkill {
   name = "yyfy_duorui",
 }
 
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["yyfy_duorui"] = "夺锐",
@@ -82,20 +82,13 @@ duorui:addEffect(fk.Damage, {
 
 --战功：闻风丧胆
 duorui:addEffect(fk.GameFinished, {
-  --global = true,
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    return player:getMark("exgod_zhangliao-achievements") >= 5 and ok-- 至少获得了5个技能
+    local winners = data:split("+")
+    return player:getMark("exgod_zhangliao-achievements") >= 5 and table.contains(winners, player.role)
   end,
   on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    local players = room.players
-    local winners = data:split("+")
-    for _, p in ipairs(players) do
-      if table.contains(winners, p.role) then
-        D.updateAchievement(room, p, "exgod_zhangliao", "exgod_zhangliao_1", 1)
-      end
-    end
+    F.addAchievement(player.room, nil, nil, nil, "闻风丧胆", nil, nil, {player}, false, "夜隐浮云")
   end
 })
 

@@ -3,7 +3,7 @@ local yyfy_shicao = fk.CreateSkill{
   anim_type = "drawcard",
 }
 
-local ok, D = pcall(require, "packages.DR-system.record.DRRP")
+local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["yyfy_shicao"] = "识草",
@@ -27,8 +27,14 @@ yyfy_shicao:addEffect("active", {
     
     -- 牌堆底摸2，计入战功进度
     room:drawCards(player, 2, yyfy_shicao.name, "bottom")
-    if ok then
-      D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+
+    local save = player:getGlobalSaveState("hidden-clouds")
+    local achieve = save["yyfy_shicao_achievement"] or {}
+    local total = achieve.achieved_count or 0
+    local update = false
+    if total < 100 then
+      update = true
+      achieve.achieved_count = total + 2
     end
     
     -- 记录已出现类型
@@ -44,8 +50,9 @@ yyfy_shicao:addEffect("active", {
       
       room:obtainCard(player, card, false, fk.ReasonDraw)
       -- 计入战功进度
-      if ok then
-        D.updateAchievement(room, player, "yyfy_mou_wupu", "yyfy_mou_wupu_2", 100)
+      total = achieve.achieved_count or 0
+      if total < 100 then
+        achieve.achieved_count = total + 1
       end
       
       local isNewType = false
@@ -62,7 +69,30 @@ yyfy_shicao:addEffect("active", {
         table.insert(existingTypes, cardType)
       end
     end
+    if update then
+      save["yyfy_shicao_achievement"] = achieve
+      player:saveGlobalState("hidden-clouds", save)
+    end
   end,
+})
+
+--战功：遍尝百草
+yyfy_shicao:addEffect(fk.GameFinished, {
+  priority = 0.0001,
+  can_refresh = function(self, event, target, player, data)
+    local temp = player:getGlobalSaveState("hidden-clouds")
+    local tempAchieve = temp["yyfy_shicao_achievement"] or {}
+    local save = player:getGlobalSaveState("glory_days_Achieve")
+    local saveAchieve = save["遍尝百草"] or {}
+    local count = tempAchieve.achieved_count
+    return count and count >= 100 --hidden-clouds存档满100，向战功存档进一
+  end,
+  on_refresh = function(self, event, target, player, data)
+    F.addAchievement(player.room, nil, nil, nil, "遍尝百草", nil, nil, {player}, false, "夜隐浮云")
+    local temp = player:getGlobalSaveState("hidden-clouds")
+    temp["yyfy_shicao_achievement"] = nil -- 清空hidden-clouds的识草存档
+    player:saveGlobalState("hidden-clouds", temp)
+  end
 })
 
 return yyfy_shicao
