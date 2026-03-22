@@ -41,11 +41,13 @@ huiliuli:addEffect(fk.BeforeCardsMove, {
   end,
   on_cost = function (self, event, target, player, data)
     local cost = event:getCostData(self)
+    local room = player.room
     if not cost or not cost.tos then return false end
     local to = cost.tos[1]
-    return player.room:askToSkillInvoke(player, {
+    room:setPlayerMark(player, "yyfy_hui-ai", to.id)
+    return room:askToSkillInvoke(player, {
       skill_name = self.name,
-      prompt = "灰流丽：%dest 即将从牌堆获得牌，是否取消之？::"..event:getCostData(self).tos[1].id
+      prompt = "灰流丽：%dest 即将从牌堆获得牌，是否取消之？::"..to.id
     })
   end,
   on_use = function (self, event, target, player, data)
@@ -54,6 +56,16 @@ huiliuli:addEffect(fk.BeforeCardsMove, {
       player.room:cancelMove(data, cost.cards)
     end
   end
+})
+
+huiliuli:addAI(Fk.Ltk.AI.newInvokeStrategy{
+  think = function(self, ai)
+    local room = ai.room
+    local id = ai.player:getMark("yyfy_hui-ai")
+    if id == 0 then return false end
+    local target = room:getPlayerById(id)
+    return target and ai:isEnemy(target)
+  end,
 })
 
 return huiliuli
