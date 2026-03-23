@@ -382,6 +382,30 @@ Fk:loadTranslationTable{
   ["designer:yyfy_maoyidawang"] = "曹宪咬我"
 }
 
+local tianshu_skels = require("packages.hidden-clouds.pkg.contribution.skills.tianshu.tianshu")
+for _, skel in ipairs(tianshu_skels) do
+  table.insert(extension.skill_skels, skel)
+end
+local nanhualaoxian = General:new(extension, "yyfy_mou__nanhualaoxian", "god", 4)
+nanhualaoxian:addSkills {"yyfy_qingshu", "yyfy_shoushu"}
+Fk:loadTranslationTable{
+  ["yyfy_mou"] = "",
+  ["yyfy_mou__nanhualaoxian"] = "谋南华老仙",
+  ["#yyfy_mou__nanhualaoxian"] = "道法自然",
+  ["designer:yyfy_mou__nanhualaoxian"] = "水上由岐",
+  ["!yyfy_mou__nanhualaoxian"] = "不参黄泉，难悟大道。",
+  ["~yyfy_mou__nanhualaoxian"] = "尔生异心，必遭恶报。"
+}
+
+-- 太逆天了，737个技能，不能上线
+-- local mou_nanhualaoxian = General:new(extension, "yyfy_mou_nanhualaoxian", "god", 4)
+-- mou_nanhualaoxian:addSkills {"yyfy_mou_qingshu", "yyfy_shoushu"}
+-- Fk:loadTranslationTable{
+--   ["yyfy_mou_nanhualaoxian"] = "谋南华老仙",
+--   ["#yyfy_mou_nanhualaoxian"] = "终成正果",
+--   ["designer:yyfy_mou_nanhualaoxian"] = "水上由岐"
+-- }
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

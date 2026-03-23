@@ -2,6 +2,60 @@ local functions = {}
 
 local okG, G = pcall(require, "packages.glory_days.utility")
 
+-- 初始化皮肤相关表
+functions.Skins = functions.Skins or {}
+functions.ExchangeItems = functions.ExchangeItems or {}
+functions.PendingSkins = functions.PendingSkins or {}
+functions.Initialized = functions.Initialized or false
+
+function functions.resolveSkinData(skinData)
+  local generals = { skinData.general }
+  local extra = skinData.extra or {}
+  if #extra > 0 then
+    table.insertTableIfNeed(generals, extra)
+  end
+
+  local unprefixs = skinData.unprefixs or {}
+  if Fk.generals then
+    for name, general in pairs(Fk.generals) do
+      if general.trueName == skinData.general and general.package.extensionName ~= "delight" then
+        local skip = false
+        if #unprefixs > 0 then
+          for _, unprefix in pairs(unprefixs) do
+            if name == unprefix .. "__" .. skinData.general then
+              skip = true
+              break
+            end
+          end
+        end
+        if not skip then
+          table.insertIfNeed(generals, name)
+        end
+      end
+    end
+  end
+
+  local mapper = { ["legend"] = 88888, ["epic"] = 40000, ["rare"] = 11111, ["good"] = 900, ["common"] = 400 }
+  for _, general in pairs(generals) do
+    functions.Skins[general] = functions.Skins[general] or {}
+    table.insert(functions.Skins[general], {
+      path = skinData.path,
+      quality = skinData.quality or "common",
+      price = skinData.price or mapper[skinData.quality or "common"]
+    })
+  end
+end
+
+function functions.checkInit()
+  if not functions.Initialized and Fk.generals and next(Fk.generals) then
+    functions.Initialized = true
+    for _, data in ipairs(functions.PendingSkins) do
+      functions.resolveSkinData(data)
+    end
+    functions.PendingSkins = {}
+  end
+end
+
 -- 判断两个角色之间是否为敌对关系
 ---@param from Player|ServerPlayer
 ---@param to Player|ServerPlayer
@@ -216,6 +270,16 @@ function functions.ChangePlayerMoney(player, num, task)
     end
   end
   return globalData.gold
+end
+
+---@class CSskinsData
+---@param skinData CSskinsData @ 皮肤数据
+function functions.addSkin(skinData)
+  -- if functions.Initialized then
+    functions.resolveSkinData(skinData)
+  -- else
+  --   table.insert(functions.PendingSkins, skinData)
+  -- end
 end
 
 return functions
