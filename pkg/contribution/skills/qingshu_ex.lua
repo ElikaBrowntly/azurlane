@@ -3,6 +3,8 @@ local yyfy_qingshu = fk.CreateSkill{
   tags = { Skill.Permanent },
 }
 
+local F = require("packages.hidden-clouds.functions")
+
 Fk:loadTranslationTable{
   ["yyfy_qingshu"] = "青书",
   [":yyfy_qingshu"] = "持恒技，游戏开始时，一名角色的准备阶段和结束阶段，你书写一册<a href='yyfy_tianshu_href'>“天书”</a>。",
@@ -106,6 +108,7 @@ local spec = {
     local room = player.room
     room:doSuperLightBox("packages/hidden-clouds/qml/qingshu.qml")
     room:doBroadcastNotify("ShowToast", "南华老仙正在书写天书……")
+    F.broadcastInOrder(player, yyfy_qingshu.name, 6, "yyfy_qingshu-sound")
     -- 时机：从所有30个时机中选择
     local triggerChoices = {}
     for i = 1, 30 do
@@ -172,6 +175,7 @@ local spec = {
 }
 
 yyfy_qingshu:addEffect(fk.GameStart, {
+  mute = true,
   can_trigger = function (self, event, target, player, data)
     return player:hasSkill(yyfy_qingshu.name)
   end,
@@ -179,6 +183,7 @@ yyfy_qingshu:addEffect(fk.GameStart, {
 })
 
 yyfy_qingshu:addEffect(fk.EventPhaseStart, {
+  mute = true,
   can_trigger = function (self, event, target, player, data)
     return target and target:isAlive() and player:hasSkill(yyfy_qingshu.name) and
       (target.phase == Player.Start or player.phase == Player.Finish)
@@ -188,6 +193,7 @@ yyfy_qingshu:addEffect(fk.EventPhaseStart, {
 
 -- 天书的实现保持不变
 yyfy_qingshu:addEffect(fk.TurnStart, {
+  mute = true,
   can_refresh = function (self, event, target, player, data)
     return target == player and player:getMark("@@yyfy_tianshu11") > 0
   end,
@@ -199,6 +205,7 @@ yyfy_qingshu:addEffect(fk.TurnStart, {
 })
 
 yyfy_qingshu:addEffect(fk.TurnEnd, {
+  mute = true,
   late_refresh = true,
   can_refresh = function (self, event, target, player, data)
     return target == player and (player:getMark("yyfy_tianshu20") > 0 or player:getMark("yyfy_tianshu24") ~= 0)

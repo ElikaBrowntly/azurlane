@@ -2,6 +2,8 @@ local shoushu = fk.CreateSkill{
   name = "yyfy_shoushu",
 }
 
+local F = require("packages.hidden-clouds.functions")
+
 Fk:loadTranslationTable{
   ["yyfy_shoushu"] = "授术",
   [":yyfy_shoushu"] = "出牌阶段限一次，或当你受到伤害后，你可以将一册<a href='yyfy_tianshu_href'>“天书”</a>交给一名其他角色。",
@@ -28,7 +30,7 @@ local function doGive(room, player, target, skillName)
     local info = room:getBanner("yyfy_tianshu_skills")[s]
     table.insert(args, Fk:translate("yyfy_tianshu_triggers"..info[1]).."，"..Fk:translate("yyfy_tianshu_effects"..info[2]).."。")
   end
-
+  F.broadcastInOrder(player, shoushu.name, 4, "yyfy_shoushu-sound")
   local choice = room:askToChoice(player, {
     choices = args,
     skill_name = skillName,
@@ -45,6 +47,7 @@ end
 
 -- 出牌阶段主动发动
 shoushu:addEffect("active", {
+  mute = true,
   anim_type = "support",
   prompt = "#yyfy_shoushu",
   card_num = 0,
@@ -65,6 +68,7 @@ shoushu:addEffect("active", {
 
 -- 受伤后触发
 shoushu:addEffect(fk.Damaged, {
+  mute = true,
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     -- 至少有一本天书

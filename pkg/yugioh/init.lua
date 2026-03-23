@@ -28,7 +28,7 @@ Fk:loadTranslationTable{
 }
 
 local mingshen = General:new(extension, "yyfy_UnderworldGoddess", "evil", 5, 5, General.Female)
-mingshen:addSkills {"yyfy_shiri", "yyfy_mingshen", "yyfy_duixiang", "yyfy_ganglie"}
+mingshen:addSkills {"yyfy_shiri", "yyfy_mingshen", "yyfy_duixiang"}
 Fk:loadTranslationTable{
   ["yyfy_UnderworldGoddess"] = "闭锁世界的冥神",
   ["#yyfy_UnderworldGoddess"] = "牌佬指定对象",

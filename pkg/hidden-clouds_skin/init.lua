@@ -26,10 +26,10 @@ extension:addSkinPackage {
 
 if ok and CS then
   CS.addSkin({
-  path = "packages/hidden-clouds/image/skins/yyfy_mou__nanhualaoxian__1.gif",
+  path = "packages/hidden-clouds/image/skins/yyfy_ex__nanhualaoxian__1.gif",
   quality = "legend",
-  general = "yyfy_mou__nanhualaoxian",
-  price = 888888
+  general = "nanhualaoxian",
+  price = 888888,
 })
 end
 
@@ -41,6 +41,7 @@ Fk:loadTranslationTable {
   ["yyfy_ArchetypeEarth__1"] = "第二再临",
   ["yyfy_ArchetypeEarth__2"] = "第三再临",
   ["yyfy_ArchetypeEarth__3"] = "最终再临",
+  ["yyfy_ex__nanhualaoxian__1"] = "着墨山河"
 }
 
 return extension

@@ -158,6 +158,20 @@ function functions.getWeimu(player, target, color, skillName)
   return nil
 end
 
+--- 按顺序播放技能语音
+---@param player ServerPlayer 拥有技能的玩家
+---@param skillName string 技能名
+---@param max integer 最大语音序号
+---@param markName string 用来记录的标记名
+function functions.broadcastInOrder(player, skillName, max, markName)
+  local index = player:getMark(markName)
+  if index == 0 then index = 1 end
+  player:broadcastSkillInvoke(skillName, index)
+  index = index + 1
+  if index == max + 1 then index = 1 end
+  player.room:setPlayerMark(player, markName, index)
+end
+
 --- 弹出成就
 --- @param room Room @ 游戏房间
 --- @param type? string|AchievementType @ 成就框样式
@@ -276,7 +290,7 @@ end
 ---@param skinData CSskinsData @ 皮肤数据
 function functions.addSkin(skinData)
   -- if functions.Initialized then
-    functions.resolveSkinData(skinData)
+  functions.resolveSkinData(skinData)
   -- else
   --   table.insert(functions.PendingSkins, skinData)
   -- end
