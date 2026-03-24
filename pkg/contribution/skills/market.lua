@@ -3,13 +3,13 @@ local skill = fk.CreateSkill({
   tags = { Skill.Permanent },
 })
 
-local ok, CS = pcall(require, "packages.hidden-clouds.functions")
+local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 Fk:loadTranslationTable {
   ["yyfy_market"] = "市场",
   [":yyfy_market"] = "持恒技，你的所有技能变为持恒技。当你获得此技能后，令所有没有此技能的其他角色获得此技能。" ..
-    "你拥有“包裹”，你视为拥有“包裹”内的技能且这些技能不会因为对局结束而失去。" ..
-    "出牌阶段，你可以选择其他角色的一个技能，花费金币购买并将其放入包裹。出牌阶段可扔掉包裹技能。",
+      "你拥有“包裹”，你视为拥有“包裹”内的技能且这些技能不会因为对局结束而失去。" ..
+      "出牌阶段，你可以选择其他角色的一个技能，花费金币购买并将其放入包裹。出牌阶段可扔掉包裹技能。",
 
   ["@yyfy_market-count"] = "包裹",
   ["#yyfy_market-buy"] = "市场：选择要购买的技能",
@@ -32,7 +32,7 @@ local function getBuyableSkills(player)
 end
 
 -- 获得市场时，加载存档中的包裹技能
-skill:addAcquireEffect(function (self, player)
+skill:addAcquireEffect(function(self, player)
   local data = player:getGlobalSaveState("yyfy_market") or {}
   data.skills = data.skills or {}
   player.room:setPlayerMark(player, "@yyfy_market-count", #data.skills)
@@ -58,7 +58,7 @@ skill:addEffect("active", {
   anim_type = "control",
   prompt = "yyfy_market_choice",
   can_use = function(self, player)
-    return player:hasSkill(skill.name)
+    return player:hasSkill(skill.name) and player.id > 0
   end,
   on_use = function(self, room, effect)
     local player = effect.from
@@ -86,13 +86,15 @@ skill:addEffect("active", {
       if #skills < 1 then return end
 
       -- 选择技能
-      local sname = room:askToChoice(player, {
-        choices = skills,
+      local sname = room:askToCustomDialog(player, {
         skill_name = skill.name,
-        prompt = "#yyfy_market-buy"
+        qml_path = "packages/utility/qml/ChooseSkillBox.qml",
+        extra_data = { skills, 1, 1, "#yyfy_market-buy" }
       })
-      if not sname then return end
-
+      if not sname or sname == "" then return end
+      if type(sname) == "table" then
+        sname = sname[1]
+      end
       -- 价格（人机自动 1000）
       local price = 1000
       if not ok then
@@ -124,11 +126,21 @@ skill:addEffect("active", {
       data.skills = data.skills or {}
       if #data.skills < 1 then return end
 
-      local sname = room:askToChoice(player, {
-        choices = data.skills,
+      local sname = room:askToCustomDialog(player, {
         skill_name = skill.name,
-        prompt = "选择要丢弃的技能"
+        qml_path = "packages/utility/qml/ChooseSkillBox.qml",
+        extra_data = { data.skills, 1, 1, "选择要丢弃的技能" }
       })
+      if not sname or sname == "" then return end
+      if type(sname) == "table" then
+        sname = sname[1]
+      end
+      -- 要是玩家技能太多，可能askToChoice比qml还要好？
+      -- local sname = room:askToChoice(player, {
+      --   choices = data.skills,
+      --   skill_name = skill.name,
+      --   prompt = "选择要丢弃的技能"
+      -- })
       if not sname then return end
 
       table.removeOne(data.skills, sname)

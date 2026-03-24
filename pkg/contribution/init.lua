@@ -11,21 +11,22 @@ Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
   ["contribution"] = "夜隐浮云-投稿",
+  ["yyfy"] = "",
   ["yyfy_exgod_zhangliao"] = "界神张辽",
   ["#yyfy_exgod_zhangliao"] = "美食家",
   ["designer:yyfy_exgod_zhangliao"] = "投稿者",
   ["~yyfy_exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
-local mou_wupu = General:new(extension, "yyfy_mou_wupu", "qun", 4)
+local mou_wupu = General:new(extension, "yyfy_mou__wupu", "qun", 4)
 mou_wupu:addSkills { "yyfy_duanti", "yyfy_shicao" }
 mou_wupu:addRelatedSkill("wuling")
 Fk:loadTranslationTable
 {
-  ["yyfy_mou_wupu"] = "谋吴普",
-  ["#yyfy_mou_wupu"] = "健体养魄",
-  ["designer:yyfy_mou_wupu"] = "夜隐浮云，孤星似梦",
-  ["~yyfy_mou_wupu"] = "五禽犹在，此戏传于后来人。",
+  ["yyfy_mou__wupu"] = "谋吴普",
+  ["#yyfy_mou__wupu"] = "健体养魄",
+  ["designer:yyfy_mou__wupu"] = "夜隐浮云，孤星似梦",
+  ["~yyfy_mou__wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
 local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
@@ -147,12 +148,12 @@ Fk:loadTranslationTable{
   ["designer:yyfy_youlewangzi"] = "夜隐浮云，孤星似梦",
 }
 
-local ex_simashi = General:new(extension, "yyfy_ex_simashi", "wei", 4)
+local ex_simashi = General:new(extension, "yyfy_ex__simashi", "wei", 4)
 ex_simashi:addSkills {"yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli"}
 Fk:loadTranslationTable{
-  ["yyfy_ex_simashi"] = "界司马师",
-  ["designer:yyfy_ex_simashi"] = "非电竞恐龙",
-  ["~yyfy_ex_simashi"] = "子上，先之则太过，后之则不及……"
+  ["yyfy_ex__simashi"] = "界司马师",
+  ["designer:yyfy_ex__simashi"] = "非电竞恐龙",
+  ["~yyfy_ex__simashi"] = "子上，先之则太过，后之则不及……"
 }
 
 local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
@@ -174,62 +175,64 @@ KusanagiGodou:addRelatedSkills{
   "yyfy_shaonian", "yyfy_fenghuang", "yyfy_muyang", "yyfy_shanyang", "yyfy_zhanshi"
 }
 
-local yueCaocao = General:new(extension, "yyfy_yueCaocao", "wei", 4)
+local yueCaocao = General:new(extension, "yyfy_yue__caocao", "wei", 4)
 yueCaocao:addSkills {"yyfy_yanjv", "yyfy_hejue"}
 Fk:loadTranslationTable{
-  ["yyfy_yueCaocao"] = "乐曹操",
-  ["designer:yyfy_yueCaocao"] = "幻矩",
-  ["illustrator:yyfy_yueCaocao"] = "新三国",
-  ["cv:yyfy_yueCaocao"] = "电视剧原声",
-  ["$xixiang_yyfy_yueCaocao1"] = "但为，君故，沉吟，至今。",
-  ["$xixiang_yyfy_yueCaocao2"] = "但为君故，沉吟至今。",
-  ["$zhubei_yyfy_yueCaocao1"] = "我有，嘉宾，鼓瑟，吹笙。",
-  ["$zhubei_yyfy_yueCaocao2"] = "我有嘉宾，鼓瑟吹笙。",
-  ["$duoyue_yyfy_yueCaocao1"] = "明明，如月，何时，可掇？",
-  ["$duoyue_yyfy_yueCaocao2"] = "皎皎如月，何时可辍？",
-  ["$guixin_yyfy_yueCaocao1"] = "周公，吐哺，天下，归心。",
-  ["$guixin_yyfy_yueCaocao2"] = "周公吐哺，天下归心。",
-  ["~yyfy_yueCaocao"] = "安敢败我诗兴？（我...）"
+  ["yyfy_yue"] = "",
+  ["yyfy_yue__caocao"] = "乐曹操",
+  ["designer:yyfy_yue__caocao"] = "幻矩",
+  ["illustrator:yyfy_yue__caocao"] = "新三国",
+  ["cv:yyfy_yue__caocao"] = "电视剧原声",
+  ["$xixiang_yyfy_yue__caocao1"] = "但为，君故，沉吟，至今。",
+  ["$xixiang_yyfy_yue__caocao2"] = "但为君故，沉吟至今。",
+  ["$zhubei_yyfy_yue__caocao1"] = "我有，嘉宾，鼓瑟，吹笙。",
+  ["$zhubei_yyfy_yue__caocao2"] = "我有嘉宾，鼓瑟吹笙。",
+  ["$duoyue_yyfy_yue__caocao1"] = "明明，如月，何时，可掇？",
+  ["$duoyue_yyfy_yue__caocao2"] = "皎皎如月，何时可辍？",
+  ["$guixin_yyfy_yue__caocao1"] = "周公，吐哺，天下，归心。",
+  ["$guixin_yyfy_yue__caocao2"] = "周公吐哺，天下归心。",
+  ["~yyfy_yue__caocao"] = "安敢败我诗兴？（我...）"
 }
 yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
 
-local caoshuang = General:new(extension, "yyfy_ex_caoshuang", "wei", 4)
+local caoshuang = General:new(extension, "yyfy_ex__caoshuang", "wei", 4)
 caoshuang:addSkills {"yyfy_tuogu", "yyfy_shanzhuan"}
 Fk:loadTranslationTable{
-  ["yyfy_ex_caoshuang"] = "界曹爽",
-  ["#yyfy_ex_caoshuang"] = "托孤辅政",
-  ["designer:yyfy_ex_caoshuang"] = "夜隐浮云，孤星似梦",
-  ["~yyfy_ex_caoshuang"] = "悔不该降了司马懿……",
-  ["$ex__biyue_yyfy_ex_caoshuang1"] = "失礼了～",
-  ["$ex__biyue_yyfy_ex_caoshuang2"] = "羡慕吧～",
-  ["illustrator:yyfy_ex_caoshuang"] = "君桓文化"
+  ["yyfy_ex__caoshuang"] = "界曹爽",
+  ["#yyfy_ex__caoshuang"] = "托孤辅政",
+  ["designer:yyfy_ex__caoshuang"] = "夜隐浮云，孤星似梦",
+  ["~yyfy_ex__caoshuang"] = "悔不该降了司马懿……",
+  ["$ex__biyue_yyfy_ex__caoshuang1"] = "失礼了～",
+  ["$ex__biyue_yyfy_ex__caoshuang2"] = "羡慕吧～",
+  ["illustrator:yyfy_ex__caoshuang"] = "君桓文化"
 }
 caoshuang:addRelatedSkill("ex__biyue")
 
-local end_jiaxu = General:new(extension, "yyfy_end_jiaxu", "qun", 3)
+local end_jiaxu = General:new(extension, "yyfy_end__jiaxu", "qun", 3)
 end_jiaxu:addSkills {"yyfy_wansha", "yyfy_weimu", "yyfy_luanwu"}
 Fk:loadTranslationTable{
-  ["yyfy_end_jiaxu"] = "终贾诩",
-  ["#yyfy_end_jiaxu"] = " ",
-  ["designer:yyfy_end_jiaxu"] = "一维无限",
-  ["~yyfy_end_jiaxu"] = "天下大定，某，亦得功成名就。",
+  ["yyfy_end"] = "",
+  ["yyfy_end__jiaxu"] = "终贾诩",
+  ["#yyfy_end__jiaxu"] = " ",
+  ["designer:yyfy_end__jiaxu"] = "一维无限",
+  ["~yyfy_end__jiaxu"] = "天下大定，某，亦得功成名就。",
 }
 
-local god_zhangfei = General:new(extension, "yyfy_god_zhangfei", "god", 4)
+local god_zhangfei = General:new(extension, "yyfy__godzhangfei", "god", 4)
 god_zhangfei:addSkills {"yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou"}
 Fk:loadTranslationTable{
-  ["yyfy_god_zhangfei"] = "神张飞",
-  ["#yyfy_god_zhangfei"] = "傲凌世间",
-  ["~yyfy_god_zhangfei"] = "桃花今又开，不见结义人。",
+  ["yyfy__godzhangfei"] = "神张飞",
+  ["#yyfy__godzhangfei"] = "傲凌世间",
+  ["~yyfy__godzhangfei"] = "桃花今又开，不见结义人。",
 }
 
-local god_machao = General:new(extension, "yyfy_god_machao", "god", 4)
+local god_machao = General:new(extension, "yyfy__godmachao", "god", 4)
 god_machao:addSkills {"yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu"}
 Fk:loadTranslationTable{
-  ["yyfy_god_machao"] = "神马超",
-  ["#yyfy_god_machao"] = "壮志凌云",
-  ["!yyfy_god_machao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
-  ["~yyfy_god_machao"] = "汉升！人间新酒如何？",
+  ["yyfy__godmachao"] = "神马超",
+  ["#yyfy__godmachao"] = "壮志凌云",
+  ["!yyfy__godmachao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
+  ["~yyfy__godmachao"] = "汉升！人间新酒如何？",
 }
 
 local gaoshou = General:new(extension, "yyfy_gaoshou", "god", 4)
@@ -381,6 +384,32 @@ Fk:loadTranslationTable{
   ["#yyfy_maoyidawang"] = "",
   ["designer:yyfy_maoyidawang"] = "曹宪咬我"
 }
+
+local tianshu_skels = require("packages.hidden-clouds.pkg.contribution.skills.tianshu.tianshu")
+for _, skel in ipairs(tianshu_skels) do
+  table.insert(extension.skill_skels, skel)
+end
+local nanhualaoxian = General:new(extension, "yyfy_ex__nanhualaoxian", "god", 4)
+nanhualaoxian:addSkills {"yyfy_qingshu", "yyfy_shoushu", "yyfy_hedao"}
+Fk:loadTranslationTable{
+  ["yyfy_ex"] = "",
+  ["yyfy_mou"] = "",
+  ["yyfy_ex__nanhualaoxian"] = "界南华老仙",
+  ["#yyfy_ex__nanhualaoxian"] = "道法自然",
+  ["designer:yyfy_ex__nanhualaoxian"] = "水上由岐",
+  ["!yyfy_ex__nanhualaoxian"] = "因果开茅塞，轮回似醍醐。",
+  ["~yyfy_ex__nanhualaoxian"] = "尔生异心，必遭恶报。"
+}
+
+-- 太逆天了，737个技能，不能上线
+local mou_nanhualaoxian = General:new(extension, "yyfy_mou__nanhualaoxian", "god", 4)
+mou_nanhualaoxian:addSkills {"yyfy_mou_qingshu", "yyfy_shoushu"}
+Fk:loadTranslationTable{
+  ["yyfy_mou__nanhualaoxian"] = "谋南华老仙",
+  ["#yyfy_mou__nanhualaoxian"] = "终成正果",
+  ["designer:yyfy_mou__nanhualaoxian"] = "水上由岐"
+}
+mou_nanhualaoxian.hidden = true
 
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",

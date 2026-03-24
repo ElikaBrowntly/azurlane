@@ -4,7 +4,7 @@ local duorui = fk.CreateSkill {
 
 local F = require("packages.hidden-clouds.functions")
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_duorui"] = "夺锐",
   [":yyfy_duorui"] = "当你对一名其他角色造成伤害后，你可以获得其一个技能，然后可以令其失去该技能",
 
@@ -20,7 +20,7 @@ duorui:addEffect(fk.Damage, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(self.name) and
-      data.to ~= player and not data.to.dead
+        data.to ~= player and not data.to.dead
   end,
   on_cost = function(self, event, target, player, data)
     local target_player = data.to
@@ -32,30 +32,32 @@ duorui:addEffect(fk.Damage, {
         table.insertIfNeed(skills, s.name)
       end
     end
-    
+
     if #skills == 0 then return false end
-    
+
     if not room:askToSkillInvoke(player, {
-        skill_name = self.name,
-        prompt = "#yyfy_duorui-choose::"..target_player.id}) then
+          skill_name = self.name,
+          prompt = "#yyfy_duorui-choose::" .. target_player.id }) then
       return false
     end
-    
+
     -- 选择技能
-    local choice = room:askToChoice(player, {
-      choices = skills,
-      skill_name = self.name,
-      prompt = "#yyfy_duorui-skill::"..target_player.id,
-      detailed = true,
+    local choice = room:askToCustomDialog(player, {
+      skill_name = duorui.name,
+      qml_path = "packages/utility/qml/ChooseSkillBox.qml",
+      extra_data = { skills, 1, 1, "#yyfy_duorui-skill::" .. target_player.id }
     })
-    
+    if not choice or choice == "" then return end
+    if type(choice) == "table" then
+      choice = choice[1]
+    end
     -- 询问是否失去技能
     local lose_choice = room:askToChoice(player, {
-        choices = {"确定", "取消"},
-        skill_name = self.name,
-        prompt = "#yyfy_duorui-lose::"..target_player.id..":"..choice
+      choices = { "确定", "取消" },
+      skill_name = self.name,
+      prompt = "#yyfy_duorui-lose::" .. target_player.id .. ":" .. choice
     })
-    
+
     event:setCostData(self, {
       skill = choice,
       lose = (lose_choice == "确定"),
@@ -68,14 +70,14 @@ duorui:addEffect(fk.Damage, {
     local cost_data = event:getCostData(self)
     local skill_name = cost_data.skill
     local target_player = room:getPlayerById(cost_data.target)
-    
+
     -- 自己获得技能
     room:handleAddLoseSkills(player, skill_name, nil, true, true)
     -- 通过标记，记录获得的技能数量，用于游戏获胜时的战功判定
     room:addPlayerMark(player, "exgod_zhangliao-achievements")
 
     if cost_data.lose then
-      room:handleAddLoseSkills(target_player, "-"..skill_name, nil, true, false)
+      room:handleAddLoseSkills(target_player, "-" .. skill_name, nil, true, false)
     end
   end,
 })
@@ -88,7 +90,7 @@ duorui:addEffect(fk.GameFinished, {
     return player:getMark("exgod_zhangliao-achievements") >= 5 and table.contains(winners, player.role)
   end,
   on_refresh = function(self, event, target, player, data)
-    F.addAchievement(player.room, nil, nil, nil, "闻风丧胆", nil, nil, {player}, false, "夜隐浮云")
+    F.addAchievement(player.room, nil, nil, nil, "闻风丧胆", nil, nil, { player }, false, "夜隐浮云")
   end
 })
 

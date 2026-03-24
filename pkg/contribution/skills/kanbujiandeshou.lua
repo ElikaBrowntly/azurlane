@@ -2,7 +2,7 @@ local shou = fk.CreateSkill {
   name = "yyfy_kanbujiandeshou",
 }
 
-local ok, CS = pcall(require, "packages.hidden-clouds.functions")
+local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 Fk:loadTranslationTable {
   ["yyfy_kanbujiandeshou"] = "看不见的手",
