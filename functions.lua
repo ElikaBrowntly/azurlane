@@ -158,6 +158,205 @@ function functions.getWeimu(player, target, color, skillName)
   return nil
 end
 
+-- 数字映射（小写+大写）
+local chinese_digits = {
+  ["零"] = 0, ["一"] = 1, ["二"] = 2, ["三"] = 3, ["四"] = 4,
+  ["五"] = 5, ["六"] = 6, ["七"] = 7, ["八"] = 8, ["九"] = 9,
+  ["壹"] = 1, ["贰"] = 2, ["叁"] = 3, ["肆"] = 4, ["伍"] = 5,
+  ["陆"] = 6, ["柒"] = 7, ["捌"] = 8, ["玖"] = 9,
+}
+
+-- 单位映射（包含大写）
+local chinese_units = {
+  ["十"] = 10, ["百"] = 100, ["千"] = 1000,
+  ["拾"] = 10, ["佰"] = 100, ["仟"] = 1000,
+  ["万"] = 10000, ["亿"] = 100000000,
+}
+
+-- 判断字符是否是汉字数字相关（用于提取）
+local function is_chinese_num_char(ch)
+    return chinese_digits[ch] or chinese_units[ch] or ch == "点"
+end
+
+-- 遍历 UTF-8 字符串的每个字符
+local function iter_utf8_chars(s)
+    local i = 1
+    return function()
+        if i > #s then return nil end
+        local b = s:byte(i)
+        local len = (b < 0x80) and 1 or (b < 0xE0) and 2 or (b < 0xF0) and 3 or 4
+        local char = s:sub(i, i+len-1)
+        i = i + len
+        return char
+    end
+end
+
+-- 解析不含“万”“亿”的汉字数字段（如“三百二十”）
+local function parse_section(sec)
+    if #sec == 0 then return 0 end
+    local val, cur = 0, 0
+    for ch in iter_utf8_chars(sec) do
+        local d = chinese_digits[ch]
+        local u = chinese_units[ch]
+        if d then
+            cur = d
+        elseif u then
+            if u == 10 then
+                cur = cur == 0 and 1 or cur
+                val = val + cur * u
+                cur = 0
+            elseif u == 100 or u == 1000 then
+                val = val + (cur == 0 and u or cur * u)
+                cur = 0
+            else -- 万、亿（在段内出现时，作为乘法处理）
+                cur = cur == 0 and 1 or cur
+                val = val + cur * u
+                cur = 0
+            end
+        end
+    end
+    return val + cur
+end
+
+-- 汉字数字转数字（支持整数、小数、复合单位）
+local function chineseToNumber(str)
+    if not str or #str == 0 then return nil end
+
+    -- 分离整数和小数部分
+    local int_part, dec_part = str:match("^(.+)点(.+)$")
+    if not int_part then
+        int_part = str
+        dec_part = nil
+    end
+
+    -- 按“亿”“万”分段
+    local parts = {}
+    local billion_pos = int_part:find("亿")
+    local million_pos = int_part:find("万")
+
+    if billion_pos then
+        -- 亿之前
+        local before = int_part:sub(1, billion_pos - 1)
+        if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 100000000 }) end
+        -- 亿之后、万之前
+        if million_pos and million_pos > billion_pos then
+            local between = int_part:sub(billion_pos + 1, million_pos - 1)
+            if #between > 0 then table.insert(parts, { val = parse_section(between), mul = 10000 }) end
+            -- 万之后
+            local after = int_part:sub(million_pos + 1)
+            if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
+        else
+            -- 只有亿没有万
+            local after = int_part:sub(billion_pos + 1)
+            if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
+        end
+    elseif million_pos then
+        -- 只有万
+        local before = int_part:sub(1, million_pos - 1)
+        if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 10000 }) end
+        local after = int_part:sub(million_pos + 1)
+        if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
+    else
+        -- 无单位
+        table.insert(parts, { val = parse_section(int_part), mul = 1 })
+    end
+
+    local total = 0
+    for _, p in ipairs(parts) do
+        total = total + p.val * p.mul
+    end
+
+    -- 处理小数部分
+    if dec_part then
+        local dec_val = 0
+        local scale = 0.1
+        for ch in iter_utf8_chars(dec_part) do
+            local d = chinese_digits[ch] or 0
+            dec_val = dec_val + d * scale
+            scale = scale * 0.1
+        end
+        total = total + dec_val
+    end
+
+    return total
+end
+
+-- 主函数：提取字符串中所有数字（阿拉伯+汉字）并求和
+functions = functions or {}
+function functions.sumNumbersInString(str)
+    if type(str) ~= "string" or #str == 0 then return 0 end
+
+    local sum = 0
+    local i = 1
+    local chars = {}
+    for ch in iter_utf8_chars(str) do
+        chars[#chars+1] = ch
+    end
+
+    local len = #chars
+    local pos = 1
+
+    while pos <= len do
+        local ch = chars[pos]
+        -- 负数
+        if ch == "-" then
+            local num_str = "-"
+            pos = pos + 1
+            while pos <= len do
+                local c = chars[pos]
+                if c:match("%d") or c == "." then
+                    num_str = num_str .. c
+                    pos = pos + 1
+                else
+                    break
+                end
+            end
+            local n = tonumber(num_str)
+            if n then sum = sum + n end
+            goto next
+        end
+
+        -- 阿拉伯数字（含小数点）
+        if ch:match("%d") then
+            local num_str = ""
+            while pos <= len do
+                local c = chars[pos]
+                if c:match("%d") or c == "." then
+                    num_str = num_str .. c
+                    pos = pos + 1
+                else
+                    break
+                end
+            end
+            local n = tonumber(num_str)
+            if n then sum = sum + n end
+            goto next
+        end
+
+        -- 汉字数字串
+        if is_chinese_num_char(ch) then
+            local num_str = ""
+            while pos <= len do
+                local c = chars[pos]
+                if is_chinese_num_char(c) then
+                    num_str = num_str .. c
+                    pos = pos + 1
+                else
+                    break
+                end
+            end
+            local n = chineseToNumber(num_str)
+            if n then sum = sum + n end
+            goto next
+        end
+
+        pos = pos + 1
+        ::next::
+    end
+
+    return sum
+end
+
 --- 按顺序播放技能语音
 ---@param player ServerPlayer 拥有技能的玩家
 ---@param skillName string 技能名

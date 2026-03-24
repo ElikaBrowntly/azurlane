@@ -385,6 +385,16 @@ Fk:loadTranslationTable{
   ["designer:yyfy_maoyidawang"] = "曹宪咬我"
 }
 
+local yuan__zhangliao = General:new(extension, "yyfy_yuan__zhangliao", "wei", 4)
+yuan__zhangliao:addSkills {"yyfy_xizhen"}
+Fk:loadTranslationTable{
+  ["yyfy_yuan"] = "缘？",
+  ["yyfy_yuan__zhangliao"] = "缘张辽",
+  ["#yyfy_yuan__zhangliao"] = "破阵十万",
+  ["designer:yyfy_yuan__zhangliao"] = "牢天师（Ark）",
+  ["~yyfy_yuan__zhangliao"] = "骨埋大魏土，魂壮逍遥津！"
+}
+
 local tianshu_skels = require("packages.hidden-clouds.pkg.contribution.skills.tianshu.tianshu")
 for _, skel in ipairs(tianshu_skels) do
   table.insert(extension.skill_skels, skel)
@@ -398,7 +408,7 @@ Fk:loadTranslationTable{
   ["#yyfy_ex__nanhualaoxian"] = "道法自然",
   ["designer:yyfy_ex__nanhualaoxian"] = "水上由岐",
   ["!yyfy_ex__nanhualaoxian"] = "因果开茅塞，轮回似醍醐。",
-  ["~yyfy_ex__nanhualaoxian"] = "尔生异心，必遭恶报。"
+  ["~yyfy_ex__nanhualaoxian"] = "尔生异心，必获恶报。"
 }
 
 -- 太逆天了，737个技能，不能上线
