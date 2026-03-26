@@ -160,201 +160,221 @@ end
 
 -- 数字映射（小写+大写）
 local chinese_digits = {
-  ["零"] = 0, ["一"] = 1, ["二"] = 2, ["三"] = 3, ["四"] = 4,
-  ["五"] = 5, ["六"] = 6, ["七"] = 7, ["八"] = 8, ["九"] = 9,
-  ["壹"] = 1, ["贰"] = 2, ["叁"] = 3, ["肆"] = 4, ["伍"] = 5,
-  ["陆"] = 6, ["柒"] = 7, ["捌"] = 8, ["玖"] = 9,
+  ["零"] = 0,
+  ["一"] = 1,
+  ["二"] = 2,
+  ["三"] = 3,
+  ["四"] = 4,
+  ["五"] = 5,
+  ["六"] = 6,
+  ["七"] = 7,
+  ["八"] = 8,
+  ["九"] = 9,
+  ["壹"] = 1,
+  ["贰"] = 2,
+  ["叁"] = 3,
+  ["肆"] = 4,
+  ["伍"] = 5,
+  ["陆"] = 6,
+  ["柒"] = 7,
+  ["捌"] = 8,
+  ["玖"] = 9,
 }
 
 -- 单位映射（包含大写）
 local chinese_units = {
-  ["十"] = 10, ["百"] = 100, ["千"] = 1000,
-  ["拾"] = 10, ["佰"] = 100, ["仟"] = 1000,
-  ["万"] = 10000, ["亿"] = 100000000,
+  ["十"] = 10,
+  ["百"] = 100,
+  ["千"] = 1000,
+  ["拾"] = 10,
+  ["佰"] = 100,
+  ["仟"] = 1000,
+  ["万"] = 10000,
+  ["亿"] = 100000000,
 }
 
 -- 判断字符是否是汉字数字相关（用于提取）
 local function is_chinese_num_char(ch)
-    return chinese_digits[ch] or chinese_units[ch] or ch == "点"
+  return chinese_digits[ch] or chinese_units[ch] or ch == "点"
 end
 
 -- 遍历 UTF-8 字符串的每个字符
 local function iter_utf8_chars(s)
-    local i = 1
-    return function()
-        if i > #s then return nil end
-        local b = s:byte(i)
-        local len = (b < 0x80) and 1 or (b < 0xE0) and 2 or (b < 0xF0) and 3 or 4
-        local char = s:sub(i, i+len-1)
-        i = i + len
-        return char
-    end
+  local i = 1
+  return function()
+    if i > #s then return nil end
+    local b = s:byte(i)
+    local len = (b < 0x80) and 1 or (b < 0xE0) and 2 or (b < 0xF0) and 3 or 4
+    local char = s:sub(i, i + len - 1)
+    i = i + len
+    return char
+  end
 end
 
 -- 解析不含“万”“亿”的汉字数字段（如“三百二十”）
 local function parse_section(sec)
-    if #sec == 0 then return 0 end
-    local val, cur = 0, 0
-    for ch in iter_utf8_chars(sec) do
-        local d = chinese_digits[ch]
-        local u = chinese_units[ch]
-        if d then
-            cur = d
-        elseif u then
-            if u == 10 then
-                cur = cur == 0 and 1 or cur
-                val = val + cur * u
-                cur = 0
-            elseif u == 100 or u == 1000 then
-                val = val + (cur == 0 and u or cur * u)
-                cur = 0
-            else -- 万、亿（在段内出现时，作为乘法处理）
-                cur = cur == 0 and 1 or cur
-                val = val + cur * u
-                cur = 0
-            end
-        end
+  if #sec == 0 then return 0 end
+  local val, cur = 0, 0
+  for ch in iter_utf8_chars(sec) do
+    local d = chinese_digits[ch]
+    local u = chinese_units[ch]
+    if d then
+      cur = d
+    elseif u then
+      if u == 10 then
+        cur = cur == 0 and 1 or cur
+        val = val + cur * u
+        cur = 0
+      elseif u == 100 or u == 1000 then
+        val = val + (cur == 0 and u or cur * u)
+        cur = 0
+      else       -- 万、亿（在段内出现时，作为乘法处理）
+        cur = cur == 0 and 1 or cur
+        val = val + cur * u
+        cur = 0
+      end
     end
-    return val + cur
+  end
+  return val + cur
 end
 
 -- 汉字数字转数字（支持整数、小数、复合单位）
 local function chineseToNumber(str)
-    if not str or #str == 0 then return nil end
+  if not str or #str == 0 then return nil end
 
-    -- 分离整数和小数部分
-    local int_part, dec_part = str:match("^(.+)点(.+)$")
-    if not int_part then
-        int_part = str
-        dec_part = nil
-    end
+  -- 分离整数和小数部分
+  local int_part, dec_part = str:match("^(.+)点(.+)$")
+  if not int_part then
+    int_part = str
+    dec_part = nil
+  end
 
-    -- 按“亿”“万”分段
-    local parts = {}
-    local billion_pos = int_part:find("亿")
-    local million_pos = int_part:find("万")
+  -- 按“亿”“万”分段
+  local parts = {}
+  local billion_pos = int_part:find("亿")
+  local million_pos = int_part:find("万")
 
-    if billion_pos then
-        -- 亿之前
-        local before = int_part:sub(1, billion_pos - 1)
-        if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 100000000 }) end
-        -- 亿之后、万之前
-        if million_pos and million_pos > billion_pos then
-            local between = int_part:sub(billion_pos + 1, million_pos - 1)
-            if #between > 0 then table.insert(parts, { val = parse_section(between), mul = 10000 }) end
-            -- 万之后
-            local after = int_part:sub(million_pos + 1)
-            if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
-        else
-            -- 只有亿没有万
-            local after = int_part:sub(billion_pos + 1)
-            if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
-        end
-    elseif million_pos then
-        -- 只有万
-        local before = int_part:sub(1, million_pos - 1)
-        if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 10000 }) end
-        local after = int_part:sub(million_pos + 1)
-        if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
+  if billion_pos then
+    -- 亿之前
+    local before = int_part:sub(1, billion_pos - 1)
+    if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 100000000 }) end
+    -- 亿之后、万之前
+    if million_pos and million_pos > billion_pos then
+      local between = int_part:sub(billion_pos + 1, million_pos - 1)
+      if #between > 0 then table.insert(parts, { val = parse_section(between), mul = 10000 }) end
+      -- 万之后
+      local after = int_part:sub(million_pos + 1)
+      if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
     else
-        -- 无单位
-        table.insert(parts, { val = parse_section(int_part), mul = 1 })
+      -- 只有亿没有万
+      local after = int_part:sub(billion_pos + 1)
+      if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
     end
+  elseif million_pos then
+    -- 只有万
+    local before = int_part:sub(1, million_pos - 1)
+    if #before > 0 then table.insert(parts, { val = parse_section(before), mul = 10000 }) end
+    local after = int_part:sub(million_pos + 1)
+    if #after > 0 then table.insert(parts, { val = parse_section(after), mul = 1 }) end
+  else
+    -- 无单位
+    table.insert(parts, { val = parse_section(int_part), mul = 1 })
+  end
 
-    local total = 0
-    for _, p in ipairs(parts) do
-        total = total + p.val * p.mul
+  local total = 0
+  for _, p in ipairs(parts) do
+    total = total + p.val * p.mul
+  end
+
+  -- 处理小数部分
+  if dec_part then
+    local dec_val = 0
+    local scale = 0.1
+    for ch in iter_utf8_chars(dec_part) do
+      local d = chinese_digits[ch] or 0
+      dec_val = dec_val + d * scale
+      scale = scale * 0.1
     end
+    total = total + dec_val
+  end
 
-    -- 处理小数部分
-    if dec_part then
-        local dec_val = 0
-        local scale = 0.1
-        for ch in iter_utf8_chars(dec_part) do
-            local d = chinese_digits[ch] or 0
-            dec_val = dec_val + d * scale
-            scale = scale * 0.1
-        end
-        total = total + dec_val
-    end
-
-    return total
+  return total
 end
 
 -- 主函数：提取字符串中所有数字（阿拉伯+汉字）并求和
 functions = functions or {}
 function functions.sumNumbersInString(str)
-    if type(str) ~= "string" or #str == 0 then return 0 end
+  if type(str) ~= "string" or #str == 0 then return 0 end
 
-    local sum = 0
-    local i = 1
-    local chars = {}
-    for ch in iter_utf8_chars(str) do
-        chars[#chars+1] = ch
+  local sum = 0
+  local i = 1
+  local chars = {}
+  for ch in iter_utf8_chars(str) do
+    chars[#chars + 1] = ch
+  end
+
+  local len = #chars
+  local pos = 1
+
+  while pos <= len do
+    local ch = chars[pos]
+    -- 负数
+    if ch == "-" then
+      local num_str = "-"
+      pos = pos + 1
+      while pos <= len do
+        local c = chars[pos]
+        if c:match("%d") or c == "." then
+          num_str = num_str .. c
+          pos = pos + 1
+        else
+          break
+        end
+      end
+      local n = tonumber(num_str)
+      if n then sum = sum + n end
+      goto next
     end
 
-    local len = #chars
-    local pos = 1
-
-    while pos <= len do
-        local ch = chars[pos]
-        -- 负数
-        if ch == "-" then
-            local num_str = "-"
-            pos = pos + 1
-            while pos <= len do
-                local c = chars[pos]
-                if c:match("%d") or c == "." then
-                    num_str = num_str .. c
-                    pos = pos + 1
-                else
-                    break
-                end
-            end
-            local n = tonumber(num_str)
-            if n then sum = sum + n end
-            goto next
+    -- 阿拉伯数字（含小数点）
+    if ch:match("%d") then
+      local num_str = ""
+      while pos <= len do
+        local c = chars[pos]
+        if c:match("%d") or c == "." then
+          num_str = num_str .. c
+          pos = pos + 1
+        else
+          break
         end
-
-        -- 阿拉伯数字（含小数点）
-        if ch:match("%d") then
-            local num_str = ""
-            while pos <= len do
-                local c = chars[pos]
-                if c:match("%d") or c == "." then
-                    num_str = num_str .. c
-                    pos = pos + 1
-                else
-                    break
-                end
-            end
-            local n = tonumber(num_str)
-            if n then sum = sum + n end
-            goto next
-        end
-
-        -- 汉字数字串
-        if is_chinese_num_char(ch) then
-            local num_str = ""
-            while pos <= len do
-                local c = chars[pos]
-                if is_chinese_num_char(c) then
-                    num_str = num_str .. c
-                    pos = pos + 1
-                else
-                    break
-                end
-            end
-            local n = chineseToNumber(num_str)
-            if n then sum = sum + n end
-            goto next
-        end
-
-        pos = pos + 1
-        ::next::
+      end
+      local n = tonumber(num_str)
+      if n then sum = sum + n end
+      goto next
     end
 
-    return sum
+    -- 汉字数字串
+    if is_chinese_num_char(ch) then
+      local num_str = ""
+      while pos <= len do
+        local c = chars[pos]
+        if is_chinese_num_char(c) then
+          num_str = num_str .. c
+          pos = pos + 1
+        else
+          break
+        end
+      end
+      local n = chineseToNumber(num_str)
+      if n then sum = sum + n end
+      goto next
+    end
+
+    pos = pos + 1
+    ::next::
+  end
+
+  return sum
 end
 
 --- 按顺序播放技能语音
@@ -493,6 +513,165 @@ function functions.addSkin(skinData)
   -- else
   --   table.insert(functions.PendingSkins, skinData)
   -- end
+end
+
+---获得武将对应的所有皮肤路径（默认排除欢乐将的原画）
+---@param general string @ 武将名
+---@param name? boolean @ 是否包括武将名本身，默认否
+---@param delight? boolean @ 填true包括欢乐将原画
+---@param only? boolean @ 排除原版皮肤，默认否
+---@return string[] @ 所有皮肤路径
+function functions.getSkins(general, name, delight, only)
+  functions.checkInit()
+  if general == "" then return {} end
+  local skins = not only and Fk:getSkinsByGeneral(general) or {}
+  if functions.Skins[general] then
+    for _, skData in pairs(functions.Skins[general]) do
+      table.insertIfNeed(skins, skData.path)
+    end
+  end
+  if name then
+    table.insertIfNeed(skins, general)
+  end
+  if not delight then
+    for i = #skins, 1, -1 do
+      local skin = skins[i]
+      if skin:find("delight/image/generals") then
+        table.remove(skins, i)
+      end
+    end
+  end
+  return skins
+end
+
+---返回对于该玩家来说的信息
+---@param player ServerPlayer|TaskPlayer @ 玩家
+---@param general? string @ 仅获取general对应的skinInfos，填""则获取玩家主副将的信息
+---@param only? boolean @ 排除原版皮肤，默认否
+---@return table @ skinInfos, 路径->价格、品质
+---@return table @ allSkins, 无general参数时为[有信息的武将名1,有信息的武将名2,...],有则为该武将的所有皮肤路径
+function functions.getSkinsInfo(player, general, only)
+  functions.checkInit()
+  local Save
+  if player.id > 0 then
+    Save = player:getGlobalSaveState("coins_system_skins") or {}
+  else
+    Save = {}
+  end
+  local gskins = {}
+  if general ~= nil then
+    local prgen = general == "" and player.general or general
+    gskins = functions.getSkins(prgen, nil, nil, only)
+    if general == "" and player.deputyGeneral and player.deputyGeneral ~= "" then
+      local deputySkins = functions.getSkins(player.deputyGeneral, nil, nil, only)
+      if #deputySkins > 0 then
+        table.insertTableIfNeed(gskins, deputySkins)
+      end
+    end
+  end
+  local skinInfos, allSkins = {}, {}
+  for gen, skinList in pairs(functions.Skins) do
+    local paths = {}
+    for _, skinData in pairs(skinList) do
+      if general == nil then
+        skinInfos[skinData.path] = {
+          price = skinData.price or 0,
+          quality = skinData.quality or "common",
+        }
+      elseif table.contains(gskins, skinData.path) then
+        table.insertIfNeed(paths, skinData.path)
+        skinInfos[skinData.path] = {
+          price = skinData.price or 0,
+          quality = skinData.quality or "common",
+        }
+      end
+    end
+    if general == nil then
+      table.insertIfNeed(allSkins, gen)
+    elseif #paths > 0 then
+      table.insertTableIfNeed(allSkins, paths)
+    end
+  end
+  for k, v in pairs(Save) do
+    if skinInfos[k] and type(v) == "number" then
+      skinInfos[k].price = v
+    end
+  end
+  return skinInfos, allSkins
+end
+
+--- 一个字符串str是否以另一个字符串ending结尾
+---@param str string 要判断的字符串
+---@param ending string 结尾字符串
+---@return boolean
+function functions.ends_with(str, ending)
+  -- 获取s的长度和ending的长度
+  local len_s = #str
+  local len_ending = #ending
+
+  -- 如果s比ending短，它不可能以ending结尾
+  if len_s < len_ending then
+    return false
+  end
+
+  -- 使用string.sub提取s的末尾部分，并与ending比较
+  local end_part = string.sub(str, len_s - len_ending + 1)
+  return end_part == ending
+end
+
+--player主将或副将的皮肤（无皮肤则判断将名）为name时，播放对应动画
+---@param player ServerPlayer @ 角色
+---@param names string|string[] 皮肤名
+---@param skill_name string 技能名
+---@param delay? integer @ 播放后延迟毫秒，默认不延迟
+---@param atype? string @ 以.qml结尾则播放全屏大动画，否则在玩家脸上播放emotion:填""是技能名anim，否则是登场动画
+---@param judge? boolean @ 仅判断是否可以播放动画，默认false
+---@return boolean @ 是否可以播放，人机情况下默认不可以（req为""，获取不到当前皮肤）
+function functions.setEmotion(player, names, skill_name, delay, atype, judge)
+  local room = player.room
+  local name
+  if type(names) == "table" then
+    name = names[1]
+  elseif type(names) == "string" then
+    name = names
+    names = { name }
+  end
+  local deputy = player.deputyGeneral
+  local extra_data = deputy == "" and { player.general } or { player.general, deputy }
+  local req = ""
+  if player.id > 0 then
+    req = room:askToCustomDialog(player, {
+      qml_path = "packages/hidden-clouds/qml/getSkin.qml",
+      skill_name = "",
+      extra_data = extra_data,
+    })
+  end
+  if #extra_data > 1 and req ~= "" then
+    deputy = req[2]
+    req = req[1]
+  end
+  if req == "" then req = player.general end
+  if not table.contains(names, req) and not table.contains(names, deputy) then return false end
+  local tp = atype or ""
+  local path = ""
+  if functions.ends_with(tp, ".qml") then
+    path = "./packages/hidden-clouds/qml/" .. tp
+    room:doSuperLightBox(path)
+  else
+    path = "./packages/hidden-clouds/image/anim/dengchang_" .. tp
+    if not judge then
+      if tp ~= "" then
+        room:setEmotion(player, path)
+      else
+        room:setEmotion(player, "./packages/hidden-clouds/image/anim/" .. skill_name)
+      end
+      delay = delay or 0
+      if delay > 0 then
+        room:delay(delay)
+      end
+    end
+  end
+  return true
 end
 
 return functions

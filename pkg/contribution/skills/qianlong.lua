@@ -36,9 +36,10 @@ Fk:loadTranslationTable{
 local wei_lord_skills = {"lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
 "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
 "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
-"lan__jiangchi", "mingjian", "lan__zhaotu", "jingju"}
+"lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju"}
 
--- 由于道心值变化而动态获得技能的函数
+--- 由于道心值变化而动态获得技能的函数
+---@param player ServerPlayer
 local function daoxin_handle_skills(player)
     local room = player.room
     if player:getMark("@lan__qianlong_daoxin") >= 30 and not player:hasSkill("lan__yongzu") then
@@ -63,6 +64,18 @@ local function daoxin_handle_skills(player)
     room:handleAddLoseSkills(player, "zhimin")
   end
   if player:getMark("@lan__qianlong_daoxin") >= 100 and not player:hasSkill("lan__juejin") then
+    room:doSuperLightBox("packages/hidden-clouds/qml/juejin.qml")
+    player:broadcastSkillInvoke("lan__juejin")
+    local data = {}
+    local path = "packages/hidden-clouds/image/skins/lan__caomao__1.gif"
+    if player.general == "lan__caomao" then
+      data = { player.id, "changeskin", path, "" }
+    elseif player.deputyGeneral == "lan__caomao" then
+      data = { player.id, "changeskin", "", path }
+    end
+    if data ~= {} then
+      room:doBroadcastNotify("ChangeSkin", data)
+    end
     room:handleAddLoseSkills(player, "lan__juejin")
   end
 end
