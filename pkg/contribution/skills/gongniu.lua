@@ -15,6 +15,9 @@ gongniu:addEffect(fk.DetermineDamageCaused, {
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
+    if data.damage ~= data.to.hp then
+      player:chat("吾乃最强，且手握一切胜利之人")
+    end
     data.damage = data.to.hp
   end
 })

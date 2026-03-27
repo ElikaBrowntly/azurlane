@@ -21,6 +21,7 @@ baima:addEffect(fk.DamageFinished, {
     })
   end,
   on_use = function(self, event, target, player, data)
+    player:chat("不死的太阳啊，请赐予吾闪耀的骏马！")
     player.room:damage{
       from = player,
       to = data.from,

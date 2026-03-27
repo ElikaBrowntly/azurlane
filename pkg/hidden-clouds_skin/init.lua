@@ -35,6 +35,11 @@ if ok and CS then
     general = "nanhualaoxian",
     price = 888888,
   })
+  CS.addSkin({
+    path = "packages/hidden-clouds/image/skins/quyi__bahua.jpg",
+    quality = "epic",
+    general = "quyi",
+  })
 end
 
 Fk:loadTranslationTable {
@@ -46,7 +51,8 @@ Fk:loadTranslationTable {
   ["yyfy_ArchetypeEarth__2"] = "第三再临",
   ["yyfy_ArchetypeEarth__3"] = "最终再临",
   ["lan__caomao__1"] = "决进形态",
-  ["yyfy_ex__nanhualaoxian__1"] = "着墨山河"
+  ["yyfy_ex__nanhualaoxian__1"] = "着墨山河",
+  ["quyi__bahua"] = "御津井芭华"
 }
 
 return extension

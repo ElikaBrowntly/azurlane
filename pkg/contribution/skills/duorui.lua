@@ -1,12 +1,13 @@
 local duorui = fk.CreateSkill {
   name = "yyfy_duorui",
+  tags = { Skill.Permanent }
 }
 
 local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_duorui"] = "夺锐",
-  [":yyfy_duorui"] = "当你对一名其他角色造成伤害后，你可以获得其一个技能，然后可以令其失去该技能",
+  [":yyfy_duorui"] = "持恒技，当你对一名其他角色造成伤害后，你可以获得其一个技能，然后可以令其失去该技能",
 
   ["#yyfy_duorui-choose"] = "夺锐：是否获得 %dest 的一个技能？",
   ["#yyfy_duorui-skill"] = "夺锐：选择%dest的一个技能",

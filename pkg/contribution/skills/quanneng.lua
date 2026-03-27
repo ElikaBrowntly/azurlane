@@ -3,25 +3,25 @@ local quanneng = fk.CreateSkill {
   tags = { Skill.Permanent },
 }
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_quanneng"] = "权能",
-  [":yyfy_quanneng"] = "持恒技，一名角色的回合开始时，你可以获得<a href='Verethragna'>乌鲁斯拉格纳十大化身</a>"..
-  "</a>中的最多3个(不能选择上回合获得过的)，直到回合结束。",
+  [":yyfy_quanneng"] = "持恒技，一名角色的回合开始时，你可以获得<a href='Verethragna'>乌鲁斯拉格纳十大化身</a>" ..
+      "</a>中的最多3个(不能选择上回合获得过的)，直到回合结束。",
 
-  ["Verethragna"] = "<br><font color='red'>强风</font>：你与其他角色的距离-10，你使用牌无次数限制且无法被响应"..
-  "<br><font color='#CC3131'>公牛</font>：你对其他角色造成的伤害改为其体力值"..
-  "<br><font color='orange'>白马</font>：其他角色造成伤害后，你可以对其造成等量火焰伤害"..
-  "<br><font color='yellow'>骆驼</font>：你受到伤害后回复等量体力"..
-  "<br><font color='#93DB70'>山猪</font>：获得此化身时，令一名其他角色失去所有体力。若其死亡，视为你杀死了该角色。"..
-  "<br><font color='green'>少年</font>：出牌阶段限一次，你可以选择一名其他角色，赐予其一个其他化身。其他角色受到另一名其他角色的伤害后，你可以赐予其一个其他化身。"..
-  "<br><font color='cyan'>凤凰</font>：其他角色与你的距离+10，你不是其他角色使用牌的合法目标。此化身结束时，你失去1点体力。"..
-  "<br><font color='blue'>牡羊</font>：限定技，你死亡时改为修整一回合"..
-  "<br><font color='indigo'>山羊</font>：其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去X点体力(X为同意的人数)"..
-  "<br><font color='purple'>战士</font>：获得此化身时，你可以令一名其他角色失去所有技能直到你的回合结束",
+  ["Verethragna"] = "<br><font color='red'>强风</font>：你与其他角色的距离-10，你使用牌无次数限制且无法被响应" ..
+      "<br><font color='#CC3131'>公牛</font>：你对其他角色造成的伤害改为其体力值" ..
+      "<br><font color='orange'>白马</font>：其他角色造成伤害后，你可以对其造成等量火焰伤害" ..
+      "<br><font color='yellow'>骆驼</font>：你受到伤害后回复等量体力" ..
+      "<br><font color='#93DB70'>山猪</font>：获得此化身时，令一名其他角色失去所有体力。若其死亡，视为你杀死了该角色。" ..
+      "<br><font color='green'>少年</font>：出牌阶段限一次，你可以选择一名其他角色，赐予其一个其他化身。其他角色受到另一名其他角色的伤害后，你可以赐予其一个其他化身。" ..
+      "<br><font color='cyan'>凤凰</font>：其他角色与你的距离+10，你不是其他角色使用牌的合法目标。此化身结束时，你失去1点体力。" ..
+      "<br><font color='blue'>牡羊</font>：限定技，你死亡时改为修整一回合" ..
+      "<br><font color='indigo'>山羊</font>：其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去X点体力(X为同意的人数)" ..
+      "<br><font color='purple'>战士</font>：获得此化身时，你可以令一名其他角色失去所有技能直到你的回合结束",
 
   ["#yyfy_quanneng_trigger"] = "权能：是否发动〖权能〗？从10个技能中选择至多3个",
   ["#yyfy_quanneng_choose"] = "权能：请选择至多3个技能（不可选择上回合获得过的）",
-  
+
   -- 子技能名称翻译
   ["yyfy_qiangfeng"] = "强风",
   ["yyfy_gongniu"] = "公牛",
@@ -72,22 +72,45 @@ quanneng:addEffect(fk.TurnStart, {
     end
     -- 如果所有技能都不可选，则无法发动
     if #available_skills == 0 then
-      room:sendLog{
+      room:sendLog {
         type = "#yyfy_quanneng_no_available",
         from = player.id,
         arg = "yyfy_quanneng",
       }
       return false
     end
-    -- 让玩家选择至多3个技能
-    local chosen_skills = room:askToChoices(player, {
-        choices = available_skills,
-        min_num = 0,
-        max_num = 3,
-        prompt = "#yyfy_quanneng_choose"
+    local disabled_skills = {}
+    for _, skill in ipairs(all_skills) do
+      if not table.contains(available_skills, skill) then
+        table.insertIfNeed(disabled_skills, skill)
+      end
+    end
+    local req = Request:new(player, "CustomDialog")
+    req:setData(player, {
+      path = "packages/hidden-clouds/qml/quanneng.qml",
+      data = { available_skills, disabled_skills }, -- 传递可用技能和禁用技能
     })
+    req:setDefaultReply(player, "")
+    local result = req:getResult(player)
+
+    if not result or result == "" then
+      return false -- 用户取消
+    end
+
+    -- 解析返回的 JSON 字符串
+    local ok, chosen_skills = pcall(json.decode, result)
+    if not ok or type(chosen_skills) ~= "table" or #chosen_skills == 0 then
+      return false
+    end
+    -- -- 让玩家选择至多3个技能
+    -- local chosen_skills = room:askToChoices(player, {
+    --     choices = available_skills,
+    --     min_num = 0,
+    --     max_num = 3,
+    --     prompt = "#yyfy_quanneng_choose"
+    -- })
     -- 如果没选择技能，则不发动
-    if not chosen_skills or #chosen_skills == 0 then return false end
+    -- if not chosen_skills or #chosen_skills == 0 then return false end
     -- 记录当前回合获得的技能
     local current_skills_str = table.concat(chosen_skills, ",")
     room:setPlayerMark(player, "yyfy_quanneng_current", current_skills_str)

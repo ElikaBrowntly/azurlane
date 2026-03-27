@@ -5,21 +5,42 @@ local yyfy_zhiti = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_zhiti"] = "止啼",
-  [":yyfy_zhiti"] = "锁定技，若场上已受伤的角色数不小于：1，你使用装备牌时摸一张牌；2，你拥有技能〖忘隙〗；3，你跳过弃牌阶段；"..
-  "4，出牌阶段限一次，你可以令一名角色增加1点体力上限并恢复所有装备栏；5，结束阶段，你可以废除一名其他角色一个指定的装备栏。",
+  [":yyfy_zhiti"] = "锁定技，若场上已受伤的角色数不小于：1，你使用装备牌时摸一张牌；2，你拥有技能"..
+  "〖<a href = 'yyfy_zhiti-wangxi'>忘隙</a>〗；3，你跳过弃牌阶段；4，出牌阶段限一次，"..
+  "你可以令一名角色增加1点体力上限并恢复所有装备栏；5，结束阶段，你可以废除一名其他角色一个指定的装备栏。",
+
+  ["yyfy_zhiti-wangxi"] = "<br>游戏开始时，可以自选本局游戏要获得标·忘隙还是界·忘隙<br><br>"..
+  "<b>标·忘隙:</b>  操作简便，适合pve<br><b>界·忘隙:</b>  效果强力，适合pvp",
 
   ["#yyfy_zhiti-choose"] = "止啼：你可以废除一名其他角色的一个装备栏",
   ["#yyfy_zhiti-recover"] = "止啼：选择一名角色，增加其体力上限并恢复所有装备栏",
   ["@yyfy_zhiti-recover"] = "止啼",
 
   ["$yyfy_zhiti1"] = "江东小儿，安敢啼哭？",
-  ["$yyfy_zhiti2"] = "娃闻名止啼，孙损十万休。",
+  ["$yyfy_zhiti2"] = "娃闻名止啼，孙损十万休。"
 }
 
 -- 获取场上受伤角色数
 local function getWoundedCount(room)
   return #table.filter(room.alive_players, function(p) return p:isWounded() end)
 end
+
+yyfy_zhiti:addEffect(fk.GameStart, {
+  can_refresh = function (self, event, target, player, data)
+    return player and player:hasSkill(self)
+  end,
+  on_refresh = function (self, event, target, player, data)
+    local room = player.room
+    if room:askToChoice(player, {
+      choices = {"界·忘隙（效果强力，适合pvp）", "标·忘隙（操作简单，适合pve）"},
+      cancelable = false,
+      skill_name = yyfy_zhiti.name,
+      prompt = "止啼：请选择本局游戏要获得的〖忘隙〗版本"
+    }) == "标·忘隙（操作简单，适合pve）" then
+      room:setPlayerMark(player, "yyfy_zhiti-wangxi", 1)
+    end
+  end
+})
 
 -- 1. 使用装备牌时摸一张牌
 yyfy_zhiti:addEffect(fk.CardUsing, {
@@ -42,10 +63,14 @@ local wangxiRefresh = {
       (not player:hasSkill("yyfy_wangxi", true) and getWoundedCount(player.room) >= 2 ))
   end,
   on_refresh = function(self, event, target, player, data)
+    local wangxi = "yyfy_wangxi"
+    if player:getMark("yyfy_zhiti-wangxi") == 1 and Fk.skills["wangxi"] then
+      wangxi = "wangxi"
+    end
     if player:hasSkill("yyfy_wangxi", true) then
-      player.room:handleAddLoseSkills(player, "-yyfy_wangxi")
+      player.room:handleAddLoseSkills(player, "-"..wangxi)
     else
-      player.room:handleAddLoseSkills(player, "yyfy_wangxi")
+      player.room:handleAddLoseSkills(player, wangxi)
     end
   end,
 }

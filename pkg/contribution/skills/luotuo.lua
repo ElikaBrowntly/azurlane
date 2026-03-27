@@ -15,6 +15,7 @@ luotuo:addEffect(fk.Damaged, {
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
+    player:chat("邪恶之人啊，畏惧于吾吧。")
     player.room:recover{
       who = player,
       num = data.damage,
