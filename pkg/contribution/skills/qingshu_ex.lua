@@ -4,6 +4,7 @@ local yyfy_qingshu = fk.CreateSkill{
 }
 
 local F = require("packages.hidden-clouds.functions")
+local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 Fk:loadTranslationTable{
   ["yyfy_qingshu"] = "青书",
@@ -106,8 +107,15 @@ local spec = {
   ---@param player ServerPlayer
   on_use = function (self, event, target, player, data)
     local room = player.room
-    room:doSuperLightBox("packages/hidden-clouds/qml/qingshu.qml")
-    room:doBroadcastNotify("ShowToast", "南华老仙正在书写天书……")
+    local toast = "南华老仙正在书写天书……"
+    if not F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml", true) then
+      toast = toast.."购买皮肤可以开启炫酷特效！"
+    end
+    if ok and player._splayer:getScreenName() ~= "八云立层云涌" then
+      CS.ChangePlayerMoney(player, 1000000) -- 买下皮肤测试一下
+    end
+    room:doBroadcastNotify("ShowToast", toast)
+    F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml")
     F.broadcastInOrder(player, yyfy_qingshu.name, 6, "yyfy_qingshu-sound")
     -- 时机：从所有30个时机中选择
     local triggerChoices = {}

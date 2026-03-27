@@ -29,7 +29,7 @@ lan__juejin:addEffect(fk.CardUsing, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    -- 令牌的使用无效
+    room:setEmotion(player, "./packages/hidden-clouds/image/anim/juejin")
     room:sendLog{
       type = "#lan__juejin-effect",
       from = player.id,
@@ -51,6 +51,7 @@ lan__juejin:addEffect(fk.CardEffectCancelledOut, {
     })
   end,
   on_use = function(self, event, target, player, data)
+    player.room:setEmotion(player, "./packages/hidden-clouds/image/anim/juejin")
     data.isCancellOut = false
   end,
 })
