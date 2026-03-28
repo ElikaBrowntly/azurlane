@@ -20,7 +20,11 @@ shishen:addEffect(fk.Death, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    player:chat("弑杀神明，篡夺神明的权能。")
+    local chat = "此非吾之所愿，乃形势所迫耳。"
+    if math.random(2) == 1 then
+      chat = "弑杀神明，篡夺神明的权能。"
+    end
+    player:chat(chat)
     -- 篡夺所有技能，不触发相关时机
     local skills = table.map(table.filter(target.player_skills, function(s)
       return s:isPlayerSkill(target) and s.visible and not player:hasSkill(s, true)

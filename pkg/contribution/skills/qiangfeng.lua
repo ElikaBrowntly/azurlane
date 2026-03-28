@@ -31,6 +31,16 @@ qiangfeng:addEffect(fk.CardUsing, {
       or (player:usedCardTimes("analeptic", Player.HistoryPhase) > 1 and data.card.name == "analeptic")
   end,
   on_refresh = function(self, event, target, player, data)
+    local chat = true
+    for _, t in ipairs(data.tos) do
+      if player:distanceTo(t) <= 1 then
+        chat = false
+        break
+      end
+    end
+    if chat then
+      player:chat("咏唱吾名，成为胜利咒文！")
+    end
     player.room:doAnimate("InvokeSkill", {
       name = self.name,
       player = player.id,

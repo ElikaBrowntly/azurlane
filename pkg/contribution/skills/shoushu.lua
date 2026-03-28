@@ -6,11 +6,11 @@ local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable{
   ["yyfy_shoushu"] = "授术",
-  [":yyfy_shoushu"] = "出牌阶段限一次，或当你受到伤害后，你可以将一册<a href='yyfy_tianshu_href'>“天书”</a>交给一名其他角色。",
+  [":yyfy_shoushu"] = "出牌阶段限一次，或当你受到伤害后，你可以令一名其他角色获得一册“天书”的复制品。",
 
 
-  ["#yyfy_shoushu"] = "授术：你可以将一册“天书”交给一名其他角色",
-  ["#yyfy_shoushu-give"] = "授术：选择交给 %dest 的“天书”",
+  ["#yyfy_shoushu"] = "授术：你可以令一名其他角色获得一册“天书”",
+  ["#yyfy_shoushu-give"] = "授术：请选择要让%dest获得的“天书”",
 
   ["$yyfy_shoushu1"] = "此书载天地至理，望汝珍视如命。",
   ["$yyfy_shoushu2"] = "我得道成仙，当出世化生人中。",
@@ -40,7 +40,6 @@ local function doGive(room, player, target, skillName)
   if choice == "Cancel" then return false end
 
   local chosenSkill = skillNames[table.indexOf(args, choice)]
-  room:handleAddLoseSkills(player, "-"..chosenSkill)
   room:handleAddLoseSkills(target, chosenSkill)
   return true
 end

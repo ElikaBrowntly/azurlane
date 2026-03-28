@@ -22,6 +22,10 @@ fenghuang:addEffect("prohibit", {
   end,
 })
 
+fenghuang:addAcquireEffect(function (self, player, is_start, src)
+  player:chat("对持有羽翼的我，心怀恐惧吧!")
+end)
+
 fenghuang:addLoseEffect(function (self, player, is_death)
   player.room:loseHp(player, 1, fenghuang.name, player)
 end)

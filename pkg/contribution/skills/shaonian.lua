@@ -6,7 +6,7 @@ local shaonian = fk.CreateSkill {
 Fk:loadTranslationTable{
   ["yyfy_shaonian"] = "少年",
   [":yyfy_shaonian"] = "出牌阶段限一次，你可以选择一名其他角色，赐予其一个其他化身。"..
-  "其他角色受到另一名其他角色的伤害后，你可以赐予其一个其他化身。",
+  "其他角色受到另一名其他角色的伤害后，你可以赐予其一个其他化身。获得化身的角色立即回满体力并复原武将牌。",
   ["#yyfy_shaonian-skill"] = "少年：请赐予 %dest 一个化身",
   ["#yyfy_shaonian-target"] = "少年：你可以赐予 %dest 一个化身"
 }
@@ -17,8 +17,8 @@ local all_skills = {
 }
 
 ---赐予其他角色化身的函数
----@param player ServerPlayer
----@param to ServerPlayer
+---@param player ServerPlayer 给出化身的角色
+---@param to ServerPlayer 接受化身的角色
 local function giveHuashen(player, to)
   local room = player.room
   local available_skills = all_skills
@@ -28,6 +28,7 @@ local function giveHuashen(player, to)
       table.removeOne(available_skills, skill)
     end
   end
+  player:chat("我的眷属们啊。没有我的允许，不准你们死去")
   local chosen_skill = room:askToChoice(player, {
     choices = available_skills,
     skill_name = shaonian.name,
@@ -35,6 +36,13 @@ local function giveHuashen(player, to)
     all_choices = all_skills -- 让不可选选项变灰
   })
   room:handleAddLoseSkills(to, chosen_skill, shaonian.name, true, true)
+  to:reset()
+  room:recover({
+    who = to,
+    num = to.maxHp - to.hp,
+    skillName = shaonian.name,
+    recoverBy = player
+  })
 end
 
 shaonian:addEffect("active", {

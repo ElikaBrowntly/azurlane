@@ -20,6 +20,7 @@ Fk:loadTranslationTable{
 }
 
 local U = require "packages/utility/utility"
+local F = require("packages.hidden-clouds.functions")
 
 diyitaiyang:addEffect("active", {
   mute = true,
@@ -39,8 +40,12 @@ diyitaiyang:addEffect("active", {
     -- 消耗10点蓄力点
     U.skillCharged(player, -10)
     room:addPlayerMark(player, "@@fate_wudiguantong-turn")
-    -- 随机播放动画和语音，但要配套
-    local order = math.random(2)
+    -- 根据皮肤播放动画和语音，要配套
+    local order = 1
+    if F.setEmotion(player, "yyfy_Tezcatlipoca__2", diyitaiyang.name, 0, "", true)
+    or F.setEmotion(player, "yyfy_Tezcatlipoca__3", diyitaiyang.name, 0, "", true) then
+      order = 2
+    end
     player:broadcastSkillInvoke(self.name, order)
     room:doSuperLightBox("packages/hidden-clouds/qml/diyitaiyang"..tostring(order)..".qml")
     

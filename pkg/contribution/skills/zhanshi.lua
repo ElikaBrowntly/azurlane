@@ -20,6 +20,7 @@ zhanshi:addAcquireEffect(function (self, player, is_start)
     prompt = "战士：请选择一名其他角色，令其暂时失去所有技能"
   })[1]
   if to == nil then return end
+  player:chat("以吾言灵之技，彰显世间正义！")
   local skills = to:getAllSkills()
   if skills == nil then return end
   for _, skill in ipairs(skills) do

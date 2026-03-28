@@ -3,7 +3,7 @@ local shanyang = fk.CreateSkill {
   tags = { Skill.Permanent },
 }
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_shanyang"] = "山羊",
   [":yyfy_shanyang"] = "其他角色发动技能时，你可征求全场的意见，然后令一名其他角色失去同意人数等量点体力。",
 
@@ -17,20 +17,20 @@ shanyang:addEffect(fk.SkillEffect, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
     return target and target ~= player and data.skill.name ~= self.name and
-           player:hasSkill(self.name) and data.skill:isPlayerSkill(target)
+        player:hasSkill(self.name) and table.contains(target:getSkillNameList(), data.skill.name)
   end,
   on_cost = function(self, event, target, player, data)
-      local to = player.room:askToChoosePlayers(player, {
-        targets = player.room:getAlivePlayers(),
-        min_num = 1,
-        max_num = 1,
-        skill_name = self.name,
-        prompt = "选择一名角色，让全场所有人审判他！"
-      })
-      if #to == 1 then
-        event:setCostData(self, {tos = to})
-        return true
-      end
+    local to = player.room:askToChoosePlayers(player, {
+      targets = player.room:getAlivePlayers(),
+      min_num = 1,
+      max_num = 1,
+      skill_name = self.name,
+      prompt = "选择一名角色，让全场所有人审判他！"
+    })
+    if #to == 1 then
+      event:setCostData(self, { tos = to })
+      return true
+    end
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -42,10 +42,11 @@ shanyang:addEffect(fk.SkillEffect, {
         table.insertIfNeed(targets, p)
       end
     end
+    player:chat("正义之人的守护者啊，吾仅邀请并奉献于您")
     local choices = room:askToJointChoice(player, {
       players = targets,
-      choices = {"yyfy_shanyang_agree", "yyfy_shanyang_disagree", "自动同意此发动者"},
-      prompt = "山羊："..tostring(player.seat).."号位想要令"..tostring(to.seat).."号位失去体力，你同意吗？"
+      choices = { "yyfy_shanyang_agree", "yyfy_shanyang_disagree", "自动同意此发动者" },
+      prompt = "山羊：" .. tostring(player.seat) .. "号位想要令" .. tostring(to.seat) .. "号位失去体力，你同意吗？"
     })
     local agreeCount = 0
     for _, p in ipairs(room:getAlivePlayers()) do
