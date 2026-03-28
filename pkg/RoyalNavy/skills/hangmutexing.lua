@@ -1,19 +1,19 @@
 local skill = fk.CreateSkill{
-  name = "hangmutexing",
+  name = "yyfy_hangmutexing",
   tags = {Skill.Compulsory},
 }
 
 Fk:loadTranslationTable({
-  ["hangmutexing"] = "航母特性",
-  [":hangmutexing"] = "锁定技，准备阶段，你获得1个「空袭」标记。当你需要使用或打出【杀】时，你可以移去1个「空袭」视为使用或打出之"..
+  ["yyfy_hangmutexing"] = "航母特性",
+  [":yyfy_hangmutexing"] = "锁定技，准备阶段，你获得1个「空袭」标记。当你需要使用或打出【杀】时，你可以移去1个「空袭」视为使用或打出之"..
   "（以此法使用的杀无距离和次数限制，且可指定任意名角色为目标）。"..
   "每当你失去1个「空袭」后，你可令任意名其他角色将技能还原为游戏开始时的状态。",
   
-  ["@kongxi"] = "空袭",
+  ["@yyfy_kongxi"] = "空袭",
   
-  ["#hangmutexing-use"] = "你可以移去1个「空袭」视为使用或打出【杀】",
-  ["#hangmutexing-choose"] = "请选择要重置技能的角色",
-  ["#hangmutexing-target"] = "航母特性：请选择任意名角色作为【杀】的目标",
+  ["#yyfy_hangmutexing-use"] = "你可以移去1个「空袭」视为使用或打出【杀】",
+  ["#yyfy_hangmutexing-choose"] = "请选择要重置技能的角色",
+  ["#yyfy_hangmutexing-target"] = "航母特性：请选择任意名角色作为【杀】的目标",
 })
 
 --重置技能
@@ -55,11 +55,11 @@ end
 --无次数限制
 skill:addEffect("targetmod", {
   bypass_times = function(self, player, skillObj, scope, card)
-    if player:hasSkill(skill.name) and 
-       skillObj and 
-       skillObj.trueName == "slash_skill" and 
+    if player:hasSkill(skill.name) and
+       skillObj and
+       skillObj.trueName == "slash_skill" and
        scope == Player.HistoryPhase and
-       card and 
+       card and
        card.skillName == skill.name then
       return true
     end
@@ -80,7 +80,7 @@ skill:addEffect("viewas", {
   before_use = function(self, player, use)
     local room = player.room
 
-    room:removePlayerMark(player, "@kongxi", 1)
+    room:removePlayerMark(player, "@yyfy_kongxi", 1)
     
     --不计入使用次数
     use.extra_data = use.extra_data or {}
@@ -106,7 +106,7 @@ skill:addEffect("viewas", {
           min_num = 0,
           max_num = #targetPlayers,
           targets = targetPlayers,
-          prompt = "#hangmutexing-target",
+          prompt = "#yyfy_hangmutexing-target",
           skill_name = skill.name,
           cancelable = true,
         })
@@ -124,7 +124,7 @@ skill:addEffect("viewas", {
         min_num = 0,
         max_num = #other_players,
         targets = other_players,
-        prompt = "#hangmutexing-choose",
+        prompt = "#yyfy_hangmutexing-choose",
         skill_name = skill.name,
         cancelable = true,
       })
@@ -137,10 +137,10 @@ skill:addEffect("viewas", {
     return nil
   end,
   enabled_at_play = function(self, player)
-    return player:getMark("@kongxi") > 0
+    return player:getMark("@yyfy_kongxi") > 0
   end,
   enabled_at_response = function(self, player)
-    return player and not player.dead and player:getMark("@kongxi") > 0
+    return player and not player.dead and player:getMark("@yyfy_kongxi") > 0
   end,
 })
 
@@ -153,7 +153,7 @@ skill:addEffect(fk.EventPhaseStart, {
            player.phase == Player.Start
   end,
   on_use = function(self, event, target, player, data)
-    player.room:addPlayerMark(player, "@kongxi", 1)
+    player.room:addPlayerMark(player, "@yyfy_kongxi", 1)
   end,
 })
 

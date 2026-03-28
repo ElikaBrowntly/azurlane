@@ -422,7 +422,7 @@ Fk:loadTranslationTable{
 mou_nanhualaoxian.hidden = true
 
 local chengxiaoshi = General:new(extension, "yyfy_chengxiaoshi", "qun", 3)
-chengxiaoshi:addSkills {"yyfy_qizha", "yyfy_powang", }--"yyfy_chengzhen"
+chengxiaoshi:addSkills {"yyfy_qizha", "yyfy_powang", "yyfy_chengzhen"}
 Fk:loadTranslationTable{
   ["yyfy_chengxiaoshi"] = "程小实",
   ["#yyfy_chengxiaoshi"] = "我从不骗人",

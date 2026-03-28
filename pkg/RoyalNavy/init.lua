@@ -3,7 +3,7 @@ extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/RoyalNavy/skills")
 
 local unicorn = General:new(extension, "yyfy_unicorn", "moe", 3, 4, General.Female)
-unicorn:addSkills { "hangmutexing", "unicornsupport", "zhihuizhuangtian" }
+unicorn:addSkills { "yyfy_hangmutexing", "yyfy_unicornsupport", "yyfy_zhihuizhuangtian" }
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",

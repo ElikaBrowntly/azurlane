@@ -1,24 +1,19 @@
 local support = fk.CreateSkill{
-  name = "unicornsupport",
+  name = "yyfy_unicornsupport",
   tags = { Skill.Compulsory },
 }
 
 Fk:loadTranslationTable({
-  ["unicornsupport"] = "独角兽的应援",
-  [":unicornsupport"] = "锁定技，游戏开始时，你获得1个「空袭」标记。每当你使用或打出一张【杀】后，你可以令任意名角色各回复1点体力，"..
+  ["yyfy_unicornsupport"] = "独角兽的应援",
+  [":yyfy_unicornsupport"] = "锁定技，游戏开始时，你获得1个「空袭」标记。每当你使用或打出一张【杀】后，你可以令任意名角色各回复1点体力，"..
   "然后你可令其中一个体力值最低的角色额外回复1点体力（若体力已满则增加等量护甲和手牌上限）。",
   
-  ["#unicornsupport-choose"] = "独角兽的应援：请选择要回复体力的角色",
-  ["#unicornsupport-choose-extra"] = "独角兽的应援：请选择要额外回复体力的角色",
-  ["#UnicornSupportArmor"] = "%to 因体力已满，改为获得 %arg2 点护甲和手牌上限",
-  ["$unicornsupport1"] = "后方支援就交给我吧…独角兽…会加油的…",
-  ["$unicornsupport2"] = "独角兽……会努力的！",
+  ["#yyfy_unicornsupport-choose"] = "独角兽的应援：请选择要回复体力的角色",
+  ["#yyfy_unicornsupport-choose-extra"] = "独角兽的应援：请选择要额外回复体力的角色",
+  ["#yyfy_unicornsupportArmor"] = "%to 因体力已满，改为获得 %arg2 点护甲和手牌上限",
+  ["$yyfy_unicornsupport1"] = "后方支援就交给我吧…独角兽…会加油的…",
+  ["$yyfy_unicornsupport2"] = "独角兽……会努力的！",
 })
-
-local maxCardSkill = fk.CreateSkill{
-  name = "unicornsupport_maxcard",
-  status_skill = true, 
-}
 
 support:addEffect("maxcards", {
   correct_func = function(self, player)
@@ -45,7 +40,7 @@ local function applySupportEffect(room, player, targetPlayer, num, skillName)
       room:setPlayerMark(targetPlayer, "unicorn_maxcard_bonus", currentBonus + num)
       
       room:sendLog{
-        type = "#UnicornSupportArmor",
+        type = "#yyfy_unicornsupportArmor",
         from = player.id,
         to = {targetPlayer.id},
         arg = skillName,
@@ -85,7 +80,7 @@ support:addEffect(fk.CardUsing, {
       targets=all_players,
       min_num=0,
       max_num=#all_players, 
-      prompt="#unicornsupport-choose",
+      prompt="#yyfy_unicornsupport-choose",
       skill_name=support.name,
       cancelable=true})
     
@@ -119,7 +114,7 @@ support:addEffect(fk.CardUsing, {
         targets=min_hp_players,
         min_num=0,
         max_num=1, 
-        prompt="#unicornsupport-choose-extra", 
+        prompt="#yyfy_unicornsupport-choose-extra", 
         skill_name=support.name,
         cancelable=true}
       )
@@ -150,7 +145,7 @@ support:addEffect(fk.CardResponding, {
       targets=all_players,
       min_num=0,
       max_num=#all_players, 
-      prompt="#unicornsupport-choose", 
+      prompt="#yyfy_unicornsupport-choose", 
       skill_name=support.name,
       cancelable=true})
     
@@ -184,7 +179,7 @@ support:addEffect(fk.CardResponding, {
         targets=min_hp_players, 
         min_num=0,
         max_num=1, 
-        prompt="#unicornsupport-choose-extra",
+        prompt="#yyfy_unicornsupport-choose-extra",
         skill_name=support.name, 
         cancelable=true} )
       
