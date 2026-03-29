@@ -421,6 +421,14 @@ Fk:loadTranslationTable{
 }
 mou_nanhualaoxian.hidden = true
 
+local chengxiaoshi = General:new(extension, "yyfy_chengxiaoshi", "qun", 3)
+chengxiaoshi:addSkills {"yyfy_qizha", "yyfy_powang", "yyfy_chengzhen"}
+Fk:loadTranslationTable{
+  ["yyfy_chengxiaoshi"] = "程小实",
+  ["#yyfy_chengxiaoshi"] = "我从不骗人",
+  ["designer:yyfy_chengxiaoshi"] = "青菜白玉汤"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

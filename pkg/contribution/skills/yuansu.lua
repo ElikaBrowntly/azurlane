@@ -38,7 +38,7 @@ yuansu:addEffect(fk.SkillEffect, {
     local room = player.room
     local e = room.logic:getCurrentEvent():findParent(GameEvent.SkillEffect)
     if e then
-      room.logic:breakEvent(e)
+      e:shutdown()
     end
   end,
 })

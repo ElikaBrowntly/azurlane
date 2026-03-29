@@ -21,7 +21,7 @@ local bilan = General:new(extension, "yyfy_bilan", "moe", 4, 4, General.Female)
 if ok then
   bilan:addSkills {"changshi__picai"}
 end
-bilan:addSkills {"yyfy_gangban", "yyfy_ezuojv"}
+bilan:addSkills {"yyfy_hangmutexing", "yyfy_gangban", "yyfy_ezuojv"}
 Fk:loadTranslationTable
 {
   ["yyfy_bilan"] = "毕岚",
