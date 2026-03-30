@@ -25,7 +25,7 @@ Fk:loadTranslationTable
 {
   ["yyfy_mou__wupu"] = "谋吴普",
   ["#yyfy_mou__wupu"] = "健体养魄",
-  ["designer:yyfy_mou__wupu"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_mou__wupu"] = "夜隐浮云",
   ["~yyfy_mou__wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
@@ -145,7 +145,7 @@ youlewangzi:addSkills {"yyfy_mianjv", "yyfy_miyu"}
 Fk:loadTranslationTable{
   ["yyfy_youlewangzi"] = "游乐王子",
   ["#yyfy_youlewangzi"] = "谜语人",
-  ["designer:yyfy_youlewangzi"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_youlewangzi"] = "夜隐浮云",
 }
 
 local ex_simashi = General:new(extension, "yyfy_ex__simashi", "wei", 4)
@@ -168,7 +168,7 @@ KusanagiGodou:addSkills {"yyfy_shishen", "yyfy_quanneng"}
 Fk:loadTranslationTable{
   ["yyfy_KusanagiGodou"] = "草薙护堂",
   ["#yyfy_KusanagiGodou"] = "弑神者",
-  ["designer:yyfy_KusanagiGodou"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_KusanagiGodou"] = "夜隐浮云",
 }
 KusanagiGodou:addRelatedSkills{
   "yyfy_qiangfeng", "yyfy_gongniu", "yyfy_baima", "yyfy_luotuo", "yyfy_shanzhu",
@@ -200,7 +200,7 @@ caoshuang:addSkills {"yyfy_tuogu", "yyfy_shanzhuan"}
 Fk:loadTranslationTable{
   ["yyfy_ex__caoshuang"] = "界曹爽",
   ["#yyfy_ex__caoshuang"] = "托孤辅政",
-  ["designer:yyfy_ex__caoshuang"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_ex__caoshuang"] = "夜隐浮云",
   ["~yyfy_ex__caoshuang"] = "悔不该降了司马懿……",
   ["$ex__biyue_yyfy_ex__caoshuang1"] = "失礼了～",
   ["$ex__biyue_yyfy_ex__caoshuang2"] = "羡慕吧～",
@@ -248,7 +248,7 @@ woyeyaosima:addSkills {"yyfy_woyeyaogeima", "yyfy_woyeyaosima"}
 Fk:loadTranslationTable{
   ["yyfy_woyeyaosima"] = "我也要死吗",
   ["#yyfy_woyeyaosima"] = "对！",
-  ["designer:yyfy_woyeyaosima"] = "夜隐浮云，孤星似梦"
+  ["designer:yyfy_woyeyaosima"] = "夜隐浮云"
 }
 
 local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
@@ -328,7 +328,7 @@ yoshino:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
 Fk:loadTranslationTable{
   ["yyfy_TomotakeYoshino"] = "朝武芳乃",
   ["#yyfy_TomotakeYoshino"] = "穗织的巫女",
-  ["designer:yyfy_TomotakeYoshino"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_TomotakeYoshino"] = "夜隐浮云",
   ["~yyfy_TomotakeYoshino"] = "",
   ["cv:yyfy_TomotakeYoshino"] = "遥空"
 }
@@ -374,7 +374,7 @@ AdamSmith:addSkills {"yyfy_kanbujiandeshou"}
 Fk:loadTranslationTable{
   ["yyfy_AdamSmith"] = "亚当·斯密",
   ["#yyfy_AdamSmith"] = "古典经济学之父",
-  ["designer:yyfy_AdamSmith"] = "夜隐浮云，孤星似梦"
+  ["designer:yyfy_AdamSmith"] = "夜隐浮云"
 }
 
 local maoyidawang = General:new(extension, "yyfy_maoyidawang", "qun", 3)
@@ -427,6 +427,16 @@ Fk:loadTranslationTable{
   ["yyfy_chengxiaoshi"] = "程小实",
   ["#yyfy_chengxiaoshi"] = "我从不骗人",
   ["designer:yyfy_chengxiaoshi"] = "青菜白玉汤"
+}
+
+local caoxiancaohua = General:new(extension, "lan__caoxiancaohua", "qun", 3)
+caoxiancaohua:addSkills {"lan__huamu", "lan__liangyuan", "lan__jisi", "lan__lingxi",
+"lan__zhifou", "lan__caiyi", "lan__guili"}
+Fk:loadTranslationTable{
+  ["lan__caoxiancaohua"] = "曹宪曹华",
+  ["#lan__caoxiancaohua"] = "木石前盟",
+  ["designer:lan__caoxiancaohua"] = "夜隐浮云",
+  ["~lan__caoxiancaohua"] = "无情总是帝王家。"
 }
 
 Fk:loadTranslationTable {

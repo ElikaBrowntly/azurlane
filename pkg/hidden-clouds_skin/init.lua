@@ -20,6 +20,15 @@ local content = {
   {
     skins = { "lan__caomao__1.gif" },
     enabled_generals = { "lan__caomao", "caomao", "mobile__caomao"}
+  },
+  {
+    skins = { "quyi__bahua.jpg", "quyi__congyu1.jpg", "quyi__congyu2.jpg" },
+    enabled_generals = { "quyi" }
+  },
+  {
+    skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.gif",
+      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png"},
+    enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua" }
   }
 }
 
@@ -35,11 +44,6 @@ if ok and CS then
     general = "nanhualaoxian",
     price = 888888,
   })
-  CS.addSkin({
-    path = "packages/hidden-clouds/image/skins/quyi__bahua.jpg",
-    quality = "epic",
-    general = "quyi",
-  })
 end
 
 Fk:loadTranslationTable {
@@ -52,7 +56,14 @@ Fk:loadTranslationTable {
   ["yyfy_ArchetypeEarth__3"] = "最终再临",
   ["lan__caomao__1"] = "决进形态",
   ["yyfy_ex__nanhualaoxian__1"] = "着墨山河",
-  ["quyi__bahua"] = "御津井芭华"
+  ["quyi__bahua"] = "御津井芭华",
+  ["quyi__congyu1"] = "丛雨（其一）",
+  ["quyi__congyu2"] = "丛雨（其二）",
+  ["lan__caoxiancaohua__1"] = "曹宪 & 曹华",
+  ["lan__caoxiancaohua__2"] = "锦瑟良缘·一",
+  ["lan__caoxiancaohua__3"] = "锦瑟良缘·二",
+  ["lan__caoxiancaohua__4"] = "真·曹宪曹华",
+  ["lan__caoxiancaohua__5"] = "贴贴❤️",
 }
 
 return extension
