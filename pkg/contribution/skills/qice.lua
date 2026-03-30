@@ -37,7 +37,8 @@ qice:addEffect("viewas", {
     return card
   end,
   enabled_at_play = function(self, player)
-    return player:usedSkillTimes(qice.name, Player.HistoryPhase) == 0 and not player:isKongcheng()
+    local count = player:getMark("@lan__zhiyu_permanent") + player:getMark("@lan__zhiyu_temp")
+    return player:usedSkillTimes(qice.name, Player.HistoryPhase) <= count and not player:isKongcheng()
   end,
 })
 

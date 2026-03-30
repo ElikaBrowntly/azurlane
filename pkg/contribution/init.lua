@@ -439,6 +439,14 @@ Fk:loadTranslationTable{
   ["~lan__caoxiancaohua"] = "无情总是帝王家。"
 }
 
+local feiyi = General:new(extension, "yyfy_mou__feiyi", "shu", 3)
+feiyi:addSkills {"yyfy_yanru", "yyfy_hezhong"}
+Fk:loadTranslationTable{
+  ["yyfy_mou__feiyi"] = "谋费祎",
+  ["#yyfy_mou__feiyi"] = "志虑忠纯",
+  ["designer:yyfy_mou__feiyi"] = "夜隐浮云/幻矩",
+  ["~yyfy_mou__feiyi"] = "今为小人所伤，皆酒醉之误……"
+}
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
