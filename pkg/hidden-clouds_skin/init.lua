@@ -27,7 +27,8 @@ local content = {
   },
   {
     skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.gif",
-      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png"},
+      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png", "lan__caoxiancaohua__6.png",
+      "lan__caoxiancaohua__7.gif"},
     enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua" }
   }
 }
@@ -64,6 +65,8 @@ Fk:loadTranslationTable {
   ["lan__caoxiancaohua__3"] = "锦瑟良缘·二",
   ["lan__caoxiancaohua__4"] = "真·曹宪曹华",
   ["lan__caoxiancaohua__5"] = "贴贴❤️",
+  ["lan__caoxiancaohua__6"] = "响 & 千键",
+  ["lan__caoxiancaohua__7"] = "豆包生成动态"
 }
 
 return extension
