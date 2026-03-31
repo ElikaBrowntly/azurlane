@@ -28,6 +28,9 @@ qizha:addEffect("active", {
   prompt = "欺诈：你可与一名角色谋弈",
   card_num = 0,
   target_num = 1,
+  times = function (self, player)
+    return player.hp - player:usedSkillTimes(qizha.name, Player.HistoryPhase)
+  end,
   can_use = function(self, player)
     return player and player.phase == Player.Play and player:hasSkill(self)
         and player:usedSkillTimes(qizha.name, Player.HistoryPhase) < player.hp

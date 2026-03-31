@@ -24,6 +24,9 @@ chengzhen:addEffect("viewas", {
   end,
   handly_pile = false,
   card_num = 0,
+  times = function (self, player)
+    return player.hp - player:usedSkillTimes(chengzhen.name, Player.HistoryTurn)
+  end,
   view_as = function(self, player, cards)
     if Fk.all_card_types[self.interaction.data] == nil then return end
     local card = Fk:cloneCard(self.interaction.data)

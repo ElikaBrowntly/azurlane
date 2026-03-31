@@ -624,7 +624,7 @@ end
 ---@param names string|string[] 皮肤名
 ---@param skill_name string 技能名
 ---@param delay? integer @ 播放后延迟毫秒，默认不延迟
----@param atype? string @ 以.qml结尾则播放全屏大动画，否则在玩家脸上播放emotion:填""是技能名anim，否则是登场动画
+---@param atype? string @ 以.qml结尾则播放全屏大动画，否则在玩家脸上播放emotion：填""是技能名anim，否则是登场动画
 ---@param judge? boolean @ 仅判断是否可以播放动画，默认false
 ---@return boolean @ 是否可以播放，人机情况下默认不可以（req为""，获取不到当前皮肤）
 function functions.setEmotion(player, names, skill_name, delay, atype, judge)

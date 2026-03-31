@@ -27,7 +27,7 @@ Fk:loadTranslationTable
   ["#yyfy_ArchetypeEarth"] = "原初之一",
   ["illustrator:yyfy_ArchetypeEarth"] = "武内崇",
   ["cv:yyfy_ArchetypeEarth"] = "长谷川育美",
-  ["designer:yyfy_ArchetypeEarth"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_ArchetypeEarth"] = "夜隐浮云",
   ["!yyfy_ArchetypeEarth"] = "已经结束了……期待与希望可没那么容易实现哦。",
   ["~yyfy_ArchetypeEarth"] = "……意料外的情况，格外有趣……",
 }
@@ -41,7 +41,7 @@ Fk:loadTranslationTable
   ["#yyfy_Tezcatlipoca"] = "特斯卡特利波卡",
   ["illustrator:yyfy_Tezcatlipoca"] = "田岛昭宇",
   ["cv:yyfy_Tezcatlipoca"] = "三上哲",
-  ["designer:yyfy_Tezcatlipoca"] = "夜隐浮云，孤星似梦",
+  ["designer:yyfy_Tezcatlipoca"] = "夜隐浮云",
   ["!yyfy_Tezcatlipoca"] = "结束了。战士之灵我会欢迎。除此以外的还是重新来过吧。",
   ["~yyfy_Tezcatlipoca"] = "很快就会回来。我是不灭的。",
 }

@@ -73,31 +73,6 @@ zhiyu:addEffect(fk.Damaged, {
   end,
 })
 
--- 回合开始时处理标记
-zhiyu:addEffect(fk.TurnStart, {
-  can_trigger = function (self, event, target, player, data)
-    return target == player
-  end,
-  on_trigger = function (self, event, target, player, data)
-    local room = player.room
-    local tempMarks = player:getMark("@lan__zhiyu_temp")
-    local permanentMarks = player:getMark("@lan__zhiyu_permanent")
-    room:addPlayerMark(player, "@lan__zhiyu_temp-turn", tempMarks + permanentMarks)
-    room:setPlayerMark(player, "@lan__zhiyu_temp", 0)
-  end,
-})
-
-zhiyu:addEffect(fk.AfterSkillEffect, {
-  can_trigger = function (self, event, target, player, data)
-    return target == player and player:getMark("@lan__zhiyu_temp-turn") > 0 and data.skill.name == "qice"
-  end,
-  on_trigger = function (self, event, target, player, data)
-    local room = player.room
-    room:addPlayerMark(player, "@lan__zhiyu_temp-turn", -1)
-    player:addSkillUseHistory("qice", -1)
-  end,
-})
-
 -- 失去技能时清除标记
 zhiyu:addLoseEffect(function(self, player)
   local room = player.room
