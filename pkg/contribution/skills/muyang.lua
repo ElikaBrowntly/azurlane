@@ -6,6 +6,9 @@ local skel = fk.CreateSkill {
 Fk:loadTranslationTable{
   ["yyfy_muyang"] = "牡羊",
   [":yyfy_muyang"] = "限定技，你死亡时改为修整一轮。",
+
+  ["yyfy_muyang1"] = "我乃最强，且手握一切胜利之人。",
+  ["yyfy_muyang2"] = "我乃粉碎一切障碍之人！",
 }
 
 skel:addEffect(fk.BeforeGameOverJudge, {

@@ -26,7 +26,8 @@ fusu:addEffect(fk.SkillEffect, {
         table.insert(targets, p)
       end
     end
-    if #targets ~= 0 then
+    if #targets ~= 0 and player:getMark(fusu.name) == 0 then
+      room:addPlayerMark(player, fusu.name)
       event:setCostData(self, {tos = targets})
       return true
     end

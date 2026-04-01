@@ -142,7 +142,7 @@ fengyin:addEffect(fk.BeforeGameOverJudge, {
     if #generals == 0 then
       room:doBroadcastNotify("ShowToast", "请注意，这是最后一张圣灵谱尼武将牌了......")
     end
-    room:changeHero(player, choice, true, isDeputy)
+    room:changeHero(player, choice, true, isDeputy, true, false)
 
     -- 继承所有技能
     for _, s in ipairs(player.tag["yyfy_puni_jicheng"]) do

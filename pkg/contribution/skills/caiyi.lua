@@ -21,8 +21,12 @@ Fk:loadTranslationTable{
   ["$lan__caiyi2"] = "身披彩翼，心有灵犀。",
 }
 
+--- 执行彩翼效果
+---@param player ServerPlayer
+---@param target ServerPlayer
+---@param choice integer
 local function doCaiyi(player, target, state, choice)
-  local room = player.room ---@type Room
+  local room = player.room
   if state == "yang" then
     if choice == 1 then
       if target:isWounded() then
