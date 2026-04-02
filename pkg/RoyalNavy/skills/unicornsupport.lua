@@ -27,7 +27,7 @@ support:addEffect(fk.GameStart, {
     return player:hasSkill(support.name)
   end,
   on_use = function(self, event, target, player, data)
-    player.room:addPlayerMark(player, "@kongxi", 1)
+    player.room:addPlayerMark(player, "@yyfy_kongxi", 1)
   end,
 })
 

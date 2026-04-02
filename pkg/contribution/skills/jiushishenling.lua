@@ -39,7 +39,11 @@ local function doFuhuo(player)
   for _, c in ipairs(choices) do
     local seat = tonumber(c[1])
     if seat ~= nil then
-      room:revivePlayer(room:getPlayerBySeat(seat), true, jiushishenling.name)
+      local to = room:getPlayerBySeat(seat)
+      room:revivePlayer(to, true, jiushishenling.name)
+      if to.maxHp <= 0 then -- 不要出现0上限的僵尸
+        room:changeMaxHp(to, to:getGeneralMaxHp() - to.maxHp)
+      end
     end
   end
   room:loseHp(player, player.hp, jiushishenling.name, player)

@@ -11,6 +11,7 @@ Fk:loadTranslationTable {
 }
 
 zaoxian:addEffect(fk.TurnEnd, {
+  anim_type = "big",
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self.name) and #player:getPile("lan__dengai_field") >= 3
     and data.reason == "game_rule"

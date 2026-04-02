@@ -8,6 +8,7 @@ local yugioh = require "packages.hidden-clouds.pkg.yugioh"
 local skin = require "packages.hidden-clouds.pkg.hidden-clouds_skin"
 
 Fk:appendKingdomMap("god", { "moon" })
+Fk:appendKingdomMap("evil", { "moon" })
 
 return {
   contribution,

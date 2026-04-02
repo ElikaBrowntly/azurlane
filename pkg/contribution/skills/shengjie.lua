@@ -24,23 +24,18 @@ end
 -- 获得此技能时，把玩家当前所有技能变成持恒技
 shengjie:addAcquireEffect(function (self, player, is_start, src)
   for _, skill in ipairs(player.player_skills) do
-    if skill:isPlayerSkill(player, false) then
-      table.insertIfNeed(skill.skeleton.tags, Skill.Permanent)
-    end
+    table.insertIfNeed(skill.skeleton.tags, Skill.Permanent)
   end
 end)
 
 -- 玩家此后获得的新技能也变成持恒技
 shengjie:addEffect(fk.EventAcquireSkill, {
   can_refresh = function (self, event, target, player, data)
-    return player and player:hasSkill(self, true, true) and target == player
-    and data.skill:isPlayerSkill(player, false)
+    return player and player:hasSkill(self, true) and target == player
   end,
   on_refresh = function (self, event, target, player, data)
     for _, skill in ipairs(player.player_skills) do
-      if skill:isPlayerSkill(player, false) then
-        table.insertIfNeed(skill.skeleton.tags, Skill.Permanent)
-      end
+      table.insertIfNeed(skill.skeleton.tags, Skill.Permanent)
     end
   end
 })

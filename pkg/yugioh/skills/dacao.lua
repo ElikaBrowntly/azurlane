@@ -24,12 +24,9 @@ dacao:addEffect(fk.Damaged, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     -- 保存当前技能以便继承
-    for _, s in ipairs(player.player_skills) do
-      if s:isPlayerSkill(player) then
-        room:addTableMark(player, "yyfy_dacao-inherit", s.name)
-      end
+    for _, s in ipairs(player:getSkillNameList()) do
+      room:addTableMark(player, "yyfy_dacao-inherit", s)
     end
-
     local generalNames = {}
     for _, g in ipairs(Fk:getAllGenerals()) do
       table.insertIfNeed(generalNames, g.name)
@@ -120,9 +117,7 @@ dacao:addEffect(fk.Damaged, {
     -- 继承之前保存的技能
     local remove = {}
     for _, s in ipairs(player:getTableMark("yyfy_dacao-inherit")) do
-      if not player:hasSkill(self, true, true) then
-        room:handleAddLoseSkills(player, s, dacao.name)
-      end
+      room:handleAddLoseSkills(player, s, dacao.name)
       table.insertIfNeed(remove, s)
     end
     for _, s in ipairs(remove) do
