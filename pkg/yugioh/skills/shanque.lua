@@ -39,8 +39,8 @@ shanque:addEffect(fk.SkillEffect, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
     if target and target ~= player and data.skill.name ~= self.name
-        and player:getMark("@yyfy_shanque-turn") < 40
-        and player:hasSkill(shanque.name) and data.skill:isPlayerSkill(target) then
+        and player:getMark("@yyfy_shanque-turn") < 40 and player:hasSkill(shanque.name)
+        and table.contains(target:getSkillNameList(), data.skill.name) then
       player.room:addPlayerMark(player, "@yyfy_shanque-turn")
       return true
     end

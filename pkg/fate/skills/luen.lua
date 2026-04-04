@@ -1,7 +1,6 @@
 local skill = fk.CreateSkill{
   name = "fate_luen",
   anim_type = "support",
-  global = false,
 }
 
 Fk:loadTranslationTable{

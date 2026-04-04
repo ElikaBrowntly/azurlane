@@ -74,7 +74,7 @@ function functions.isEnemy(from, to)
   return false -- 默认不是敌人
 end
 
---- 获取 player 的存活队友数量
+--- 获取 player 的存活队友数量，包括自己
 ---@param player Player|ServerPlayer 主视角
 ---@param room Room|AbstractRoom 所在房间
 ---@return integer --队友数量

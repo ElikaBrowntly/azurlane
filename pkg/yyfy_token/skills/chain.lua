@@ -66,7 +66,6 @@ chain:addEffect("cardskill", {
 })
 
 chain:addEffect(fk.Death, {
-  global = true,
   can_refresh = function(self, event, target, player, data)
     return target == player and player:getTableMark("@yyfy_xs_chain") ~= {} and data.killer
   end,
@@ -88,7 +87,6 @@ chain:addEffect(fk.Death, {
 })
 
 chain:addEffect(fk.RoundEnd, {
-  global = true,
   can_refresh = function(self, event, target, player, data)
     return player.room:getBanner("yyfy_xs_avenge") and player and player:isAlive()
     and (event:getCostData(self) or {}).invoked == nil
@@ -125,7 +123,6 @@ chain:addEffect(fk.RoundEnd, {
 })
 
 chain:addEffect(fk.Death, {
-  global = true,
   can_refresh = function(self, event, target, player, data)
     return player.room:getBanner("yyfy_xs_avenge") and data.killer
   end,

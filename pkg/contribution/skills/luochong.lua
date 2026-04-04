@@ -59,7 +59,16 @@ local function triggerLuochong(player, event)
         table.insert(choices, text)
       end
     end
-    
+    local wounded = false
+    for _, p in ipairs(room:getAlivePlayers()) do
+      if p:isWounded() then
+        wounded = true
+        break
+      end
+    end
+    if not wounded then
+      table.removeOne(choices, "回复1点体力")
+    end
     -- 询问选择
     local choiceText = room:askToChoice(player, {
       choices = choices,
@@ -104,7 +113,9 @@ local function triggerLuochong(player, event)
       end
       
       -- 选择目标
-      local target = room:askToChoosePlayers(player, {
+      local target = player
+      if player.id > 0 then
+        target = room:askToChoosePlayers(player, {
         targets = validTargets,
         min_num = 1,
         max_num = 1,
@@ -116,7 +127,8 @@ local function triggerLuochong(player, event)
         goto continue
       end
       target = target[1]
-      
+      end
+
       -- 执行效果
       if choice == 1 then
         player:broadcastSkillInvoke(luochong.name, 2)

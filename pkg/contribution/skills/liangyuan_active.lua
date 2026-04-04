@@ -20,9 +20,19 @@ liangyuan:addEffect("viewas", {
   pattern = "analeptic",
   prompt = "良缘：将一张「灵杉」当【酒】使用",
   card_num = 1,
-  expand_pile = "lan__huamu_lingshan",
+  expand_pile = function ()
+    local subcards = {}
+    for _, p in ipairs(Fk:currentRoom().alive_players) do
+      table.insertTable(subcards, p:getPile("lan__huamu_lingshan"))
+    end
+    return subcards
+  end,
   card_filter = function (self, player, to_select, selected, selected_targets)
-    return #selected == 0 and table.contains(player:getPile("lan__huamu_lingshan"), to_select)
+    local subcards = {}
+    for _, p in ipairs(Fk:currentRoom().alive_players) do
+      table.insertTable(subcards, p:getPile("lan__huamu_lingshan"))
+    end
+    return #selected == 0 and table.contains(subcards, to_select)
   end,
   view_as = function(self, player, cards)
     if #cards ~= 1 then return nil end
@@ -52,12 +62,18 @@ liangyuan:addEffect("viewas", {
     end
   end,
   enabled_at_play = function (self, player)
-    local subcards = player:getPile("lan__huamu_lingshan")
+    local subcards = {}
+    for _, p in ipairs(Fk:currentRoom().alive_players) do
+      table.insertTable(subcards, p:getPile("lan__huamu_lingshan"))
+    end
     return #subcards > 0 and #player:getViewAsCardNames(liangyuan.name, {"analeptic"}, subcards) > 0
   end,
   enabled_at_response = function (self, player, response)
     if response then return false end
-    local subcards = player:getPile("lan__huamu_lingshan")
+    local subcards = {}
+    for _, p in ipairs(Fk:currentRoom().alive_players) do
+      table.insertTable(subcards, p:getPile("lan__huamu_lingshan"))
+    end
     return #subcards > 0 and #player:getViewAsCardNames(liangyuan.name, {"analeptic"}, subcards) > 0
   end,
 })
