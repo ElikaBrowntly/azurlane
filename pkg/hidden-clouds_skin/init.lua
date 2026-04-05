@@ -26,15 +26,23 @@ local content = {
     enabled_generals = { "quyi" }
   },
   {
-    skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.gif",
+    skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.mp4",
       "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png", "lan__caoxiancaohua__6.png",
-      "lan__caoxiancaohua__7.gif"},
+      "lan__caoxiancaohua__7.mp4"},
     enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua" }
   },
   {
-    skins = { "yyfy_Cheshire__1.gif" },
+    skins = { "lan__caoxiancaohua__6.png", "lan__caoxiancaohua__7.mp4"},
+    enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua", "yuantanyuanshang" }
+  },
+  {
+    skins = { "yyfy_Cheshire__1.mp4" },
     enabled_generals = { "yyfy_Cheshire", "Cheshire", "yyfy_mou__feiyi", "hxdoro__catcat&doro",
       "hxqunyou__dogchaijun", "moesp__cheshire" }
+  },
+  {
+    skins = { "yuantanyuanshangyuanxi__chonghuomo.png" },
+    enabled_generals = { "yuantanyuanshangyuanxi", "yuantanyuanshang" }
   }
 }
 
@@ -72,7 +80,8 @@ Fk:loadTranslationTable {
   ["lan__caoxiancaohua__5"] = "贴贴❤️",
   ["lan__caoxiancaohua__6"] = "响 & 千键",
   ["lan__caoxiancaohua__7"] = "豆包生成动态",
-  ["yyfy_Cheshire__1"] = "冰雪公主"
+  ["yyfy_Cheshire__1"] = "冰雪公主",
+  ["yuantanyuanshangyuanxi__chonghuomo"] = "虫惑魔"
 }
 
 return extension

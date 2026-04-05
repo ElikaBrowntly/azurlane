@@ -86,7 +86,6 @@ lan__qingliu:addEffect("active", {
 
 -- 当有角色进入濒死状态时改变势力
 lan__qingliu:addEffect(fk.Dying, {
-  global = true,
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self.name)
   end,

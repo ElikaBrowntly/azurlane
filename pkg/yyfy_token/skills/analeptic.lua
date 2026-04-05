@@ -39,7 +39,6 @@ analepticSkill:addEffect("cardskill", {
 })
 
 analepticSkill:addEffect(fk.PreCardUse, {
-  global = true,
   can_refresh = function(self, event, target, player, data)
     return target == player and data.card.trueName == "slash" and player.drank > 0
   end,
@@ -55,7 +54,6 @@ analepticSkill:addEffect(fk.PreCardUse, {
 })
 
 analepticSkill:addEffect(fk.TurnEnd, {
-  global = true,
   late_refresh = true,
   can_refresh = function(self, event, target, player, data)
     return player.drank > 0
