@@ -92,22 +92,9 @@ local function ChangeDaoxin(player, num)
 end
 
 qianlong:addAcquireEffect(function(self, player, is_start)
-  local room = player.room
-  if is_start then
-    local num = 20
-    if player:hasSkill("lan__weitong") and player.role == "lord" and table.find(room.alive_players, function(p)
-          return p ~= player and p.kingdom == "wei"
-        end)
-    then
-      num = 100
-      player:broadcastSkillInvoke("lan__weitong", 1)
-      room:notifySkillInvoked(player, "weitong", "support")
-    end
-    ChangeDaoxin(player, num)
-  end
   if player:getTableMark("lan__qianlong_skills") == {} then
     for _, skill in ipairs(wei_lord_skills) do
-      room:addTableMark(player, "lan__qianlong_skills", skill)
+      player.room:addTableMark(player, "lan__qianlong_skills", skill)
     end
   end
   daoxin_handle_skills(player)
@@ -127,7 +114,18 @@ qianlong:addEffect(fk.GameStart, {
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
-
+    local room = player.room
+    local num = 20
+    -- 斗地主做地主不生效，因为主公技卫统不会添加给地主
+    if player:hasSkill("lan__weitong") and player.role == "lord" and table.find(room.alive_players, function(p)
+          return p ~= player and p.kingdom == "wei"
+        end)
+    then
+      num = 100
+      player:broadcastSkillInvoke("lan__weitong", 1)
+      room:notifySkillInvoked(player, "lan__weitong", "support")
+    end
+    ChangeDaoxin(player, num)
   end,
 })
 
