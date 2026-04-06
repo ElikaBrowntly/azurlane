@@ -35,7 +35,7 @@ fate_shanzhixinzang:addEffect("active", {
     local player = effect.from
     
     -- 赋予毅力状态(1次·3回合)
-    room:setPlayerMark(player, "@!fate_yili", 1)
+    room:addPlayerMark(player, "@!fate_yili", 1)
     room:setPlayerMark(player, "fate_shanzhixinzang_yili_turns", 3) -- 剩余3个回合
     
     -- 设置下一次蓄力技伤害+1

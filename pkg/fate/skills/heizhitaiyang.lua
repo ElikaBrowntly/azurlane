@@ -33,7 +33,7 @@ fate_heizhitaiyang:addEffect("active", {
     
     -- 赋予无敌状态：护盾标记和回合计数标记
     for _, target in ipairs(targets) do
-      room:setPlayerMark(target, "@!fate_wudi", 1)
+      room:addPlayerMark(target, "@!fate_wudi", 1)
       room:setPlayerMark(target, "fate_heizhitaiyang_shield_turns", 3) -- 剩余3个回合
     end
     

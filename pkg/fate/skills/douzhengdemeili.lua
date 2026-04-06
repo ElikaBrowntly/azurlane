@@ -8,7 +8,7 @@ Fk:loadTranslationTable{
   [":fate_douzhengdemeili"] = "出牌阶段限一次，你可以选择任意名角色，这些角色造成的伤害+1"..
   "（处于「毅力」状态的角色额外+1）直到各自的下个结束阶段。",
   
-  ["@fate_douzhengdemeili_damage_boost"] = "斗争的魅力",
+  ["@!fate_attack_end"] = "斗争的魅力",
   
   ["#fate_douzhengdemeili-choose"] = "斗争的魅力：请选择任意名角色",
   ["#fate_douzhengdemeili_damage_boost"] = "%from 的「%arg」效果触发，伤害+%arg2",
@@ -21,7 +21,7 @@ Fk:loadTranslationTable{
 
 -- 主动效果：选择角色加伤
 fate_douzhengdemeili:addEffect("active", {
-  anim_type = "offensive",
+  anim_type = "support",
   prompt = "#fate_douzhengdemeili-choose",
   card_num = 0,
   max_phase_use_time = 1,
@@ -41,21 +41,22 @@ fate_douzhengdemeili:addEffect("active", {
       end
       
       -- 设置伤害加成标记，标记值为加成数值
-      room:setPlayerMark(target, "@fate_douzhengdemeili_damage_boost", boostValue)
+      room:setPlayerMark(target, "@!fate_attack_end", boostValue)
     end
   end,
 })
 
 -- 伤害加成效果
 fate_douzhengdemeili:addEffect(fk.DamageCaused, {
+  anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return data.from:getMark("@fate_douzhengdemeili_damage_boost") > 0
+    return data.from:getMark("@!fate_attack_end") > 0
     and player and player:hasSkill(self.name)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local boostValue = data.from:getMark("@fate_douzhengdemeili_damage_boost") or 0
+    local boostValue = data.from:getMark("@!fate_attack_end") or 0
     
     if boostValue > 0 then
       -- 增加伤害
@@ -77,11 +78,11 @@ fate_douzhengdemeili:addEffect(fk.TurnEnd, {
   can_refresh = function(self, event, target, player, data)
     -- 检查当前回合结束的角色是否有伤害加成标记
     return target == player and 
-           player:getMark("@fate_douzhengdemeili_damage_boost") > 0
+           player:getMark("@!fate_attack_end") > 0
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
-    room:setPlayerMark(player, "@fate_douzhengdemeili_damage_boost", 0)
+    room:setPlayerMark(player, "@!fate_attack_end", 0)
   end,
 })
 
@@ -89,8 +90,8 @@ fate_douzhengdemeili:addEffect(fk.TurnEnd, {
 fate_douzhengdemeili:addLoseEffect(function(self, player, is_death)
   -- 只清理技能拥有者自身的标记，其他角色的标记继续存在直到他们自己的结束阶段
   local room = player.room
-  if player:getMark("@fate_douzhengdemeili_damage_boost") > 0 then
-    room:setPlayerMark(player, "@fate_douzhengdemeili_damage_boost", 0)
+  if player:getMark("@!fate_attack_end") > 0 then
+    room:setPlayerMark(player, "@!fate_attack_end", 0)
   end
 end)
 

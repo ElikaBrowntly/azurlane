@@ -14,7 +14,7 @@ Fk:loadTranslationTable{
   .."<br>该描述与<b>绝情:你造成的伤害均视为失去体力</b>的区别在于时机更晚。<br>"
   .."〖绝情〗的描述既无法享受造成伤害时的加伤，也无法享受对方受到伤害时的加伤；而本描述可以享受造成伤害时的加伤，"
   .."仅无法享受对方受到伤害时的加伤。<br>其实该描述在官方武将中出现过，比如ol审配",
-  ["@@!fate_wudiguantong-turn"] = "无敌贯通",
+  ["@!fate_wudiguantong-turn"] = "无敌贯通",
   ["$fate_diyitaiyang1"] = "风啊，风啊。夜之风啊，奴役吾等之人。灭亡之时已至。——去往下一个世界吧。别相·山之心脏。",
   ["$fate_diyitaiyang2"] = "只要是冥界就都一样。九个地下世界，十二之恐怖在太阳之下被统一。黑之特斯卡特利波卡……"
 }
@@ -39,7 +39,7 @@ diyitaiyang:addEffect("active", {
     
     -- 消耗10点蓄力点
     U.skillCharged(player, -10)
-    room:addPlayerMark(player, "@@!fate_wudiguantong-turn")
+    room:setPlayerMark(player, "@!fate_wudiguantong-turn", 1)
     -- 根据皮肤播放动画和语音，要配套
     local order = 1
     if F.setEmotion(player, "yyfy_Tezcatlipoca__2", diyitaiyang.name, 0, "", true)
@@ -101,7 +101,7 @@ diyitaiyang:addEffect(fk.DamageInflicted, {
   mute = true,
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self.name)
-    and data.from == player and player:getMark("@@!fate_wudiguantong-turn") > 0
+    and data.from == player and player:getMark("@!fate_wudiguantong-turn") > 0
     or player:getMark("fate_wudiguantong") > 0
   end,
   on_cost = Util.TrueFunc,
