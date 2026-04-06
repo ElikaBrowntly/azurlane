@@ -6,6 +6,7 @@ local EagleUnion = require "packages.hidden-clouds.pkg.EagleUnion"
 local yyfy_token = require "packages.hidden-clouds.pkg.yyfy_token"
 local yugioh = require "packages.hidden-clouds.pkg.yugioh"
 local skin = require "packages.hidden-clouds.pkg.hidden-clouds_skin"
+local modes = require "packages.hidden-clouds.pkg.gamemodes"
 
 Fk:appendKingdomMap("god", { "moon" })
 Fk:appendKingdomMap("evil", { "moon" })
@@ -18,5 +19,6 @@ return {
   SakuraEmpire,
   EagleUnion,
   yyfy_token,
-  skin
+  skin,
+  modes
 }
