@@ -494,7 +494,7 @@ function functions.ChangePlayerMoney(player, num, task)
     player:saveGlobalState("CS_System_Data", globalData)
     if not task then
       player.room:sendLog {
-        type = "#CS_gold_Change_Log",
+        type = "#AD_gold_Change_Log",
         arg = player._splayer:getScreenName(),
         arg2 = num > 0 and "获得" or "失去",
         arg3 = math.abs(num),

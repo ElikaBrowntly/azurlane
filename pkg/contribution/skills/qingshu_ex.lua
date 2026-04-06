@@ -111,8 +111,8 @@ local spec = {
     if not F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml", true) then
       toast = toast.."购买皮肤可以开启炫酷特效！"
     end
-    if ok and player._splayer:getScreenName() == "八云立层云涌" then
-      CS.ChangePlayerMoney(player, 1000000) -- 买下皮肤测试一下
+    if ok and player._splayer:getScreenName() == "player" then--"八云立层云涌"
+      F.ChangePlayerMoney(player, 1000000) -- 买下皮肤测试一下
     end
     room:doBroadcastNotify("ShowToast", toast)
     F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml")

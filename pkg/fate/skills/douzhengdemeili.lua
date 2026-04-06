@@ -15,7 +15,7 @@ Fk:loadTranslationTable{
   
   ["$fate_douzhengdemeili1"] = "祭祀吧。开启战士的时间吧。",
   ["$fate_douzhengdemeili2"] = "——不错，非常好。",
-  ["$fate_douzhengdemeili3"] = "来吧！　来吧！　来吧！",
+  ["$fate_douzhengdemeili3"] = "来吧！来吧！来吧！",
   ["$fate_douzhengdemeili4"] = "前往特特奥坎以北吧。"
 }
 
@@ -36,7 +36,7 @@ fate_douzhengdemeili:addEffect("active", {
     for _, target in ipairs(targets) do
       -- 有毅力标记的角色额外+1
       local boostValue = 1
-      if target:getMark("@fate_yili") > 0 then
+      if target:getMark("@!fate_yili") > 0 then
         boostValue = 2
       end
       
@@ -55,7 +55,7 @@ fate_douzhengdemeili:addEffect(fk.DamageCaused, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local boostValue = player:getMark("@fate_douzhengdemeili_damage_boost") or 0
+    local boostValue = data.from:getMark("@fate_douzhengdemeili_damage_boost") or 0
     
     if boostValue > 0 then
       -- 增加伤害

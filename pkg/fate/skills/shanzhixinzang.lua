@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
   
   [":fate_yili_1*3"] = "<b>「毅力」状态 (1次·3回合):</b><br>进入濒死时，消耗1个此状态将体力值改为1；<br>"..
   "死亡时，消耗1个此状态复活并将体力值改为1。<br>经过3个回合后无论是否使用都会失效。",
-  ["@fate_yili"] = "毅力",
+  ["@!fate_yili"] = "毅力",
   
   ["#fate_shanzhixinzang_prompt"] = "山之心脏：赋予自身毅力状态(1次·3回合)，下一次蓄力技伤害+1",
   ["#fate_shanzhixinzang_yili"] = "由于「山之心脏」的「毅力」效果，%from 将体力值改为1",
@@ -35,7 +35,7 @@ fate_shanzhixinzang:addEffect("active", {
     local player = effect.from
     
     -- 赋予毅力状态(1次·3回合)
-    room:setPlayerMark(player, "@fate_yili", 1)
+    room:setPlayerMark(player, "@!fate_yili", 1)
     room:setPlayerMark(player, "fate_shanzhixinzang_yili_turns", 3) -- 剩余3个回合
     
     -- 设置下一次蓄力技伤害+1
@@ -46,14 +46,14 @@ fate_shanzhixinzang:addEffect("active", {
 -- 进入濒死时触发毅力
 fate_shanzhixinzang:addEffect(fk.EnterDying, {
   can_trigger = function(self, event, target, player, data)
-    return target:getMark("@fate_yili") > 0 and target == player and data.who == player
+    return target:getMark("@!fate_yili") > 0 and target == player and data.who == player
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = target.room
     
     -- 消耗毅力状态
-    room:setPlayerMark(target, "@fate_yili", 0)
+    room:setPlayerMark(target, "@!fate_yili", 0)
     room:setPlayerMark(target, "fate_shanzhixinzang_yili_turns", 0)
     
     -- 将体力值改为1，效仿武诸葛亮
@@ -68,66 +68,19 @@ fate_shanzhixinzang:addEffect(fk.EnterDying, {
   end,
 })
 
--- 求桃结束后触发毅力
-fate_shanzhixinzang:addEffect(fk.AskForPeachesDone, {
-  can_trigger = function(self, event, target, player, data)
-    return target:getMark("@fate_yili") > 0 and target == player and data.who == player
+fate_shanzhixinzang:addEffect(fk.BeforeGameOverJudge, {
+  anim_type = "support",
+  priority = 2,
+  can_trigger = function (self, event, target, player, data)
+    return player and player:hasSkill(self, true, true) and target:getMark("@!fate_yili") > 0
   end,
   on_cost = Util.TrueFunc,
-  on_use = function(self, event, target, player, data)
-    local room = target.room
-    
-    -- 消耗毅力状态
-    room:setPlayerMark(target, "@fate_yili", 0)
-    room:setPlayerMark(target, "fate_shanzhixinzang_yili_turns", 0)
-    
-    -- 复活
-    room:revivePlayer(player, true)
-    if player.maxHp <= 0 then
-      room:changeMaxHp(player, 4 - player.maxHp) -- 若体力上限在0以下，则回到4
-    end
-    
-    -- 将体力值改为1
-    target.hp = 1
-    room:broadcastProperty(target, "hp")
-    
-    -- 发送日志
-    room:sendLog{
-      type = "#fate_shanzhixinzang_yili_revive",
-      from = target.id,
-    }
-  end,
-})
-
--- 死亡后触发毅力
-fate_shanzhixinzang:addEffect(fk.Death, {
-  can_trigger = function(self, event, target, player, data)
-    return target:getMark("@fate_yili") > 0 and target == player and data.who == player
-  end,
-  on_cost = Util.TrueFunc,
-  on_use = function(self, event, target, player, data)
-    local room = target.room
-    
-    -- 消耗毅力状态
-    room:setPlayerMark(target, "@fate_yili", 0)
-    room:setPlayerMark(target, "fate_shanzhixinzang_yili_turns", 0)
-    
-    -- 复活
-    room:revivePlayer(player, true)
-    if player.maxHp <= 0 then
-      room:changeMaxHp(player, 4 - player.maxHp) -- 若体力上限在0以下，则回到4
-    end
-    
-    -- 将体力值改为1
-    target.hp = 1
-    room:broadcastProperty(target, "hp")
-    
-    -- 发送日志
-    room:sendLog{
-      type = "#fate_shanzhixinzang_yili_revive",
-      from = target.id,
-    }
-  end,
+  on_use = function (self, event, target, player, data)
+    local room = player.room
+    room:setTag("SkipGameRule", true)
+    local skills_snapshot = {}
+    room:revivePlayer(player, false)
+  end
 })
 
 fate_shanzhixinzang:addEffect(fk.TurnEnd, {
@@ -142,7 +95,7 @@ fate_shanzhixinzang:addEffect(fk.TurnEnd, {
     
     if remainingTurns <= 0 then
       -- 回合数用完，移除毅力状态
-      room:setPlayerMark(player, "@fate_yili", 0)
+      room:setPlayerMark(player, "@!fate_yili", 0)
       room:setPlayerMark(player, "fate_shanzhixinzang_yili_turns", 0)
     else
       -- 更新剩余回合数
