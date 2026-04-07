@@ -33,7 +33,7 @@ fate_heizhitaiyang:addEffect("active", {
     
     -- 赋予无敌状态：护盾标记和回合计数标记
     for _, target in ipairs(targets) do
-      room:setPlayerMark(target, "@fate_wudi", 1)
+      room:addPlayerMark(target, "@!fate_wudi", 1)
       room:setPlayerMark(target, "fate_heizhitaiyang_shield_turns", 3) -- 剩余3个回合
     end
     
@@ -68,7 +68,7 @@ fate_heizhitaiyang:addEffect("active", {
 -- 无敌效果
 fate_heizhitaiyang:addEffect(fk.DetermineDamageInflicted, {
   can_trigger = function(self, event, target, player, data)
-    return data.to:getMark("@fate_wudi") > 0
+    return data.to:getMark("@!fate_wudi") > 0
     and player and player:hasSkill(self.name)
   end,
   on_cost = Util.TrueFunc,
@@ -83,7 +83,7 @@ fate_heizhitaiyang:addEffect(fk.DetermineDamageInflicted, {
     }
     
     -- 移除护盾
-    room:setPlayerMark(t, "@fate_wudi", 0)
+    room:setPlayerMark(t, "@!fate_wudi", 0)
     room:setPlayerMark(t, "fate_heizhitaiyang_shield_turns", 0)
     
     return true
@@ -101,7 +101,7 @@ fate_heizhitaiyang:addEffect(fk.TurnEnd, {
     
     if remainingTurns <= 0 then
       -- 回合数用完，移除护盾
-      room:setPlayerMark(player, "@fate_wudi", 0)
+      room:setPlayerMark(player, "@!fate_wudi", 0)
       room:setPlayerMark(player, "fate_heizhitaiyang_shield_turns", 0)
     else
       -- 更新剩余回合数
@@ -125,8 +125,8 @@ Fk:addTargetTip{
 -- 技能失去时清理自己的无敌标记
 fate_heizhitaiyang:addLoseEffect(function(self, player, is_death)
   local room = player.room
-  if player:getMark("@fate_wudi") > 0 then
-    room:setPlayerMark(player, "@fate_wudi", 0)
+  if player:getMark("@!fate_wudi") > 0 then
+    room:setPlayerMark(player, "@!fate_wudi", 0)
   end
   if player:getMark("fate_heizhitaiyang_shield_turns") > 0 then
     room:setPlayerMark(player, "fate_heizhitaiyang_shield_turns", 0)

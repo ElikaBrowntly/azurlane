@@ -13,7 +13,7 @@ Fk:loadTranslationTable{
   ["#fate_FunnyVamp-choose"] = "Funny Vamp：请选择任意名角色",
   ["#fate_FunnyVamp-charge"] = "Funny Vamp：请选择任意名有蓄力技的其他角色，这些角色将各获得3点蓄力点",
   ["fate_has_charge"] = "有蓄力技",
-  ["@fate_wudi"] = "无敌",
+  ["@!fate_wudi"] = "无敌",
   ["#fate_FunnyVamp-shield"] = "由于「Funny Vamp」的效果，%from 防止了受到的伤害",
 
   ["$fate_FunnyVamp1"] = "只是余兴，来狩猎吧。",
@@ -36,7 +36,7 @@ fate_FunnyVamp:addEffect("active", {
     
     -- 护盾标记和回合计数标记
     for _, target in ipairs(targets) do
-      room:setPlayerMark(target, "@fate_wudi", 1)
+      room:setPlayerMark(target, "@!fate_wudi", 1)
       room:setPlayerMark(target, "fate_FunnyVamp_shield_turns", 3) -- 剩余3个回合
     end
     
@@ -69,7 +69,7 @@ fate_FunnyVamp:addEffect("active", {
 -- 防止伤害
 fate_FunnyVamp:addEffect(fk.DetermineDamageInflicted, {
   can_trigger = function(self, event, target, player, data)
-    return data.to:getMark("@fate_wudi") > 0
+    return data.to:getMark("@!fate_wudi") > 0
     and player and player:hasSkill(self.name)
   end,
   on_cost = Util.TrueFunc,
@@ -83,7 +83,7 @@ fate_FunnyVamp:addEffect(fk.DetermineDamageInflicted, {
       from = t.id,
     }
     -- 移除护盾
-    room:setPlayerMark(t, "@fate_wudi", 0)
+    room:setPlayerMark(t, "@!fate_wudi", 0)
     return true
   end,
 })
@@ -99,7 +99,7 @@ fate_FunnyVamp:addEffect(fk.TurnEnd, {
     
     if remainingTurns <= 0 then
       -- 回合数用完，移除护盾
-      room:setPlayerMark(player, "@fate_wudi", 0)
+      room:setPlayerMark(player, "@!fate_wudi", 0)
       room:setPlayerMark(player, "fate_FunnyVamp_shield_turns", 0)
     else
       -- 更新剩余回合数

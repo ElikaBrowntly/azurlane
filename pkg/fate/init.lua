@@ -4,7 +4,6 @@ extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/fate/skills")
 
 local CuChulainn = General:new(extension, "yyfy_CuChulainn", "moon", 4, 4, General.Male)
 CuChulainn:addSkills { "fate_bishi", "fate_luen", "fate_siji" }
-
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
@@ -20,7 +19,6 @@ Fk:loadTranslationTable
 
 local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "moon", 4, 4, General.Female)
 ArchetypeEarth:addSkills { "fate_hongzhimoyan", "fate_xingzhituxi", "fate_FunnyVamp", "fate_kongxiangjvxianhua" }
-
 Fk:loadTranslationTable
 {
   ["yyfy_ArchetypeEarth"] = "爱尔奎特",
@@ -33,8 +31,8 @@ Fk:loadTranslationTable
 }
 
 local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "moon", 4, 4, General.Male)
-Tezcatlipoca:addSkills { "fate_douzhengdemeili", "fate_heizhitaiyang", "fate_shanzhixinzang", "fate_diyitaiyang", "fate_zhanshizhisi" }
-
+Tezcatlipoca:addSkills { "fate_douzhengdemeili", "fate_heizhitaiyang", "fate_shanzhixinzang",
+ "fate_diyitaiyang", "fate_zhanshizhisi", "fate_zhengwudetaiyang" }
 Fk:loadTranslationTable
 {
   ["yyfy_Tezcatlipoca"] = "烟雾镜",
@@ -45,5 +43,6 @@ Fk:loadTranslationTable
   ["!yyfy_Tezcatlipoca"] = "结束了。战士之灵我会欢迎。除此以外的还是重新来过吧。",
   ["~yyfy_Tezcatlipoca"] = "很快就会回来。我是不灭的。",
 }
+Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
 return extension
