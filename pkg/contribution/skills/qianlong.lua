@@ -33,11 +33,6 @@ Fk:loadTranslationTable {
   ["$lan__qianlong6"] = "朕行之决矣！正使死又何惧？",
 }
 
-local wei_lord_skills = { "lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
-  "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
-  "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
-  "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju" }
-
 --- 由于道心值变化而动态获得技能的函数
 ---@param player ServerPlayer
 local function daoxin_handle_skills(player)
@@ -92,11 +87,16 @@ local function ChangeDaoxin(player, num)
 end
 
 qianlong:addAcquireEffect(function(self, player, is_start)
-  if player:getTableMark("lan__qianlong_skills") == {} then
+  local wei_lord_skills = { "lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
+  "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
+  "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
+  "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju" }
+  if #player:getTableMark("lan__qianlong_skills") == 0 then
     for _, skill in ipairs(wei_lord_skills) do
       player.room:addTableMark(player, "lan__qianlong_skills", skill)
     end
   end
+  print("获得后",#player:getTableMark("lan__qianlong_skills"))
   daoxin_handle_skills(player)
 end)
 
@@ -184,7 +184,7 @@ end
 qianlong:addEffect(fk.Damaged, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(qianlong.name) and
-        player:getMark("@lan__qianlong_daoxin") == 100 and #wei_lord_skills > 0
+        player:getMark("@lan__qianlong_daoxin") == 100 and #player:getTableMark("lan__qianlong_skills") > 0
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
@@ -201,7 +201,7 @@ qianlong:addEffect(fk.Damaged, {
 qianlong:addEffect(fk.Damage, {
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(qianlong.name) and
-        player:getMark("@lan__qianlong_daoxin") == 100 and #wei_lord_skills > 0
+        player:getMark("@lan__qianlong_daoxin") == 100 and #player:getTableMark("lan__qianlong_skills") > 0
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)

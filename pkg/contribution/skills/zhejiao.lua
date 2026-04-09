@@ -115,4 +115,31 @@ zhejiao:addEffect(fk.RoundEnd, {
   end
 })
 
+zhejiao:addEffect(fk.AfterCardsMove, {
+  can_refresh = function (self, event, target, player, data)
+    return player and player:hasSkill(self, true, true) and table.find(data, function (d)
+      for _, m in ipairs(d.moveInfo) do
+        local card = Fk:getCardById(m.cardId)
+        if card:getMark("@@yyfy_zhejiao-next") > 0 or card:getMark("@@yyfy_zhejiao-turn") > 0 then
+          return true
+        end
+      end
+      return false
+    end)
+  end,
+  on_refresh = function (self, event, target, player, data)
+    local room = player.room
+    for _, d in ipairs(data) do
+      for _, m in ipairs(d.moveInfo) do
+        local card = Fk:getCardById(m.cardId)
+        if m.fromArea == Player.Hand and (card:getMark("@@yyfy_zhejiao-next") > 0
+         or card:getMark("@@yyfy_zhejiao-turn") > 0) then
+          room:setCardMark(card, "@@yyfy_zhejiao-turn", 0)
+          room:setCardMark(card, "@@yyfy_zhejiao-next", 0)
+        end
+      end
+    end
+  end
+})
+
 return zhejiao

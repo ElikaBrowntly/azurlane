@@ -28,6 +28,7 @@ aozhan:addEffect(fk.TargetSpecified, {
     return target == player and player:hasSkill(self) and data.card.trueName == "slash"
     and data.card.skillName == aozhan.name
   end,
+  on_cost = Util.TrueFunc,
   on_use = function (self, event, target, player, data)
     data:setResponseTimes(2, data.to)
   end
