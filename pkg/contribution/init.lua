@@ -447,6 +447,24 @@ Fk:loadTranslationTable{
   ["designer:yyfy_mou__feiyi"] = "夜隐浮云/幻矩",
   ["~yyfy_mou__feiyi"] = "今为小人所伤，皆酒醉之误……"
 }
+
+local guanyu = General:new(extension, "yyfy_mou__guanyu", "shu", 4)
+guanyu:addSkills {"yyfy_zhejiao", "yyfy_aozhan", "yyfy_yishi"}
+Fk:loadTranslationTable{
+  ["yyfy_mou__guanyu"] = "谋关羽",
+  ["#yyfy_mou__guanyu"] = "从风傲苍穹",
+  ["designer:yyfy_mou__guanyu"] = "牢天师（Ark）",
+  ["~yyfy_mou__guanyu"] = "今为小人所伤，皆酒醉之误……"
+}
+
+local Keynes = General:new(extension, "yyfy_Keynes", "west", 3)
+Keynes:addSkills {"yyfy_hongguanganyu"}
+Fk:loadTranslationTable{
+  ["yyfy_Keynes"] = "凯恩斯",
+  ["#yyfy_Keynes"] = "宏观经济学之父",
+  ["designer:yyfy_Keynes"] = "夜隐浮云",
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
