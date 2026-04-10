@@ -59,7 +59,7 @@ huamu:addEffect(fk.CardUseFinished, {
     local skindata = {}
     local path = ""
     if F.setEmotion(player, "lan__caoxiancaohua__2", huamu.name, 0, "", true) then
-      path = "packages/hidden-clouds/image/skins/lan__caoxiancaohua__3.gif"
+      path = "packages/hidden-clouds/image/skins/lan__caoxiancaohua__3.mp4"
     elseif F.setEmotion(player, "lan__caoxiancaohua__3", huamu.name, 0, "", true) then
       path = "packages/hidden-clouds/image/skins/lan__caoxiancaohua__2.gif"
     end

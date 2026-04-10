@@ -38,20 +38,20 @@ analepticSkill:addEffect("cardskill", {
   end,
 })
 
-analepticSkill:addEffect(fk.PreCardUse, {
-  can_refresh = function(self, event, target, player, data)
-    return target == player and data.card.trueName == "slash" and player.drank > 0
-  end,
-  on_refresh = function(self, event, target, player, data)
-    local room = player.room
-    -- 加伤？消耗天意？
-    -- data.additionalDamage = (data.additionalDamage or 0) + player.drank
-    data.extra_data = data.extra_data or {}
-    data.extra_data.drankBuff = player.drank
-    player.drank = 0
-    room:broadcastProperty(player, "drank")
-  end,
-})
+-- analepticSkill:addEffect(fk.PreCardUse, {
+--   can_refresh = function(self, event, target, player, data)
+--     return target == player and data.card.trueName == "slash" and player.drank > 0
+--   end,
+--   on_refresh = function(self, event, target, player, data)
+--     local room = player.room
+--     -- 加伤？消耗天意？全局？
+--     -- data.additionalDamage = (data.additionalDamage or 0) + player.drank
+--     data.extra_data = data.extra_data or {}
+--     data.extra_data.drankBuff = player.drank
+--     player.drank = 0
+--     room:broadcastProperty(player, "drank")
+--   end,
+-- })
 
 analepticSkill:addEffect(fk.TurnEnd, {
   late_refresh = true,
@@ -63,69 +63,5 @@ analepticSkill:addEffect(fk.TurnEnd, {
     player.room:broadcastProperty(player, "drank")
   end,
 })
-
-analepticSkill:addAI(Fk.Ltk.AI.newCardSkillStrategy {
-  keep_value = 4.1,
-  use_value = 5.98,
-  use_priority = 3.0,
-
-  on_effect = function(self, logic, effect)
-    if effect.extra_data and effect.extra_data.analepticRecover then
-      logic:recover({
-        who = effect.to,
-        num = 1,
-        recoverBy = effect.from,
-        card = effect.card,
-      })
-    else
-      Util.TrueFunc()
-    end
-  end
-})
-
-analepticSkill:addTest(function(room, me)
-  local analeptic = room:printCard("analeptic")
-  local comp2 = room.players[2]
-
-  -- test1: 喝酒后等到回合结束，酒状态解除
-  FkTest.runInRoom(function()
-    room:useCard {
-      from = me,
-      card = analeptic,
-      tos = {},
-    }
-  end)
-  lu.assertEquals(me.drank, 1)
-  FkTest.runInRoom(function()
-    GameEvent.Turn:create(TurnData:new(me, "game_rule", { Player.Finish })):exec()
-  end)
-  lu.assertEquals(me.drank, 0)
-
-  -- test2: 喝酒加伤害
-  FkTest.runInRoom(function()
-    room:useCard {
-      from = me,
-      card = analeptic,
-      tos = {},
-    }
-    room:useCard {
-      from = me,
-      tos = { comp2 },
-      card = Fk:cloneCard("slash")
-    }
-  end)
-  lu.assertEquals(me.drank, 0)
-  lu.assertEquals(comp2.hp, 2)
-
-  -- test3: 濒死时喝酒，改为回血
-  FkTest.setNextReplies(me, { {
-    card = analeptic.id,
-  } })
-  FkTest.runInRoom(function()
-    room:obtainCard(me, analeptic)
-    room:loseHp(me, 4)
-  end)
-  lu.assertEquals(me.hp, 1)
-end)
 
 return analepticSkill

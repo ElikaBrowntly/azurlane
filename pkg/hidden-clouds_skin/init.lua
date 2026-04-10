@@ -43,6 +43,10 @@ local content = {
   {
     skins = { "yuantanyuanshangyuanxi__chonghuomo.png" },
     enabled_generals = { "yuantanyuanshangyuanxi", "yuantanyuanshang" }
+  },
+  {
+    skins = { "yyfy_Keynes__1.png" },
+    enabled_generals = { "yyfy_Keynes" }
   }
 }
 
@@ -81,7 +85,8 @@ Fk:loadTranslationTable {
   ["lan__caoxiancaohua__6"] = "响 & 千键",
   ["lan__caoxiancaohua__7"] = "豆包生成动态",
   ["yyfy_Cheshire__1"] = "冰雪公主",
-  ["yuantanyuanshangyuanxi__chonghuomo"] = "虫惑魔"
+  ["yuantanyuanshangyuanxi__chonghuomo"] = "虫惑魔",
+  ["yyfy_Keynes__1"] = "青年凯恩斯"
 }
 
 return extension

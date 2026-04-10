@@ -2,8 +2,6 @@ local chain = fk.CreateSkill {
   name = "yyfy_xs_chain_skill",
 }
 
-
-
 Fk:loadTranslationTable {
   ["@yyfy_xs_chain"] = "绑定",
   ["@[:]yyfy_xs_avenge"] = "<font color='red'>复仇任务</font>"
@@ -66,12 +64,20 @@ chain:addEffect("cardskill", {
 })
 
 chain:addEffect(fk.Death, {
+  global = true,
   can_refresh = function(self, event, target, player, data)
-    return target == player and player:getTableMark("@yyfy_xs_chain") ~= {} and data.killer
+    return target == player and #player:getTableMark("@yyfy_xs_chain") ~= 0 and data.killer
   end,
   on_refresh = function(self, event, target, player, data)
     local room = player.room
     local tos = player:getTableMark("yyfy_xs_chain")
+    if data.killer == player then
+      for _, id in ipairs(tos) do
+        room:killPlayer({
+        who = room:getPlayerById(id)
+      })
+      end
+    end
     --键值表，键为复仇者id字符串，值为本轮任务current和下轮任务next两个表，next是复仇任务目标id列表
     local banner = room:getBanner("yyfy_xs_avenge") or {}
     for _, id in ipairs(tos) do
@@ -87,6 +93,7 @@ chain:addEffect(fk.Death, {
 })
 
 chain:addEffect(fk.RoundEnd, {
+  global = true,
   can_refresh = function(self, event, target, player, data)
     return player.room:getBanner("yyfy_xs_avenge") and player and player:isAlive()
     and (event:getCostData(self) or {}).invoked == nil
@@ -123,6 +130,7 @@ chain:addEffect(fk.RoundEnd, {
 })
 
 chain:addEffect(fk.Death, {
+  global = true,
   can_refresh = function(self, event, target, player, data)
     return player.room:getBanner("yyfy_xs_avenge") and data.killer
   end,

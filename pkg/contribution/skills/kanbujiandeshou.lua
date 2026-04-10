@@ -2,7 +2,7 @@ local shou = fk.CreateSkill {
   name = "yyfy_kanbujiandeshou",
 }
 
-local ok, CS = pcall(require, "packages.abcd-system.csfs")
+local CS = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_kanbujiandeshou"] = "看不见的手",
@@ -10,15 +10,14 @@ Fk:loadTranslationTable {
       "游戏结束</a>后，你获得5%的已拥有金币。",
   ["$yyfy_kanbujiandeshou"] = "叮~",
   ["yyfy_kanbujiandeshou-gamemode"] = "除了白名单模式以外，不允许存在人机。<br>白名单模式：机关造物，" ..
-      "后浪模式，虎牢关1v3，虎牢关2022，虎牢关炼狱。<br><br><br><font color='blue'><i>&nbsp;&nbsp;" ..
-      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的晚餐并非来自屠宰商、酿酒师和面包师的恩惠，而是来自" ..
+      "后浪模式，虎牢关1v3，虎牢关2022，虎牢关炼狱，双阴国战。<br><br><br><font color='blue'><i>&nbsp;" ..
+      "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们的晚餐并非来自屠宰商、酿酒师和面包师的恩惠，而是来自" ..
       "他们对自身利益的关切。<div style = 'text-align:right;'>———亚当·斯密《国富论》</div></i></font>"
 }
 
-if not ok then return shou end
-
 local function whitelist(room)
-  local list = { "houlang_mode", "jiguanzaowu_mode", "m_1v3_mode", "hx__1v3_mode", "hulaoguan" }
+  local list = { "houlang_mode", "jiguanzaowu_mode", "m_1v3_mode", "hx__1v3_mode",
+  "hulaoguan", "yyfy_hegemony" }
   for _, mode in ipairs(list) do
     if room:isGameMode(mode) then
       return true
