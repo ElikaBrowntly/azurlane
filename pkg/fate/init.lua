@@ -2,11 +2,23 @@ local extension = Package:new("fate")
 extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/fate/skills")
 
+-- 拓展包注册的额外页面
+extension.customPages = {
+  {
+    name = "Chaldea Gate",
+    iconUrl = "../../../hidden-clouds/image/icon/ChaldeaGate.png",
+    qml = {
+      url = "packages/hidden-clouds/qml/GachaSimulator.qml",
+    }
+  },
+}
+
 local CuChulainn = General:new(extension, "yyfy_CuChulainn", "moon", 4, 4, General.Male)
 CuChulainn:addSkills { "fate_bishi", "fate_luen", "fate_siji" }
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
+  ["Chaldea Gate"] = "迦勒底之门",
   ["moon"] = "月",
   ["yyfy_CuChulainn"] = "库丘林",
   ["#yyfy_CuChulainn"] = "光之子",

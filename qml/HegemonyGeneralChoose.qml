@@ -16,7 +16,7 @@ GraphicsBox {
     width: 800
     height: 600
 
-    // 辅助函数（与之前相同）
+    // 辅助函数
     function getGeneralInfo(name) {
         for (var i = 0; i < generals.length; i++) {
             if (generals[i].name === name)
@@ -114,35 +114,28 @@ GraphicsBox {
                             name: modelData.name
                             selectable: {
                                 if (selectedMain === "" && selectedDeputy === "")
-                                    return true;  // 未选任何将，都可选为主将
+                                    return true;
                                 if (selectedMain !== "" && selectedDeputy === "") {
-                                    // 已选主将未选副将：如果是当前主将自己，允许点击（取消选择）
                                     if (modelData.name === selectedMain)
                                         return true;
                                     else
                                         return isDeputyValid(modelData.name);
                                 }
-                                return false; // 已选完，禁止再选
+                                return false;
                             }
                             selected: (selectedMain === modelData.name) || (selectedDeputy === modelData.name)
                             onSelectedChanged: {
                                 if (!selected) return;
                                 if (selectedMain === "") {
-                                    // 选主将
                                     selectedMain = modelData.name;
                                     selectedDeputy = "";
                                     stepText.text = "请选择副将";
                                 } else if (selectedDeputy === "") {
-                                    // 已选主将，点击副将或点击主将自己取消
                                     if (modelData.name === selectedMain) {
-                                        // 点击已选主将：取消选中
                                         clearSelection();
                                     } else {
-                                        // 点击有效副将
                                         selectedDeputy = modelData.name;
-                                        var resultArray = [selectedMain, selectedDeputy];
-                                        ClientInstance.replyToServer("", resultArray);
-                                        root.close(resultArray);
+                                        stepText.text = "已选择副将，点击“确定”完成选将";
                                     }
                                 }
                             }
@@ -151,7 +144,7 @@ GraphicsBox {
                             }
                         }
 
-                        // 绿色对钩标记（仅当是主将时显示）
+                        // 主将标记
                         Rectangle {
                             visible: selectedMain === modelData.name
                             width: 24
@@ -161,13 +154,34 @@ GraphicsBox {
                             anchors.top: parent.top
                             anchors.right: parent.right
                             anchors.margins: 4
-                            z: 1  // 确保显示在武将图上方
+                            z: 1
 
                             Text {
-                                text: "✓"
+                                text: "主"
                                 anchors.centerIn: parent
                                 color: "white"
-                                font.pixelSize: 16
+                                font.pixelSize: 14
+                                font.bold: true
+                            }
+                        }
+
+                        // 副将标记
+                        Rectangle {
+                            visible: selectedDeputy === modelData.name
+                            width: 24
+                            height: 24
+                            radius: 12
+                            color: "#9C27B0"
+                            anchors.top: parent.top
+                            anchors.right: parent.right
+                            anchors.margins: 4
+                            z: 1
+
+                            Text {
+                                text: "副"
+                                anchors.centerIn: parent
+                                color: "white"
+                                font.pixelSize: 14
                                 font.bold: true
                             }
                         }
@@ -184,11 +198,25 @@ GraphicsBox {
                 visible: selectedMain !== ""
             }
 
-            Button {
-                text: "重置选择"
-                visible: selectedMain !== ""
-                onClicked: clearSelection()
+            RowLayout {
                 Layout.alignment: Qt.AlignHCenter
+                spacing: 20
+
+                Button {
+                    text: "重置选择"
+                    visible: selectedMain !== "" || selectedDeputy !== ""
+                    onClicked: clearSelection()
+                }
+
+                Button {
+                    text: "确定"
+                    enabled: selectedMain !== "" && selectedDeputy !== ""
+                    onClicked: {
+                        var resultArray = [selectedMain, selectedDeputy];
+                        ClientInstance.replyToServer("", resultArray);
+                        root.close(resultArray);
+                    }
+                }
             }
         }
     }

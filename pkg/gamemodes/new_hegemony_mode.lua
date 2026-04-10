@@ -481,11 +481,8 @@ local settings = {
     W.SpinRow {
       _settingsKey = "deckThickness",
       title = "牌堆倍数",
-      default = 1,
       from = 1,
-      to = 10,
-      step = 1,
-      suffix = "倍",
+      to = 10
     },
   },
 
