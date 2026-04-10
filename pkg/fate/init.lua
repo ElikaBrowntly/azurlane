@@ -19,15 +19,98 @@ Fk:addTaskDef {
     local quartz = state["SaintQuartz"] or {}
     local sign_in = quartz.sign_in or false
     local sign_constant = quartz.sign_constant or 0
+    local sign_total = quartz.sign_total or 0
+    local sign_date = quartz.sign_date or "2026-04-09"
     local quartz_num = quartz.quartz_num or 30
+    -- 跨日重置 sign_in
+    local today = os.date("%Y-%m-%d")
+    if sign_date ~= today then
+      sign_in = false
+      quartz.sign_in = false
+      state["SaintQuartz"] = quartz
+      player:saveGlobalState("hidden-clouds", state)
+    end
     local data = {
       gold = gold,
       kanbujiandeshou = kanbujiandeshou,
       sign_in = sign_in,
       sign_constant = sign_constant,
-      quartz_num = quartz_num
+      quartz_num = quartz_num,
+      sign_total = sign_total,
+      sign_date = sign_date
     }
     task.player:doNotify("get_player_SaintQuartz_callback", json.encode(data))
+  end,
+}
+
+Fk:addTaskDef {
+  type = "sign_in_SaintQuartz",
+  handler = function(task)
+    local player = task.player
+    if not player then
+      task.player:doNotify("sign_in_SaintQuartz_callback", json.encode({ success = false, message = "无效玩家" }))
+      return
+    end
+
+    local state = player:getGlobalSaveState("hidden-clouds") or {}
+    local quartz = state["SaintQuartz"] or {}
+    local today = os.date("%Y-%m-%d")
+    local sign_date = quartz.sign_date or ""
+    local sign_in = quartz.sign_in or false
+
+    --已经签到过
+    if sign_in then
+      task.player:doNotify("sign_in_SaintQuartz_callback", json.encode({ success = false, message = "今日已签到" }))
+      return
+    end
+
+    -- 计算连续签到天数
+    local sign_constant = quartz.sign_constant or 0
+    ---@diagnostic disable-next-line: param-type-mismatch
+    if sign_date == "" or not F.isYesterday(sign_date) then
+      sign_constant = 1
+    else
+      sign_constant = sign_constant + 1
+    end
+
+    -- 基础奖励
+    local reward = 1
+    if sign_constant >= 7 then
+      reward = 2
+    end
+
+    -- 执行增加圣晶石
+    local newQuartz = F.ChangePlayerSaintQuartz(player, reward)
+
+    -- 更新累计签到
+    local sign_total = (quartz.sign_total or 0) + 1
+    local bonus = 0
+    if sign_total % 50 == 0 then
+      bonus = 30
+      newQuartz = F.ChangePlayerSaintQuartz(player, bonus)
+    end
+
+    -- 保存签到状态
+    quartz.sign_in = true
+    quartz.sign_constant = sign_constant
+    quartz.sign_total = sign_total
+    quartz.sign_date = today
+    quartz.quartz_num = newQuartz
+    state["SaintQuartz"] = quartz
+    player:saveGlobalState("hidden-clouds", state)
+
+    -- 返回数据给前端
+    local result = {
+      success = true,
+      quartz_num = newQuartz,
+      sign_constant = sign_constant,
+      sign_total = sign_total,
+      sign_in = true,
+      sign_date = today,
+      reward = reward,
+      bonus = bonus
+    }
+    task.player:doNotify("sign_in_SaintQuartz_callback", json.encode(result))
   end,
 }
 
@@ -73,7 +156,7 @@ Fk:loadTranslationTable
 
 local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "moon", 4, 4, General.Male)
 Tezcatlipoca:addSkills { "fate_douzhengdemeili", "fate_heizhitaiyang", "fate_shanzhixinzang",
- "fate_diyitaiyang", "fate_zhanshizhisi", "fate_zhengwudetaiyang" }
+  "fate_diyitaiyang", "fate_zhanshizhisi", "fate_zhengwudetaiyang" }
 Fk:loadTranslationTable
 {
   ["yyfy_Tezcatlipoca"] = "烟雾镜",

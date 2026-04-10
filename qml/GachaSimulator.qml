@@ -15,8 +15,10 @@ W.PageBase {
     property string lastHandDate: ""
     property bool todaySigned: false
     property int signConstant: 0
+    property int signTotal: 0          // 累计签到次数
+    property string signDate: ""       // 上次签到日期
 
-    // 抽卡配置（与之前完全相同）
+    // 抽卡配置（不变）
     property var categories: [
         { prob: 0.8, getPath: function() { return basePath + "up/servant5.jpg"; } },
         { prob: 0.2, getPath: function() { return basePath + "servant5/" + randomInt(1, 35) + ".jpg"; } },
@@ -53,13 +55,23 @@ W.PageBase {
         Cpp.notifyServer("LobbyTask", ["get_player_SaintQuartz", []]);
     }
 
+    // 签到请求
+    function signIn() {
+        if (todaySigned) {
+            App.showToast("今日已经签到过了！");
+            return;
+        }
+        App.setBusy(true);
+        Cpp.notifyServer("LobbyTask", ["sign_in_SaintQuartz", []]);
+    }
+
     // 切换页面
     function setPage(page) {
         currentPage = page;
         if (page === 1) requestSaintQuartz();
     }
 
-    // 全局抽卡结果显示函数（操作抽卡页面内的组件）
+    // 全局抽卡结果显示函数
     function showGachaResult(icons) {
         if (!gachaPage) return;
         if (icons.length === 1) {
@@ -121,45 +133,42 @@ W.PageBase {
                 width: parent.width / 2 - 1; height: parent.height
                 color: currentPage === 1 ? "#4CAF50" : "#3A6EA5"; radius: 8
                 border.color: "white"; border.width: 1
-                Text { anchors.centerIn: parent; text: "圣晶石"; font.pixelSize: 18; color: "white"; font.bold: true }
+                Text { anchors.centerIn: parent; text: "圣晶石系统"; font.pixelSize: 18; color: "white"; font.bold: true }
                 MouseArea { anchors.fill: parent; onClicked: setPage(1) }
             }
         }
     }
 
-    // 抽卡页面（内部组件通过 property alias 暴露）
+    // 抽卡页面（不变）
     Item {
         id: gachaPage
         anchors.top: parent.top; anchors.bottom: menuArea.top
         anchors.left: parent.left; anchors.right: parent.right
         visible: currentPage === 0
 
-        // 暴露弹窗组件给根函数使用
         property alias resultPopup: resultPopup
         property alias singleResultImage: singleResultImage
         property alias resultGrid: resultGrid
 
-        // 热区（调用根函数）
         MouseArea {
             x: parent.width * (363 / 1450); y: parent.height * (475 / 720)
             width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
             onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: true }
+            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
         }
         MouseArea {
             x: parent.width * (603 / 1450); y: parent.height * (475 / 720)
             width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
             onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: true }
+            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
         }
         MouseArea {
             x: parent.width * (842 / 1450); y: parent.height * (475 / 720)
             width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
             onClicked: { var icons = drawMultiple(10); root.showGachaResult(icons); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: true }
+            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
         }
 
-        // 抽卡结果弹窗
         Rectangle {
             id: resultPopup
             anchors.centerIn: parent
@@ -175,7 +184,7 @@ W.PageBase {
 
             GridView {
                 id: resultGrid
-                anchors.fill: parent;// anchors.margins: 5
+                anchors.fill: parent;
                 cellWidth: (parent.width - 50) / 5; cellHeight: cellWidth
                 model: []; visible: false
                 delegate: Item {
@@ -202,7 +211,7 @@ W.PageBase {
         }
     }
 
-    // 圣晶石页面
+    // 圣晶石页面（增加签到按钮和累计签到显示）
     Item {
         id: saintQuartzPage
         anchors.top: parent.top; anchors.bottom: menuArea.top
@@ -213,8 +222,10 @@ W.PageBase {
 
         Column {
             anchors.centerIn: parent; spacing: 20; width: parent.width * 0.8
+
             Text { anchors.horizontalCenter: parent.horizontalCenter; text: "圣晶石"; font.pixelSize: 32; color: "#FFD700"; font.bold: true; style: Text.Outline; styleColor: "black" }
             Rectangle { width: parent.width; height: 2; color: "white"; opacity: 0.5 }
+
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Text { text: "当前数量："; font.pixelSize: 20; color: "white"; font.bold: true }
                 Text { text: quartzNum.toString(); font.pixelSize: 20; color: "#3A6EA5"; font.bold: true }
@@ -224,6 +235,10 @@ W.PageBase {
                 Text { text: signConstant + " 天"; font.pixelSize: 18; color: "#3A6EA5"; font.bold: true }
             }
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
+                Text { text: "累计签到："; font.pixelSize: 18; color: "white"; font.bold: true }
+                Text { text: signTotal + " 次"; font.pixelSize: 18; color: "#3A6EA5"; font.bold: true }
+            }
+            Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Text { text: "今日签到："; font.pixelSize: 18; color: "white"; font.bold: true }
                 Text { text: todaySigned ? "已完成" : "未签到"; font.pixelSize: 18; color: todaySigned ? "#4CAF50" : "#FF9800"; font.bold: true }
             }
@@ -231,20 +246,57 @@ W.PageBase {
                 Text { text: "上次看不见的手："; font.pixelSize: 16; color: "white"; font.bold: true }
                 Text { text: lastHandDate || "暂无"; font.pixelSize: 16; color: "#3A6EA5"; font.bold: true }
             }
-            Button { anchors.horizontalCenter: parent.horizontalCenter; text: "刷新"; onClicked: requestSaintQuartz() }
+
+            // 按钮行：刷新 + 签到（并排）
+            Column {
+                spacing: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                Button {
+                    text: "签到"
+                    width: 100
+                    height: 40
+                    background: Rectangle {
+                        color: "#FF9800"
+                        radius: 4
+                        border.color: "#E67E22"
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    onClicked: signIn()
+                }
+                Button {
+                    text: "刷新"
+                    width: 100
+                    height: 40
+                    onClicked: requestSaintQuartz()
+                }
+            }
         }
     }
 
-    // 返回热区
-    MouseArea {
-        x: 0; y: 0
-        width: parent.width * (204 / 1450); height: parent.height * (78 / 720)
-        z: 100
-        onClicked: { App.quitPage(); }
-        Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
+    // 关闭按钮（左上角）
+    Image {
+        id: closeButton
+        anchors.left: parent.left
+        anchors.top: parent.top
+        width: 80
+        height: 80
+        source: root.basePath + "close.png"
+        fillMode: Image.PreserveAspectFit
+        z: 200
+        MouseArea {
+            anchors.fill: parent
+            onClicked: App.quitPage()
+        }
     }
 
     Component.onCompleted: {
+        // 获取圣晶石数据回调
         addCallback("get_player_SaintQuartz_callback", function(sender, data) {
             if (typeof data === "string") {
                 try {
@@ -253,10 +305,37 @@ W.PageBase {
                     lastHandDate = obj.kanbujiandeshou || "";
                     todaySigned = obj.sign_in || false;
                     signConstant = obj.sign_constant || 0;
+                    signTotal = obj.sign_total || 0;
+                    signDate = obj.sign_date || "";
                 } catch(e) {}
             }
             App.setBusy(false);
         });
+
+        // 签到回调
+        addCallback("sign_in_SaintQuartz_callback", function(sender, data) {
+            if (typeof data === "string") {
+                try {
+                    var obj = JSON.parse(data);
+                    if (obj.success) {
+                        // 更新界面
+                        quartzNum = obj.quartz_num;
+                        signConstant = obj.sign_constant;
+                        signTotal = obj.sign_total;
+                        todaySigned = obj.sign_in;
+                        signDate = obj.sign_date;
+                        // 显示奖励信息
+                        var msg = "签到成功！获得 " + obj.reward + " 圣晶石。";
+                        if (obj.bonus && obj.bonus > 0) msg += "\n累计签到50天：额外获得 " + obj.bonus + " 圣晶石！";
+                        App.showToast(msg);
+                    } else {
+                        App.showToast(obj.message || "签到失败");
+                    }
+                } catch(e) {}
+            }
+            App.setBusy(false);
+        });
+
         requestSaintQuartz();
     }
 

@@ -600,6 +600,43 @@ function functions.getSkinsInfo(player, general, only)
   return skinInfos, allSkins
 end
 
+--- 判断给定日期是否为昨天
+--- @param dateStr string 格式 "YYYY-MM-DD"
+--- @return boolean
+function functions.isYesterday(dateStr)
+    local now = os.date("*t")
+    local today = os.time({year=now.year, month=now.month, day=now.day, hour=0, min=0, sec=0})
+    local yesterday = today - 86400
+    local yesterdayStr = os.date("%Y-%m-%d", yesterday)
+    return dateStr == yesterdayStr
+end
+
+--- 改变玩家圣晶石
+--- @param player ServerPlayer|TaskPlayer @ 玩家
+--- @param num integer @ 变更值
+--- @return integer @ 返回改变后的金币
+function functions.ChangePlayerSaintQuartz(player, num)
+  if player.id < 0 then return 0 end
+  num = num or 0
+  local globalData = player:getGlobalSaveState("hidden-clouds") or {}
+  local quartz = globalData["SaintQuartz"] or {}
+  local before = quartz.quartz_num or 30
+    quartz.quartz_num = before + num
+    globalData["SaintQuartz"] = quartz
+    player:saveGlobalState("hidden-clouds", globalData)
+    local direction = "获得了"..tostring(num)
+    if num < 0 then
+      direction = "失去了"..tostring(math.abs(num))
+    end
+    if player.room then
+      player.room:sendLog {
+      type = player._splayer:getScreenName()..direction.."个圣晶石",
+      toast = true,
+    }
+    end
+  return quartz.quartz_num
+end
+
 --- 一个字符串str是否以另一个字符串ending结尾
 ---@param str string 要判断的字符串
 ---@param ending string 结尾字符串
