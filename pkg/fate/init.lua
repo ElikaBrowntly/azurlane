@@ -2,6 +2,35 @@ local extension = Package:new("fate")
 extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/fate/skills")
 
+local F = require("packages.hidden-clouds.functions")
+
+-- 定义获取圣晶石数据的任务
+Fk:addTaskDef {
+  type = "get_player_SaintQuartz",
+  handler = function(task)
+    local player = task.player
+    if not player then return end
+    -- 获取玩家的全局存档数据（示例：CS_System_Data）
+    local coinData = player:getGlobalSaveState("CS_System_Data") or {}
+    local gold = coinData.gold or 0
+    local state = player:getGlobalSaveState("hidden-clouds")
+    local shou = state["yyfy_kanbujiandeshou"] or {}
+    local kanbujiandeshou = shou.last_date or ""
+    local quartz = state["SaintQuartz"] or {}
+    local sign_in = quartz.sign_in or false
+    local sign_constant = quartz.sign_constant or 0
+    local quartz_num = quartz.quartz_num or 30
+    local data = {
+      gold = gold,
+      kanbujiandeshou = kanbujiandeshou,
+      sign_in = sign_in,
+      sign_constant = sign_constant,
+      quartz_num = quartz_num
+    }
+    task.player:doNotify("get_player_SaintQuartz_callback", json.encode(data))
+  end,
+}
+
 -- 拓展包注册的额外页面
 extension.customPages = {
   {

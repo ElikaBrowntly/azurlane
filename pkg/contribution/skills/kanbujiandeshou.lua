@@ -67,7 +67,6 @@ shou:addEffect(fk.GameFinished, {
     --仅存储一个 last_date 字段，记录最后一次触发日期。如果当天已触发则跳过。
     state["yyfy_kanbujiandeshou"] = save
     player:saveGlobalState("hidden-clouds", state)
-    player:saveGlobalState("yyfy_kanbujiandeshou", {})
   end
 })
 
