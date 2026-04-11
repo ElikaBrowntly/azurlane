@@ -138,14 +138,11 @@ function HegLogic:chooseGenerals()
 
   table.shuffle(generals)
 
-
-
   -- local req = Request:new(players, "AskForGeneral")
   -- req.timeout = self.room:getSettings('generalTimeout')
-
-  -- 假设 generals 已经生成（全局武将列表），generalNum 已定义
   local playerGeneralPool = {}
   local playerGeneralsInfo = {}
+
 
   for k, p in ipairs(players) do
     local arg = table.slice(generals, (k - 1) * generalNum + 1, k * generalNum + 1)
@@ -175,25 +172,77 @@ function HegLogic:chooseGenerals()
     return { cardList[1], cardList[2] }
   end
 
-  -- 处理 AI：直接分配默认组合
-  for _, p in ipairs(players) do
-    if p.id < 0 then -- AI
-      local defaultPair = getDefaultPair(playerGeneralPool[p.id])
-      room:setPlayerMark(p, "__heg_general", defaultPair[1])
-      room:setPlayerMark(p, "__heg_deputy", defaultPair[2])
-      room:setPlayerGeneral(p, "anjiang", true)
-      room:setDeputyGeneral(p, "anjiang")
+  local humanKingdom = table.random(allKingdoms, 1)[1]   -- 真人玩家共同的势力
+  local usableKingdoms = { humanKingdom, "god", "evil" } -- 包含共同势力的势力
+  local humans = {} ---@type ServerPlayer[] 真人玩家数组
+  local compPlayers = {} ---@type ServerPlayer[] 小杀数组
+  -- 如果是抗金模式
+  if room:getSettings("kangjin_mode") then
+    for _, p in ipairs(players) do
+      if p.id > 0 then
+        table.insert(humans, p)
+      else
+        table.insert(compPlayers, p)
+      end
+    end
+    generalNames = {}
+    for _, g in ipairs(Fk:getAllGenerals()) do
+      if table.contains(usableKingdoms, g.kingdom) or table.contains(usableKingdoms, g.subkingdom) then
+        table.insertIfNeed(generalNames, g.name)
+      end
+    end
+    generals = table.random(generalNames, #humans * generalNum) ---@type string[]
+    for k, p in ipairs(humans) do
+      local arg = table.slice(generals, (k - 1) * generalNum + 1, k * generalNum + 1)
+      playerGeneralPool[p.id] = arg
+      local info = {}
+      for _, name in ipairs(arg) do
+        local g = Fk.generals[name]
+        table.insert(info, { name = name, kingdom = g.kingdom, subkingdom = g.subkingdom or "" })
+      end
+      playerGeneralsInfo[p.id] = info
+    end
+    -- 处理小杀
+    table.removeOne(allKingdoms, "god")
+    table.removeOne(allKingdoms, "evil") -- 不给小杀玩神/魔
+    table.removeOne(allKingdoms, humanKingdom)
+    if #allKingdoms < 2 then             -- 如果小杀可用势力太少，则回退到魏蜀吴群中没被占用的三个
+      allKingdoms = { "wei", "shu", "wu", "qun" }
+      table.removeOne(allKingdoms, humanKingdom)
+    end
+    generalNames = {}
+    for _, g in ipairs(Fk:getAllGenerals()) do
+      if table.contains(allKingdoms, g.kingdom) then
+        table.insertIfNeed(generalNames, g.name)
+      end
+    end
+    generals = table.random(generalNames, #compPlayers * generalNum) ---@type string[]
+    for k, p in ipairs(compPlayers) do
+      local arg = table.slice(generals, (k - 1) * generalNum + 1, k * generalNum + 1)
+      playerGeneralPool[p.id] = arg
+      local info = {}
+      for _, name in ipairs(arg) do
+        local g = Fk.generals[name]
+        table.insert(info, { name = name, kingdom = g.kingdom, subkingdom = g.subkingdom or "" })
+      end
+      playerGeneralsInfo[p.id] = info
     end
   end
 
+  -- 处理 AI：直接分配默认组合
+  for _, p in ipairs(compPlayers) do
+    local defaultPair = getDefaultPair(playerGeneralPool[p.id])
+    room:setPlayerMark(p, "__heg_general", defaultPair[1])
+    room:setPlayerMark(p, "__heg_deputy", defaultPair[2])
+    room:setPlayerGeneral(p, "anjiang", true)
+    room:setDeputyGeneral(p, "anjiang")
+  end
   -- 处理人类玩家
-  local humanPlayers = table.filter(players, function(p) return p.id > 0 end)
-
-  local req = Request:new(humanPlayers, "CustomDialog")
+  local req = Request:new(humans, "CustomDialog")
   req.timeout = room:getSettings('generalTimeout')
-  for _, p in ipairs(humanPlayers) do
+  for _, p in ipairs(humans) do
     req:setData(p, {
-      path = "packages/hidden-clouds/qml/HegemonyGeneralChoose.qml", -- 根据实际路径调整
+      path = "packages/hidden-clouds/qml/HegemonyGeneralChoose.qml",
       data = {
         generals = playerGeneralsInfo[p.id],
         prompt = "请选择主将"
@@ -202,7 +251,7 @@ function HegLogic:chooseGenerals()
     req:setDefaultReply(p, getDefaultPair(playerGeneralPool[p.id]))
   end
   req:ask()
-  for _, p in ipairs(humanPlayers) do
+  for _, p in ipairs(humans) do
     local result = req:getResult(p)
     if type(result) ~= "table" or #result < 2 then
       result = req.default_reply[p.id]
@@ -213,102 +262,115 @@ function HegLogic:chooseGenerals()
     room:setPlayerGeneral(p, "anjiang", true)
     room:setDeputyGeneral(p, "anjiang")
   end
+  -- 如果是抗金模式
+  if room:getSettings("kangjin_mode") then
+    for _, p in ipairs(humans) do
+      room:setPlayerMark(p, "__heg_kingdom", humanKingdom)      -- 变野后变为wild
+      room:setPlayerMark(p, "__heg_init_kingdom", humanKingdom) -- 保存初始势力
+      -- p.kingdom = kingdomChosen
+      --room:notifyProperty(p, p, "kingdom")
+    end
+    for _, p in ipairs(compPlayers) do
+      local kingdom = Fk.generals[p:getMark("__heg_general")].kingdom -- 直接用主将主势力
+      room:setPlayerMark(p, "__heg_kingdom", kingdom)
+      room:setPlayerMark(p, "__heg_init_kingdom", kingdom)
+    end
+  else
+    req = Request:new(players, "AskForChoice")
+    req.focus_text = "AskForKingdom"
+    req.receive_decode = false
 
-  req = Request:new(players, "AskForChoice")
-  req.focus_text = "AskForKingdom"
-  req.receive_decode = false
+    -- 确保 allKingdoms 包含所有玩家武将的势力（避免遗漏自定义势力）
+    local function ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
+      for _, p in ipairs(players) do
+        local mainName = p:getMark("__heg_general")
+        local deputyName = p:getMark("__heg_deputy")
+        if mainName and mainName ~= "anjiang" then
+          local g = Fk.generals[mainName]
+          if g then
+            table.insertIfNeed(allKingdoms, g.kingdom)
+            if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
+          end
+        end
+        if deputyName and deputyName ~= "anjiang" then
+          local g = Fk.generals[deputyName]
+          if g then
+            table.insertIfNeed(allKingdoms, g.kingdom)
+            if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
+          end
+        end
+      end
+      table.removeOne(allKingdoms, "wild")
+      table.sort(allKingdoms)
+    end
 
-  -- 确保 allKingdoms 包含所有玩家武将的势力（避免遗漏自定义势力）
-  local function ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
+    -- 在调用 ensureAllKingdomsContainsPlayerKingdoms 之前，先确保 allKingdoms 已包含基础势力
+    -- 原代码中 allKingdoms 已从 room.general_pile 获取，这里再补充玩家武将中的势力
+    ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
+
     for _, p in ipairs(players) do
-      local mainName = p:getMark("__heg_general")
-      local deputyName = p:getMark("__heg_deputy")
-      if mainName and mainName ~= "anjiang" then
-        local g = Fk.generals[mainName]
-        if g then
-          table.insertIfNeed(allKingdoms, g.kingdom)
-          if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
+      local mainGen = Fk.generals[p:getMark("__heg_general")]
+      local deputyGen = Fk.generals[p:getMark("__heg_deputy")]
+      -- 收集主将势力列表（去 nil）
+      local mainKingdoms = {}
+      if mainGen.kingdom then table.insert(mainKingdoms, mainGen.kingdom) end
+      if mainGen.subkingdom then table.insert(mainKingdoms, mainGen.subkingdom) end
+
+      -- 收集副将势力列表（去 nil）
+      local deputyKingdoms = {}
+      if deputyGen.kingdom then table.insert(deputyKingdoms, deputyGen.kingdom) end
+      if deputyGen.subkingdom then table.insert(deputyKingdoms, deputyGen.subkingdom) end
+
+      local kingdoms = {}
+
+      -- 野心家处理（主将为 wild 时，使用副将势力列表）
+      if mainGen.kingdom == "wild" then
+        room:setPlayerMark(p, "__heg_wild", 1)
+        kingdoms = deputyKingdoms
+        -- 神/魔主将：看设置是否允许任选势力
+      elseif mainGen.kingdom == "god" or mainGen.kingdom == "evil" then
+        if room:getSettings("no_limit_god_kingdom") -- 没限制的话，神将任选势力
+            or deputyGen.kingdom == "god" or deputyGen.kingdom == "evil"
+            or deputyGen.kingdom == "wild" then   -- 有限制但副将也是万能势力的话，允许任选势力
+          kingdoms = table.simpleClone(allKingdoms)
+        else
+          kingdoms = table.simpleClone(deputyKingdoms) -- 否则，势力跟着副将势力走
         end
-      end
-      if deputyName and deputyName ~= "anjiang" then
-        local g = Fk.generals[deputyName]
-        if g then
-          table.insertIfNeed(allKingdoms, g.kingdom)
-          if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
-        end
-      end
-    end
-    table.removeOne(allKingdoms, "wild")
-    table.sort(allKingdoms)
-  end
-
-  -- 在调用 ensureAllKingdomsContainsPlayerKingdoms 之前，先确保 allKingdoms 已包含基础势力
-  -- 原代码中 allKingdoms 已从 room.general_pile 获取，这里再补充玩家武将中的势力
-  ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
-
-  for _, p in ipairs(players) do
-    local mainGen = Fk.generals[p:getMark("__heg_general")]
-    local deputyGen = Fk.generals[p:getMark("__heg_deputy")]
-    -- 收集主将势力列表（去 nil）
-    local mainKingdoms = {}
-    if mainGen.kingdom then table.insert(mainKingdoms, mainGen.kingdom) end
-    if mainGen.subkingdom then table.insert(mainKingdoms, mainGen.subkingdom) end
-
-    -- 收集副将势力列表（去 nil）
-    local deputyKingdoms = {}
-    if deputyGen.kingdom then table.insert(deputyKingdoms, deputyGen.kingdom) end
-    if deputyGen.subkingdom then table.insert(deputyKingdoms, deputyGen.subkingdom) end
-
-    local kingdoms = {}
-
-    -- 野心家处理（主将为 wild 时，使用副将势力列表）
-    if mainGen.kingdom == "wild" then
-      room:setPlayerMark(p, "__heg_wild", 1)
-      kingdoms = deputyKingdoms
-      -- 神/魔主将：看设置是否允许任选势力
-    elseif mainGen.kingdom == "god" or mainGen.kingdom == "evil" then
-      if room:getSettings("no_limit_god_kingdom")  -- 没限制的话，神将任选势力
-      or deputyGen.kingdom == "god" or deputyGen.kingdom == "evil"
-      or deputyGen.kingdom == "wild" then -- 有限制但副将也是万能势力的话，允许任选势力
-        kingdoms = table.simpleClone(allKingdoms)
       else
-        kingdoms = table.simpleClone(deputyKingdoms) -- 否则，势力跟着副将势力走
-      end
-      
-    else
-      -- 普通情况：取主将与副将的势力交集
-      for _, mk in ipairs(mainKingdoms) do
-        if table.contains(deputyKingdoms, mk) then
-          table.insertIfNeed(kingdoms, mk)
+        -- 普通情况：取主将与副将的势力交集
+        for _, mk in ipairs(mainKingdoms) do
+          if table.contains(deputyKingdoms, mk) then
+            table.insertIfNeed(kingdoms, mk)
+          end
+        end
+        -- 如果交集为空（比如说副将是神/魔），回退到主将势力列表
+        if #kingdoms == 0 then
+          kingdoms = mainKingdoms
         end
       end
-      -- 如果交集为空（比如说副将是神/魔），回退到主将势力列表
-      if #kingdoms == 0 then
-        kingdoms = mainKingdoms
+
+      -- 特殊测试：如果包含谋徐盛，加入 wu 势力
+      if not table.contains(allKingdoms, "wu") and
+          (p:getMark("__heg_deputy") == "mouxusheng" or p:getMark("__heg_general") == "mouxusheng") then
+        table.insert(kingdoms, "wu")
+        table.insert(allKingdoms, "wu")
       end
+
+      -- 如果 kingdoms 仍然为空（例如势力信息没有成功加载），则给予一个默认值（allKingdoms）
+      if #kingdoms == 0 then
+        kingdoms = table.clone(allKingdoms)
+      end
+      req:setData(p, { kingdoms, allKingdoms, "AskForKingdom", "#ChooseHegInitialKingdom" })
+      req:setDefaultReply(p, kingdoms[1])
     end
 
-    -- 特殊测试：如果包含谋徐盛，加入 wu 势力
-    if not table.contains(allKingdoms, "wu") and
-        (p:getMark("__heg_deputy") == "mouxusheng" or p:getMark("__heg_general") == "mouxusheng") then
-      table.insert(kingdoms, "wu")
-      table.insert(allKingdoms, "wu")
+    for _, p in ipairs(players) do
+      local kingdomChosen = req:getResult(p)
+      room:setPlayerMark(p, "__heg_kingdom", kingdomChosen)    -- 变野后变为wild
+      room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
+      -- p.kingdom = kingdomChosen
+      --room:notifyProperty(p, p, "kingdom")
     end
-
-    -- 如果 kingdoms 仍然为空（例如势力信息没有成功加载），则给予一个默认值（allKingdoms）
-    if #kingdoms == 0 then
-      kingdoms = table.clone(allKingdoms)
-    end
-    req:setData(p, { kingdoms, allKingdoms, "AskForKingdom", "#ChooseHegInitialKingdom" })
-    req:setDefaultReply(p, kingdoms[1])
-  end
-
-  for _, p in ipairs(players) do
-    local kingdomChosen = req:getResult(p)
-    room:setPlayerMark(p, "__heg_kingdom", kingdomChosen)      -- 变野后变为wild
-    room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
-    -- p.kingdom = kingdomChosen
-    --room:notifyProperty(p, p, "kingdom")
   end
 end
 
@@ -496,6 +558,10 @@ local settings = {
     W.SwitchRow {
       _settingsKey = "no_limit_god_kingdom",
       title = "no_limit_god_kingdom",
+    },
+    W.SwitchRow {
+      _settingsKey = "kangjin_mode",
+      title = "kangjin_mode",
     }
   }
 }
@@ -744,7 +810,8 @@ Fk:loadTranslationTable {
   ["help: deckThickness"] = "调整牌堆倍数，默认为1",
   ["no_limit_god_kingdom"] = "神将任选势力",
   ["help: no_limit_god_kingdom"] = "开启后，仅限主将为神将时，可以任选势力加入",
-
+  ["kangjin_mode"] = "抗金模式",
+  ["help: kangjin_mode"] = "玩家方将固定为相同势力。请调整玩家数/总人数，防止玩家变为野心家",
   ["hegemony_special_rule"] = "特殊规则",
   ["heg_reveal_all_on_start"] = "全亮国战",
   ["help: heg_reveal_all_on_start"] = "游戏开始时所有角色依次亮出所有武将",
