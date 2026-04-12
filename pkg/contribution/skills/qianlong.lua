@@ -96,7 +96,6 @@ qianlong:addAcquireEffect(function(self, player, is_start)
       player.room:addTableMark(player, "lan__qianlong_skills", skill)
     end
   end
-  print("获得后",#player:getTableMark("lan__qianlong_skills"))
   daoxin_handle_skills(player)
 end)
 

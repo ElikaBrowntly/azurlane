@@ -60,7 +60,7 @@ zhejiao:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
     return target == player and data.card and data.card.trueName == "slash"
-    and data.to and #data.to:getCardIds("h") > 0
+    and data.to and #data.to:getCardIds("h") > 0 and player:hasSkill(self)
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)

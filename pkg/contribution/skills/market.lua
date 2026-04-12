@@ -3,7 +3,7 @@ local skill = fk.CreateSkill({
   tags = { Skill.Permanent },
 })
 
-local ok, CS = pcall(require, "packages.abcd-system.csfs")
+local CS = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_market"] = "市场",
@@ -97,10 +97,6 @@ skill:addEffect("active", {
       end
       -- 价格（人机自动 1000）
       local price = 1000
-      if not ok then
-        room:doBroadcastNotify("ShowToast", "未开启金币系统，无法购买")
-        return
-      end
       local coinsData = CS.GetcoinsData(player)
       local gold = coinsData.gold or 0
       -- 扣费

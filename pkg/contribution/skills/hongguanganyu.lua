@@ -24,10 +24,11 @@ local sayings = {
 
 ganyu:addEffect(fk.GameStart, {
   priority = 100000,
-  can_refresh = function(self, event, target, player, data)
+  can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self)
   end,
-  on_refresh = function(self, event, target, player, data)
+  on_cost = Util.TrueFunc,
+  on_use = function(self, event, target, player, data)
     local coinsData = CS.GetcoinsData(player)
     local before = coinsData.gold or 0
     player.room:setPlayerMark(player, ganyu.name, before)
