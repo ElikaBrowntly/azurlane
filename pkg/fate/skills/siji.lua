@@ -1,16 +1,16 @@
 local skill = fk.CreateSkill{
-  name = "fate_siji",
+  name = "yyfy_siji",
   anim_type = "offensive",
   tags = {Skill.Limited},
 }
 
 Fk:loadTranslationTable{
-  ["fate_siji"] = "死棘",
-  [":fate_siji"] = "限定技：出牌阶段，你可以对一名角色造成一点雷电伤害，"..
+  ["yyfy_siji"] = "死棘",
+  [":yyfy_siji"] = "限定技：出牌阶段，你可以对一名角色造成一点雷电伤害，"..
   "每传导一次，该伤害便+x（x为上一名角色剩余体力值）",
   
-  ["$fate_siji1"] = "这心脏就由我拿下了！",
-  ["$fate_siji2"] = "穿刺死棘之枪！"
+  ["$yyfy_siji1"] = "这心脏就由我拿下了！",
+  ["$yyfy_siji2"] = "穿刺死棘之枪！"
 }
 
 skill:addEffect("active", {

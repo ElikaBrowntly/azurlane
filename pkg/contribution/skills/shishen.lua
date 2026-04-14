@@ -43,8 +43,8 @@ shishen:addEffect(fk.Death, {
     target.hp = 0
     room:broadcastProperty(target, "hp")
     -- 篡夺所有牌
-    if not target:isKongcheng() then
-      room:moveCardTo(target:getCardIds("h"), Card.PlayerHand, player, fk.ReasonPrey, self.name, nil, false, player)
+    if not target:isAllNude() then
+      room:moveCardTo(target:getCardIds("he"), Card.PlayerHand, player, fk.ReasonPrey, self.name, nil, false, player)
     end
   end,
 })

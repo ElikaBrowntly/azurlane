@@ -1,19 +1,19 @@
 local skill = fk.CreateSkill{
-  name = "fate_bishi",
+  name = "yyfy_bishi",
   anim_type = "defensive",
 }
 
 Fk:loadTranslationTable{
-  ["fate_bishi"] = "避矢",
-  [":fate_bishi"] = "当【杀】或普通锦囊牌对唯一目标生效前，你可以进行一次判定："..
+  ["yyfy_bishi"] = "避矢",
+  [":yyfy_bishi"] = "当【杀】或普通锦囊牌对唯一目标生效前，你可以进行一次判定："..
     "若与该牌类型相同，你令目标角色视为使用一张抵消此牌的牌（不可被响应）；否则，你获得此判定牌。",
   
-  ["#fate_bishi-response"] = "%from 受到「%arg」效果影响，视为使用了一张响应 %arg2 的牌",
-  ["#fate_bishi-obtain"] = "%from 获得「%arg」的判定牌",
-  ["#fate_bishi-ask"] = "避矢：是否发动技能进行判定？",
+  ["#yyfy_bishi-response"] = "%from 受到「%arg」效果影响，视为使用了一张响应 %arg2 的牌",
+  ["#yyfy_bishi-obtain"] = "%from 获得「%arg」的判定牌",
+  ["#yyfy_bishi-ask"] = "避矢：是否发动技能进行判定？",
   
-  ["$fate_bishi1"] = "看得见的话就躲得开！",
-  ["$fate_bishi2"] = "放马过来吧？",
+  ["$yyfy_bishi1"] = "看得见的话就躲得开！",
+  ["$yyfy_bishi2"] = "放马过来吧？",
 }
 
 skill:addEffect(fk.AskForCardUse, {
@@ -22,13 +22,13 @@ skill:addEffect(fk.AskForCardUse, {
     if cardType ~= "jink" then --and cardType ~= "nullification" 
       return false
     end
-    return player:hasSkill("fate_bishi") and player:isAlive()
+    return player:hasSkill("yyfy_bishi") and player:isAlive()
   end,
   
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
-        skill_name = "fate_bishi",
-        prompt = "#fate_bishi-ask",
+        skill_name = "yyfy_bishi",
+        prompt = "#yyfy_bishi-ask",
     })
   end,
 
@@ -71,8 +71,8 @@ skill:addEffect(fk.PreCardEffect, {
   end,
   on_cost = function(self, event, target, player, data)
     return player.room:askToSkillInvoke(player, {
-        skill_name = "fate_bishi",
-        prompt = "#fate_bishi-ask",
+        skill_name = "yyfy_bishi",
+        prompt = "#yyfy_bishi-ask",
     })
   end,
   on_use = function (self, event, target, player, data)
