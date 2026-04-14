@@ -3,6 +3,14 @@ extension.extensionName = "hidden-clouds"
 
 local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
+-- 所有的前缀
+local AllPrefixs = { "ex", "hs", "js", "klsp", "mini", "miniex", "mobile", "m_ex", "mou", "ofl", "ol", "ol_js", "ol_ex",
+  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil" }
+
+local zhugeliang = { "zhugeliang" }
+for _, prefix in pairs(AllPrefixs) do
+  table.insertIfNeed(zhugeliang, prefix .. "__zhugeliang")
+end
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
 --- enabled_generals GeneralID[] 启用此皮肤的武将ID列表
@@ -47,6 +55,15 @@ local content = {
   {
     skins = { "yyfy_Keynes__1.png" },
     enabled_generals = { "yyfy_Keynes" }
+  },
+  {
+    skins = { "zhugeliang__zhugekongming.png", "zhugeliang__El-Melloi.png", "zhugeliang__WaverVelvet.png",
+    "zhugeliang__zuizhongzailin.png" },
+    enabled_generals = zhugeliang
+  },
+  {
+    skins = { "caoshuang__anyishemi.jpg", "caoshuang__shouzhaozhuanquan.gif" },
+    enabled_generals = { "caoshuang", "tymou__caoshuang", "qshm__caoshuang", "yyfy_ex__caoshuang"}
   }
 }
 
@@ -86,7 +103,13 @@ Fk:loadTranslationTable {
   ["lan__caoxiancaohua__7"] = "豆包生成动态",
   ["yyfy_Cheshire__1"] = "冰雪公主",
   ["yuantanyuanshangyuanxi__chonghuomo"] = "虫惑魔",
-  ["yyfy_Keynes__1"] = "青年凯恩斯"
+  ["yyfy_Keynes__1"] = "青年凯恩斯",
+  ["zhugeliang__zhugekongming"] = "诸葛孔明",
+  ["zhugeliang__El-Melloi"] = "埃尔梅罗II世",
+  ["zhugeliang__WaverVelvet"] = "韦伯·维尔维特",
+  ["zhugeliang__zuizhongzailin"] = "最终再临",
+  ["caoshuang__anyishemi"] = "安逸奢靡",
+  ["caoshuang__shouzhaozhuanquan"] = "受诏专权"
 }
 
 return extension
