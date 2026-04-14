@@ -78,7 +78,6 @@ yyfy_shanzhixinzang:addEffect(fk.BeforeGameOverJudge, {
   on_use = function (self, event, target, player, data)
     local room = player.room
     room:setTag("SkipGameRule", true)
-    local skills_snapshot = {}
     room:revivePlayer(player, false)
   end
 })

@@ -170,7 +170,7 @@ Fk:loadTranslationTable
 Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
 local ORT = General:new(extension, "yyfy_ORT", "moon", 2, 2, General.Agender) -- ORT无性别
-ORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_xietiao" }
+ORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_xietiao_ORT" }
 Fk:loadTranslationTable
 {
   ["yyfy_ORT"] = "O R T",
