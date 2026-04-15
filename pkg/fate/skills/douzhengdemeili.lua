@@ -1,28 +1,28 @@
-local fate_douzhengdemeili = fk.CreateSkill{
-  name = "fate_douzhengdemeili",
+local yyfy_douzhengdemeili = fk.CreateSkill{
+  name = "yyfy_douzhengdemeili",
   anim_type = "support",
 }
 
 Fk:loadTranslationTable{
-  ["fate_douzhengdemeili"] = "斗争的魅力",
-  [":fate_douzhengdemeili"] = "出牌阶段限一次，你可以选择任意名角色，这些角色造成的伤害+1"..
+  ["yyfy_douzhengdemeili"] = "斗争的魅力",
+  [":yyfy_douzhengdemeili"] = "出牌阶段限一次，你可以选择任意名角色，这些角色造成的伤害+1"..
   "（处于「毅力」状态的角色额外+1）直到各自的下个结束阶段。",
   
   ["@!fate_attack_end"] = "斗争的魅力",
   
-  ["#fate_douzhengdemeili-choose"] = "斗争的魅力：请选择任意名角色",
-  ["#fate_douzhengdemeili_damage_boost"] = "%from 的「%arg」效果触发，伤害+%arg2",
+  ["#yyfy_douzhengdemeili-choose"] = "斗争的魅力：请选择任意名角色",
+  ["#yyfy_douzhengdemeili_damage_boost"] = "%from 的「%arg」效果触发，伤害+%arg2",
   
-  ["$fate_douzhengdemeili1"] = "祭祀吧。开启战士的时间吧。",
-  ["$fate_douzhengdemeili2"] = "——不错，非常好。",
-  ["$fate_douzhengdemeili3"] = "来吧！来吧！来吧！",
-  ["$fate_douzhengdemeili4"] = "前往特特奥坎以北吧。"
+  ["$yyfy_douzhengdemeili1"] = "祭祀吧。开启战士的时间吧。",
+  ["$yyfy_douzhengdemeili2"] = "——不错，非常好。",
+  ["$yyfy_douzhengdemeili3"] = "来吧！来吧！来吧！",
+  ["$yyfy_douzhengdemeili4"] = "前往特特奥坎以北吧。"
 }
 
 -- 主动效果：选择角色加伤
-fate_douzhengdemeili:addEffect("active", {
+yyfy_douzhengdemeili:addEffect("active", {
   anim_type = "support",
-  prompt = "#fate_douzhengdemeili-choose",
+  prompt = "#yyfy_douzhengdemeili-choose",
   card_num = 0,
   max_phase_use_time = 1,
   target_filter = function(self, to_select, selected)
@@ -47,7 +47,7 @@ fate_douzhengdemeili:addEffect("active", {
 })
 
 -- 伤害加成效果
-fate_douzhengdemeili:addEffect(fk.DamageCaused, {
+yyfy_douzhengdemeili:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
     return data.from:getMark("@!fate_attack_end") > 0
@@ -64,9 +64,9 @@ fate_douzhengdemeili:addEffect(fk.DamageCaused, {
       
       -- 发送日志
       room:sendLog{
-        type = "#fate_douzhengdemeili_damage_boost",
+        type = "#yyfy_douzhengdemeili_damage_boost",
         from = player.id,
-        arg = "fate_douzhengdemeili",
+        arg = "yyfy_douzhengdemeili",
         arg2 = tostring(boostValue),
       }
     end
@@ -74,7 +74,7 @@ fate_douzhengdemeili:addEffect(fk.DamageCaused, {
 })
 
 -- 在目标的下个结束阶段清除标记
-fate_douzhengdemeili:addEffect(fk.TurnEnd, {
+yyfy_douzhengdemeili:addEffect(fk.TurnEnd, {
   can_refresh = function(self, event, target, player, data)
     -- 检查当前回合结束的角色是否有伤害加成标记
     return target == player and 
@@ -87,7 +87,7 @@ fate_douzhengdemeili:addEffect(fk.TurnEnd, {
 })
 
 -- 技能失去时清理标记
-fate_douzhengdemeili:addLoseEffect(function(self, player, is_death)
+yyfy_douzhengdemeili:addLoseEffect(function(self, player, is_death)
   -- 只清理技能拥有者自身的标记，其他角色的标记继续存在直到他们自己的结束阶段
   local room = player.room
   if player:getMark("@!fate_attack_end") > 0 then
@@ -95,4 +95,4 @@ fate_douzhengdemeili:addLoseEffect(function(self, player, is_death)
   end
 end)
 
-return fate_douzhengdemeili
+return yyfy_douzhengdemeili

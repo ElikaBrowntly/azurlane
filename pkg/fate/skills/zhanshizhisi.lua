@@ -1,11 +1,11 @@
 local zhanshizhisi = fk.CreateSkill {
-  name = "fate_zhanshizhisi",
+  name = "yyfy_zhanshizhisi",
   tags = { Skill.Compulsory },
 }
 
 Fk:loadTranslationTable{
-  ["fate_zhanshizhisi"] = "战士之司",
-  [":fate_zhanshizhisi"] = "锁定技，游戏开始时，你的出牌时间+5秒。",
+  ["yyfy_zhanshizhisi"] = "战士之司",
+  [":yyfy_zhanshizhisi"] = "锁定技，游戏开始时，你的出牌时间+5秒。",
 }
 
 zhanshizhisi:addEffect(fk.GameStart, {

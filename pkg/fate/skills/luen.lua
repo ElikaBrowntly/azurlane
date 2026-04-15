@@ -1,20 +1,20 @@
 local skill = fk.CreateSkill{
-  name = "fate_luen",
+  name = "yyfy_luen",
   anim_type = "support",
 }
 
 Fk:loadTranslationTable{
-  ["fate_luen"] = "卢恩",
-  [":fate_luen"] = "结束阶段，你可以将任意张基本牌扣置在武将牌上，称为「符」；出牌阶段，"..
+  ["yyfy_luen"] = "卢恩",
+  [":yyfy_luen"] = "结束阶段，你可以将任意张基本牌扣置在武将牌上，称为「符」；出牌阶段，"..
   "你可以将一张「符」当做一张非延时锦囊牌使用，如果当做铁索连环使用，你摸一张牌。",
   
   ["符"] = "符",
   
-  ["#fate_luen-put"] = "卢恩：你可以将任意张基本牌扣置在武将牌上，称为「符」",
-  ["#fate_luen-choose"] = "卢恩：请选择要将「符」当做什么非延时锦囊牌使用",
+  ["#yyfy_luen-put"] = "卢恩：你可以将任意张基本牌扣置在武将牌上，称为「符」",
+  ["#yyfy_luen-choose"] = "卢恩：请选择要将「符」当做什么非延时锦囊牌使用",
   
-  ["$fate_luen1"] = "活动手指活动手指。",
-  ["$fate_luen2"] = "动真格的我可是很不好对付的哦？",
+  ["$yyfy_luen1"] = "活动手指活动手指。",
+  ["$yyfy_luen2"] = "动真格的我可是很不好对付的哦？",
 }
 
 skill:addEffect(fk.EventPhaseEnd, {
@@ -52,7 +52,7 @@ skill:addEffect(fk.EventPhaseEnd, {
       max_num=#basicCards,
       include_equip=false,
       skill_name=self.name, true, 
-      prompt="#fate_luen-put",
+      prompt="#yyfy_luen-put",
       pattern=".|.|.|.|.|basic"})
     
     if #result > 0 then
@@ -67,7 +67,7 @@ skill:addEffect(fk.EventPhaseEnd, {
 })
 -- 印牌
 skill:addEffect("viewas", {
-  name = "fate_luen",
+  name = "yyfy_luen",
   interaction = function(self, player)
 
     local all_choices = Fk:getAllCardNames("t")
@@ -77,7 +77,7 @@ skill:addEffect("viewas", {
     return UI.ComboBox {
       choices = trickCards,
       all_choices = all_choices,
-      prompt = "#fate_luen-choose"
+      prompt = "#yyfy_luen-choose"
     }
   end,
   expand_pile = "符",

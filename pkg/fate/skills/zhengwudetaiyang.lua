@@ -1,15 +1,15 @@
 local xieitao2 = fk.CreateSkill{
-  name = "fate_zhengwudetaiyang",
+  name = "yyfy_zhengwudetaiyang",
   tags = { Skill.Wake },
 }
 
 Fk:loadTranslationTable{
-  ["fate_zhengwudetaiyang"] = "<font color='red'>正午的太阳</font>",
-  [":fate_zhengwudetaiyang"] = "觉醒技，你死亡后，加一点体力上限并复活，然后获得技能〖拂晓的太阳〗。"..
+  ["yyfy_zhengwudetaiyang"] = "<font color='red'>正午的太阳</font>",
+  [":yyfy_zhengwudetaiyang"] = "觉醒技，你死亡后，加一点体力上限并复活，然后获得技能〖拂晓的太阳〗。"..
   "此后，你使用的牌不可被响应。",
 
-  ["fate_zhengwudetaiyang1"] = "正午的太阳",
-  ["fate_zhengwudetaiyang2"] = "特斯卡特利波卡"
+  ["yyfy_zhengwudetaiyang1"] = "正午的太阳",
+  ["yyfy_zhengwudetaiyang2"] = "特斯卡特利波卡"
 }
 
 xieitao2:addEffect(fk.BeforeGameOverJudge, {
