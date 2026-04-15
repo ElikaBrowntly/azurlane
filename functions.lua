@@ -62,7 +62,10 @@ end
 ---@return boolean
 function functions.isEnemy(from, to)
   if from.id == to.id then return false end -- 自己不是敌人
-
+  local mode = from.room:isGameMode("yyfy_hegemony") or from.room:isGameMode("new_heg_mode")
+  if mode then
+    return from:getMark("__heg_kingdom") == to:getMark("__heg_kingdom")
+  end
   if from.role == "lord" or from.role == "loyalist" then
     return (to.role ~= "lord" and to.role ~= "loyalist")
   elseif from.role == "rebel" then -- 反贼没必要敌视内奸

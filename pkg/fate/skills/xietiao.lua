@@ -47,7 +47,7 @@ xietiao:addEffect(fk.BeforeGameOverJudge, {
     if player.deputyGeneral == "yyfy_ORT" then
       isDeputy = true
     end
-    room:changeHero(player, "sunce", true, isDeputy)
+    room:changeHero(player, "yyfy_mobileORT", true, isDeputy)
   end
 })
 

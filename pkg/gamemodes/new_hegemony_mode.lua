@@ -114,17 +114,20 @@ function HegLogic:chooseGenerals()
   lord.role = "hidden"
 
   local allKingdoms = {} ---@type string[]
-  table.forEach(room.general_pile, function(name)
-    table.insertIfNeed(allKingdoms, Fk.generals[name].kingdom) -- 假设不会有只出现在副势力的势力
-  end)
 
-  if #allKingdoms > 4 and not room:getSettings("notBanToFourKingdoms") then -- 是否要禁至四个势力
-    allKingdoms = table.random(allKingdoms, 4)
+  if not room:getSettings("notBanToFourKingdoms") then -- 是否要禁至四个势力
+    allKingdoms = { "wei", "shu", "wu", "qun" }
+  else
+    table.forEach(room.general_pile, function(name)
+      table.insertIfNeed(allKingdoms, Fk.generals[name].kingdom) -- 假设不会有只出现在副势力的势力
+    end)
+    table.removeOne(allKingdoms, "god")                          -- 不能直接奔着神/魔势力选将
+    table.removeOne(allKingdoms, "evil")
+    table.removeOne(allKingdoms, "wild")
   end
 
   local generalNum = math.max(room:getSettings('generalNum'), #allKingdoms + 1) -- 抽屉原理
   room:doBroadcastNotify("ShowToast", Fk:translate("#yyfy_HegInitialNotice"))
-  table.removeOne(allKingdoms, "wild")                                          -- 野心家势力不包括
 
   table.sort(allKingdoms)
   room:setBanner("all_kingdoms", allKingdoms)
@@ -132,14 +135,16 @@ function HegLogic:chooseGenerals()
   local players = room.players
   local generalNames = {}
   for _, g in ipairs(Fk:getAllGenerals()) do
-    table.insertIfNeed(generalNames, g.name)
+    if table.contains(allKingdoms, g.kingdom) or table.contains(allKingdoms, g.subkingdom)
+        or g.kingdom == "god" or g.kingdom == "evil" then -- 可以顺带给神/魔势力武将
+      table.insertIfNeed(generalNames, g.name)
+    end
   end
+
   local generals = table.random(generalNames, #players * generalNum) ---@type string[]
 
   table.shuffle(generals)
 
-  -- local req = Request:new(players, "AskForGeneral")
-  -- req.timeout = self.room:getSettings('generalTimeout')
   local playerGeneralPool = {}
   local playerGeneralsInfo = {}
 
@@ -202,11 +207,9 @@ function HegLogic:chooseGenerals()
       end
       playerGeneralsInfo[p.id] = info
     end
-    -- 处理小杀
-    table.removeOne(allKingdoms, "god")
-    table.removeOne(allKingdoms, "evil") -- 不给小杀玩神/魔
+    -- 处理小杀,小杀已经玩不到神魔了
     table.removeOne(allKingdoms, humanKingdom)
-    if #allKingdoms < 2 then             -- 如果小杀可用势力太少，则回退到魏蜀吴群中没被占用的三个
+    if #allKingdoms < 2 then -- 如果小杀可用势力太少，则回退到魏蜀吴群中没被占用的三个
       allKingdoms = { "wei", "shu", "wu", "qun" }
       table.removeOne(allKingdoms, humanKingdom)
     end
@@ -236,6 +239,13 @@ function HegLogic:chooseGenerals()
     room:setPlayerMark(p, "__heg_deputy", defaultPair[2])
     room:setPlayerGeneral(p, "anjiang", true)
     room:setDeputyGeneral(p, "anjiang")
+
+    local kingdom = allKingdoms[1]
+    if Fk.generals[defaultPair[1]] then
+      kingdom = Fk.generals[defaultPair[1]].kingdom -- 直接用主将主势力
+    end
+    room:setPlayerMark(p, "__heg_kingdom", kingdom)
+    room:setPlayerMark(p, "__heg_init_kingdom", kingdom)
   end
   -- 处理人类玩家
   local req = Request:new(humans, "CustomDialog")
@@ -269,11 +279,6 @@ function HegLogic:chooseGenerals()
       room:setPlayerMark(p, "__heg_init_kingdom", humanKingdom) -- 保存初始势力
       -- p.kingdom = kingdomChosen
       --room:notifyProperty(p, p, "kingdom")
-    end
-    for _, p in ipairs(compPlayers) do
-      local kingdom = Fk.generals[p:getMark("__heg_general")].kingdom -- 直接用主将主势力
-      room:setPlayerMark(p, "__heg_kingdom", kingdom)
-      room:setPlayerMark(p, "__heg_init_kingdom", kingdom)
     end
   else
     req = Request:new(players, "AskForChoice")
@@ -331,7 +336,7 @@ function HegLogic:chooseGenerals()
       elseif mainGen.kingdom == "god" or mainGen.kingdom == "evil" then
         if room:getSettings("no_limit_god_kingdom") -- 没限制的话，神将任选势力
             or deputyGen.kingdom == "god" or deputyGen.kingdom == "evil"
-            or deputyGen.kingdom == "wild" then   -- 有限制但副将也是万能势力的话，允许任选势力
+            or deputyGen.kingdom == "wild" then     -- 有限制但副将也是万能势力的话，允许任选势力
           kingdoms = table.simpleClone(allKingdoms)
         else
           kingdoms = table.simpleClone(deputyKingdoms) -- 否则，势力跟着副将势力走
@@ -366,7 +371,7 @@ function HegLogic:chooseGenerals()
 
     for _, p in ipairs(players) do
       local kingdomChosen = req:getResult(p)
-      room:setPlayerMark(p, "__heg_kingdom", kingdomChosen)    -- 变野后变为wild
+      room:setPlayerMark(p, "__heg_kingdom", kingdomChosen)      -- 变野后变为wild
       room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
       -- p.kingdom = kingdomChosen
       --room:notifyProperty(p, p, "kingdom")
@@ -804,8 +809,8 @@ Fk:loadTranslationTable {
   ["heg_watch_next_deputy"] = "观看下家副将",
   ["help: heg_watch_next_deputy"] = "游戏开始前观看下家的副将",
   ["heg_enter_battle_royal_on_first_shuffle"] = "第一次洗牌进入鏖战",
-  ["heg_not_ban_to_four_kingdoms"] = "不禁用至四个势力",
-  ["help: heg_not_ban_to_four_kingdoms"] = "保留所有势力。请确认选将数量和将池以保证至少有一对武将可选",
+  ["heg_not_ban_to_four_kingdoms"] = "不固定魏蜀吴群",
+  ["help: heg_not_ban_to_four_kingdoms"] = "保留所有不常见势力。除非细调过将池，否则不建议开启",
   ["deckThickness"] = "牌堆厚度",
   ["help: deckThickness"] = "调整牌堆倍数，默认为1",
   ["no_limit_god_kingdom"] = "神将任选势力",
