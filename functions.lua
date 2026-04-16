@@ -633,7 +633,7 @@ function functions.ChangePlayerSaintQuartz(player, num)
     end
     if player.room then
       player.room:sendLog {
-      type = player._splayer:getScreenName()..direction.."个圣晶石",
+      type = player._splayer:getScreenName()..direction.."个<font color = 'blue'>圣晶石</font>",
       toast = true,
     }
     end
