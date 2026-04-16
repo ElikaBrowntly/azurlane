@@ -170,13 +170,22 @@ Fk:loadTranslationTable
 Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
 local ORT = General:new(extension, "yyfy_ORT", "moon", 2, 2, General.Agender) -- ORT无性别
-ORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_xietiao_ORT" }
+ORT:addSkills { "yyfy_yuzhouxian", "yyfy_baofa", "yyfy_xietiao_ORT" }
 Fk:loadTranslationTable
 {
   ["yyfy_ORT"] = "O R T",
   ["#yyfy_ORT"] = "人类威胁苏醒",
   ["designer:yyfy_ORT"] = "夜隐浮云",
 }
---ORT:addRelatedSkill("fate_fuxiaodetaiyang")
+
+local mobileORT = General:new(extension, "yyfy_mobileORT", "moon", 10, 10, General.Agender) -- ORT无性别
+mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_baofa" }
+Fk:loadTranslationTable
+{
+  ["yyfy_mobileORT"] = "移动O R T",
+  ["#yyfy_mobileORT"] = "侵略型移动生命体",
+  ["designer:yyfy_mobileORT"] = "夜隐浮云",
+}
+mobileORT.hidden = true
 
 return extension

@@ -69,20 +69,11 @@ Fk:loadTranslationTable{
 }
 
 local tianjiulong = General:new(extension, "yyfy__tianjiulong", "qun", 7, 7, General.Female)
-tianjiulong:addSkill("yyfy_bangshou")
+tianjiulong:addSkills {"yyfy_bangshou", "yyfy_tianjiu"}
 Fk:loadTranslationTable{
   ["yyfy__tianjiulong"] = "调和之天救龙",
   ["#yyfy__tianjiulong"] = "调和之露露卡",
-  ["designer:yyfy__tianjiulong"] = "哈基米"
-}
-
-local zhentianjiulong = General:new(extension, "yyfy_zhen__tianjiulong", "qun", 7)
-zhentianjiulong:addSkill("yyfy_tianjiu")
-Fk:loadTranslationTable{
-  ["yyfy_zhen"] = "",
-  ["yyfy_zhen__tianjiulong"] = "真天救龙",
-  ["#yyfy_zhen__tianjiulong"] = "Pay To Win",
-  ["designer:yyfy_zhen__tianjiulong"] = "玛格巨龙"
+  ["designer:yyfy__tianjiulong"] = "哈基米/玛格巨龙"
 }
 
 return extension
