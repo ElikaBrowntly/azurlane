@@ -6,9 +6,10 @@ local baofa = fk.CreateSkill({
 Fk:loadTranslationTable {
   ["yyfy_baofa"] = "爆发",
   [":yyfy_baofa"] = "蓄力技（0/5），回合结束时，你获得1点蓄力点。" ..
-      "你可以消耗5点蓄力点，对所有敌方角色造成2点伤害。",--，然后令这些角色无法获得蓄力点
+      "你可以消耗5点蓄力点，对所有敌方角色造成2点伤害，然后令这些角色无法获得蓄力点。",
   ["$yyfy_baofa1"] = "宇宙射线爆裂",
-  ["$yyfy_baofa2"] = "宇宙线爆发"
+  ["$yyfy_baofa2"] = "宇宙线爆发",
+  ["@@yyfy_baofa"] = "宇宙线爆发"
 }
 
 local U = require "packages/utility/utility"
@@ -40,6 +41,7 @@ baofa:addEffect("active", {
         damageType = fk.NormalDamage,
         skillName = self.name,
       }
+      room:addPlayerMark(target, "@@yyfy_baofa")
     end
   end,
 })
@@ -56,7 +58,7 @@ baofa:addEffect(fk.TurnEnd, {
 
 -- 技能获得时初始化蓄力点
 baofa:addAcquireEffect(function(self, player)
-  U.skillCharged(player, 0, 5)
+  U.skillCharged(player, 5, 5)
 end)
 
 -- 技能失去时移除蓄力点
@@ -64,14 +66,15 @@ baofa:addLoseEffect(function(self, player)
   U.skillCharged(player, 0, -5)
 end)
 
--- baolie:addEffect(U.SkillChargeChangeTE, {
---   can_trigger = function (self, event, target, player, data)
---     return player and player:hasSkill(self) and data.who ~= player
---   end,
---   on_cost = Util.TrueFunc,
---   on_use = function (self, event, target, player, data)
---     U.skillCharged(data.who, -data.num)
---   end
--- })
+baofa:addEffect(U.SkillChargeChanged, {
+  can_trigger = function (self, event, target, player, data)
+    return player and player:hasSkill(self) and target ~= player
+    and data.num and data.num > 0 and target:getMark("@@yyfy_baofa") > 0
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
+    U.skillCharged(target, -data.num)
+  end
+})
 
 return baofa

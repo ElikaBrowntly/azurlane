@@ -4,13 +4,13 @@ extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/fate/skills")
 
 local F = require("packages.hidden-clouds.functions")
 
--- 定义获取圣晶石数据的任务
+-- 获取圣晶石数据
 Fk:addTaskDef {
   type = "get_player_SaintQuartz",
   handler = function(task)
     local player = task.player
     if not player then return end
-    -- 获取玩家的全局存档数据（示例：CS_System_Data）
+    -- 获取玩家的全局存档数据
     local coinData = player:getGlobalSaveState("CS_System_Data") or {}
     local gold = coinData.gold or 0
     local state = player:getGlobalSaveState("hidden-clouds")
@@ -31,11 +31,11 @@ Fk:addTaskDef {
       player:saveGlobalState("hidden-clouds", state)
     end
     local data = {
-      gold = gold,
+      gold = tostring(gold),
       kanbujiandeshou = kanbujiandeshou,
       sign_in = sign_in,
       sign_constant = sign_constant,
-      quartz_num = quartz_num,
+      quartz_num = tostring(quartz_num),
       sign_total = sign_total,
       sign_date = sign_date
     }
@@ -114,6 +114,87 @@ Fk:addTaskDef {
   end,
 }
 
+-- 金币换圣晶石 (9305金币 -> 1圣晶石)
+Fk:addTaskDef {
+  type = "exchange_gold_to_quartz",
+  handler = function(task)
+    local player = task.player
+    if not player then
+      task.player:doNotify("exchange_callback", json.encode({ success = false, message = "无效玩家" }))
+      return
+    end
+
+    -- 获取当前金币和圣晶石
+    local coinData = player:getGlobalSaveState("CS_System_Data") or {}
+    local gold = coinData.gold or 0
+    local state = player:getGlobalSaveState("hidden-clouds") or {}
+    local quartz = state["SaintQuartz"] or {}
+    local quartzNum = quartz.quartz_num or 0
+
+    if gold < 9305 then
+      task.player:doNotify("exchange_callback", json.encode({ success = false, message = "金币不足，需要9305金币" }))
+      return
+    end
+
+    -- 扣金币
+    local newGold = F.ChangePlayerMoney(player, -9305, true)
+    -- 加圣晶石
+    local newQuartz = F.ChangePlayerSaintQuartz(player, 1)
+
+    -- 更新存档中的圣晶石数量
+    quartz.quartz_num = newQuartz
+    state["SaintQuartz"] = quartz
+    player:saveGlobalState("hidden-clouds", state)
+
+    local result = {
+      success = true,
+      gold = tostring(newGold),
+      quartz_num = tostring(newQuartz),
+      message = "兑换成功！消耗9305金币获得1圣晶石。"
+    }
+    task.player:doNotify("exchange_callback", json.encode(result))
+  end,
+}
+
+-- 圣晶石兑金币 (1圣晶石 -> 9305金币)
+Fk:addTaskDef {
+  type = "exchange_quartz_to_gold",
+  handler = function(task)
+    local player = task.player
+    if not player then
+      task.player:doNotify("exchange_callback", json.encode({ success = false, message = "无效玩家" }))
+      return
+    end
+
+    local state = player:getGlobalSaveState("hidden-clouds") or {}
+    local quartz = state["SaintQuartz"] or {}
+    local quartzNum = quartz.quartz_num or 0
+
+    if quartzNum < 1 then
+      task.player:doNotify("exchange_callback", json.encode({ success = false, message = "圣晶石不足，需要1圣晶石" }))
+      return
+    end
+
+    -- 扣圣晶石
+    local newQuartz = F.ChangePlayerSaintQuartz(player, -1)
+    -- 加金币
+    local newGold = F.ChangePlayerMoney(player, 9305, true)
+
+    -- 更新圣晶石数量
+    quartz.quartz_num = newQuartz
+    state["SaintQuartz"] = quartz
+    player:saveGlobalState("hidden-clouds", state)
+
+    local result = {
+      success = true,
+      gold = tostring(newGold),
+      quartz_num = tostring(newQuartz),
+      message = "兑换成功！消耗1圣晶石获得9305金币。"
+    }
+    task.player:doNotify("exchange_callback", json.encode(result))
+  end,
+}
+
 -- 拓展包注册的额外页面
 extension.customPages = {
   {
@@ -187,5 +268,15 @@ Fk:loadTranslationTable
   ["designer:yyfy_mobileORT"] = "夜隐浮云",
 }
 mobileORT.hidden = true
+
+local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
+SaintQuartz:addSkills { "yyfy_ChaldeaGate" }
+Fk:loadTranslationTable
+{
+  ["yyfy_SaintQuartz"] = "圣晶石系统",
+  ["#yyfy_SaintQuartz"] = "迦勒底之门",
+  ["designer:yyfy_SaintQuartz"] = "夜隐浮云",
+}
+SaintQuartz.hidden = true
 
 return extension
