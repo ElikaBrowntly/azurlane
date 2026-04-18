@@ -208,7 +208,7 @@ Fk:addTaskDef {
 
     -- 定义所有可用的礼装（名称、显示名、图片名、单次交换价格（圣晶石））
     local allClothes = {
-      { name = "wanhuajing", displayName = "万华镜", price = 30 },
+      { name = "wanhuajing", displayName = "万华镜", price = 250 },
       -- { name = "linghua", displayName = "零化", price = 20 },
       -- { name = "xingchentian", displayName = "星辰天", price = 25 },
       -- 根据需要添加更多
@@ -359,7 +359,7 @@ Fk:loadTranslationTable
 mobileORT.hidden = true
 
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
-SaintQuartz:addSkills { "yyfy_ChaldeaGate", "yyfy_gainianzhaichu" }
+SaintQuartz:addSkills { "yyfy_ChaldeaGate" }
 Fk:loadTranslationTable
 {
   ["yyfy_SaintQuartz"] = "圣晶石系统",
