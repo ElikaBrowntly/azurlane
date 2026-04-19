@@ -115,8 +115,8 @@ qianlong:addEffect(fk.GameStart, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local num = 20
-    -- 斗地主做地主不生效，因为主公技卫统不会添加给地主
-    if player:hasSkill("lan__weitong") and player.role == "lord" and table.find(room.alive_players, function(p)
+    -- 加强为威主技
+    if player:hasSkill("lan__weitong") and table.find(room.alive_players, function(p)
           return p ~= player and p.kingdom == "wei"
         end)
     then

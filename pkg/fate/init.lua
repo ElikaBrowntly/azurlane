@@ -195,6 +195,95 @@ Fk:addTaskDef {
   end,
 }
 
+-- 获取玩家拥有的概念礼装
+Fk:addTaskDef {
+  type = "get_concept_clothes",
+  handler = function(task)
+    local player = task.player
+    if not player then return end
+
+    local state = player:getGlobalSaveState("hidden-clouds") or {}
+    local quartz = state["SaintQuartz"] or {}
+    local clothes = quartz.clothes or {}     -- 键值表 { ["wanhuajing"] = count, ... }
+
+    -- 定义所有可用的礼装（名称、显示名、图片名、单次交换价格（圣晶石））
+    local allClothes = {
+      { name = "wanhuajing", displayName = "万华镜", price = 250 },
+      -- { name = "linghua", displayName = "零化", price = 20 },
+      -- { name = "xingchentian", displayName = "星辰天", price = 25 },
+      -- 根据需要添加更多
+    }
+
+    local resultClothes = {}
+    for _, cloth in ipairs(allClothes) do
+      local count = clothes[cloth.name] or 0
+      table.insert(resultClothes, {
+        name = cloth.name,
+        displayName = cloth.displayName,
+        image = "../image/icon/clothes/" .. cloth.name .. ".jpg",
+        count = count,
+        price = cloth.price,
+      })
+    end
+
+    local data = { clothes = resultClothes }
+    task.player:doNotify("get_concept_clothes_callback", json.encode(data))
+  end,
+}
+
+-- 交换概念礼装（增加持有数）
+Fk:addTaskDef {
+  type = "exchange_concept_clothes",
+  handler = function(task)
+    local player = task.player
+    if not player then
+      task.player:doNotify("exchange_concept_clothes_callback", json.encode({ success = false, message = "无效玩家" }))
+      return
+    end
+
+    local args = task.data     -- 直接使用，无需 decode
+    local clothName = args[1]
+    local buyCount = args[2]
+    local totalCost = args[3]     -- 使用前端计算的消耗
+
+    -- 检查圣晶石余额
+    local state = player:getGlobalSaveState("hidden-clouds") or {}
+    local quartz = state["SaintQuartz"] or {}
+    local quartzNum = quartz.quartz_num or 0
+    if quartzNum < totalCost then
+      task.player:doNotify("exchange_concept_clothes_callback", json.encode({ success = false, message = "圣晶石不足" }))
+      return
+    end
+
+    -- 获取当前礼装持有数
+    local clothes = quartz.clothes or {}
+    local currentCount = clothes[clothName] or 0
+    local newCount = currentCount + buyCount
+    if newCount > 5 or newCount < 0 then
+      task.player:doNotify("exchange_concept_clothes_callback", json.encode({ success = false, message = "超出限制" }))
+      return
+    end
+
+    -- 扣除圣晶石
+    local newQuartz = quartzNum - totalCost
+    quartz.quartz_num = newQuartz
+
+    -- 更新礼装数量
+    clothes[clothName] = newCount
+    quartz.clothes = clothes
+    state["SaintQuartz"] = quartz
+    player:saveGlobalState("hidden-clouds", state)
+    local clothNames = {
+      ["wanhuajing"] = "万华镜"
+    }
+    local result = {
+      success = true,
+      message = string.format("成功交换 %d 个 %s，消耗 %d 圣晶石", buyCount, clothNames[clothName], totalCost)
+    }
+    task.player:doNotify("exchange_concept_clothes_callback", json.encode(result))
+  end,
+}
+
 -- 拓展包注册的额外页面
 extension.customPages = {
   {

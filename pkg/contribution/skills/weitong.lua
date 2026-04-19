@@ -5,7 +5,7 @@ local weitong = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["lan__weitong"] = "卫统",
-  [":lan__weitong"] = "持恒技，主公技，若场上有存活的其他魏势力角色，则你的〖潜龙〗于游戏开始时获得的"..
+  [":lan__weitong"] = "持恒技，威主技，若场上有存活的其他魏势力角色，则你的〖潜龙〗于游戏开始时获得的"..
   "道心值改为100点。其他魏势力角色回复体力时，你可以摸一张牌。",
 
   ["#lan__weitong-invoke"] = "卫统：是否要摸一张牌？",

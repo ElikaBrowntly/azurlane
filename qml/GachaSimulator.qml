@@ -1,6 +1,7 @@
-import QtQuick 2.12
+import QtQuick 2.15
 import QtQuick.Layouts 1.12
-import QtQuick.Controls 2.12
+import QtQuick.Window 2.15
+import QtQuick.Controls 2.15
 import Fk
 import Fk.Components.LunarLTK
 import Fk.Widgets as W
@@ -12,7 +13,7 @@ W.PageBase {
     property string basePath: "../image/icon/"
     property int currentPage: 0
     property var quartzNum: 0
-    property var goldNum: 0 //用int会溢出（
+    property var goldNum: 0
     property string lastHandDate: ""
     property bool todaySigned: false
     property int signConstant: 0
@@ -31,6 +32,9 @@ W.PageBase {
         { prob: 12,  getPath: function() { return basePath + "clothes4/" + randomInt(1, 50) + ".jpg"; } },
         { prob: 40,  getPath: function() { return basePath + "clothes3/" + randomInt(1, 59) + ".jpg"; } }
     ]
+
+    // 概念礼装数据
+    property var clothesList: []      // 存储礼装数据 [{ name, displayName, image, count, price }]
 
     function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
@@ -64,9 +68,81 @@ W.PageBase {
         Cpp.notifyServer("LobbyTask", ["sign_in_SaintQuartz", []]);
     }
 
+    // 请求礼装数据
+    function requestClothes() {
+        App.setBusy(true);
+        Cpp.notifyServer("LobbyTask", ["get_concept_clothes", []]);
+    }
+
+    // 交换礼装（弹出对话框）
+    function exchangeClothes(clothName, currentCount, pricePerOne) {
+        var maxBuy = 5 - currentCount;
+        if (maxBuy <= 0) {
+            App.showToast("已满5星，无法再交换");
+            return;
+        }
+
+        var currentValue = 1; // 用外部变量存值，不靠id
+
+        var dialog = Qt.createQmlObject(`
+        import QtQuick 2.15
+        import QtQuick.Controls 2.15
+        import QtQuick.Layouts 1.15
+
+        Dialog {
+            modal: true
+            title: "交换礼装"
+            width: 320
+            height: 240
+            standardButtons: Dialog.Ok | Dialog.Cancel
+
+            contentItem: ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 12
+
+                Text { text: "交换数量："; font.pixelSize: 16 }
+
+                SpinBox {
+                    Layout.fillWidth: true
+                    from: 1
+                    to: ${maxBuy}
+                    value: 1
+                    onValueChanged: console.log(value)
+                }
+
+                Text {
+                    id: costLabel
+                    font.pixelSize: 16
+                    color: "#ff9800"
+                    text: "消耗圣晶石：" + (1 * ${pricePerOne})
+                }
+            }
+        }`, root);
+
+        // 关键：不用id，直接获取contentItem的孩子！
+        var spinBox = dialog.contentItem.children[1];
+        spinBox.onValueChanged.connect(function() {
+            currentValue = spinBox.value;
+            var cost = spinBox.value * pricePerOne;
+            dialog.contentItem.children[2].text = "消耗圣晶石：" + cost;
+        });
+
+        dialog.accepted.connect(function() {
+            var totalCost = currentValue * pricePerOne;
+            App.setBusy(true);
+            Cpp.notifyServer("LobbyTask", ["exchange_concept_clothes", [clothName, currentValue, totalCost]]);
+            dialog.destroy();
+        });
+
+        dialog.rejected.connect(function() { dialog.destroy(); });
+        dialog.open();
+    }
+
     function setPage(page) {
         currentPage = page;
         if (page === 1) requestSaintQuartz();
+        else if (page === 2 && clothesList.length === 0) requestClothes();
     }
 
     function showGachaResult(icons) {
@@ -94,7 +170,7 @@ W.PageBase {
         z: -1; visible: currentPage === 0
     }
 
-    // 底部菜单
+    // 底部菜单（三个等宽按钮）
     Rectangle {
         id: menuArea
         anchors.bottom: parent.bottom
@@ -109,7 +185,8 @@ W.PageBase {
             height: parent.height * 0.4; color: "transparent"
             Text {
                 anchors.centerIn: parent
-                text: currentPage === 0 ? "抽卡模拟器\n（请将此窗口最大化）" : "圣晶石\n（您的财富）"
+                text: currentPage === 0 ? "抽卡模拟器\n（请将此窗口最大化）" :
+                      (currentPage === 1 ? "圣晶石\n（您的财富）" : "概念礼装\n（购买后在所有模式生效；集齐5个可以提升礼装技能的效果）")
                 font.pixelSize: 20; color: "white"; font.bold: true
                 style: Text.Outline; styleColor: "black"
                 horizontalAlignment: Text.AlignHCenter; width: parent.width * 0.9; wrapMode: Text.WordWrap
@@ -119,24 +196,32 @@ W.PageBase {
         Row {
             anchors.bottom: parent.bottom; anchors.left: parent.left; anchors.right: parent.right
             height: parent.height * 0.6; spacing: 2
+            // 三个按钮等宽
             Rectangle {
-                width: parent.width / 2 - 1; height: parent.height
+                width: (parent.width - 4) / 3; height: parent.height
                 color: currentPage === 0 ? "#4CAF50" : "#3A6EA5"; radius: 8
                 border.color: "white"; border.width: 1
-                Text { anchors.centerIn: parent; text: "抽卡模拟器"; font.pixelSize: 18; color: "white"; font.bold: true }
+                Text { anchors.centerIn: parent; text: "抽卡模拟器"; font.pixelSize: 16; color: "white"; font.bold: true }
                 MouseArea { anchors.fill: parent; onClicked: setPage(0) }
             }
             Rectangle {
-                width: parent.width / 2 - 1; height: parent.height
+                width: (parent.width - 4) / 3; height: parent.height
                 color: currentPage === 1 ? "#4CAF50" : "#3A6EA5"; radius: 8
                 border.color: "white"; border.width: 1
-                Text { anchors.centerIn: parent; text: "圣晶石系统"; font.pixelSize: 18; color: "white"; font.bold: true }
+                Text { anchors.centerIn: parent; text: "圣晶石系统"; font.pixelSize: 16; color: "white"; font.bold: true }
                 MouseArea { anchors.fill: parent; onClicked: setPage(1) }
+            }
+            Rectangle {
+                width: (parent.width - 4) / 3; height: parent.height
+                color: currentPage === 2 ? "#4CAF50" : "#3A6EA5"; radius: 8
+                border.color: "white"; border.width: 1
+                Text { anchors.centerIn: parent; text: "概念礼装"; font.pixelSize: 16; color: "white"; font.bold: true }
+                MouseArea { anchors.fill: parent; onClicked: setPage(2) }
             }
         }
     }
 
-    // 抽卡页面
+    // ==================== 抽卡页面 ====================
     Item {
         id: gachaPage
         anchors.top: parent.top; anchors.bottom: menuArea.top
@@ -208,7 +293,7 @@ W.PageBase {
         }
     }
 
-    // 圣晶石页面（修改版）
+    // ==================== 圣晶石页面 ====================
     Item {
         id: saintQuartzPage
         anchors.top: parent.top; anchors.bottom: menuArea.top
@@ -223,19 +308,14 @@ W.PageBase {
             Text { anchors.horizontalCenter: parent.horizontalCenter; text: "圣晶石"; font.pixelSize: 32; color: "#FFD700"; font.bold: true; style: Text.Outline; styleColor: "black" }
             Rectangle { width: parent.width; height: 2; color: "white"; opacity: 0.5 }
 
-            // 圣晶石数量行
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Text { text: "当前数量："; font.pixelSize: 20; color: "white"; font.bold: true }
                 Text { text: quartzNum.toString(); font.pixelSize: 20; color: "#3A6EA5"; font.bold: true }
             }
-
-            // 金币数量行
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Text { text: "当前金币："; font.pixelSize: 18; color: "white"; font.bold: true }
                 Text { text: goldNum.toString(); font.pixelSize: 18; color: "#3A6EA5"; font.bold: true }
             }
-
-            // 兑换按钮行
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Button {
                     text: "金币换圣晶石"
@@ -266,19 +346,12 @@ W.PageBase {
                     }
                 }
             }
-
-            // 汇率说明
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "*现行汇率：金币按10:1折算元宝，再按3倍充值计算；<br>1颗圣晶石按非首充时的1单计算平均数，最终1圣晶石=9305金币"
-                font.pixelSize: 12
-                color: "#666666"
-                wrapMode: Text.WordWrap
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: 12; color: "#666666"; wrapMode: Text.WordWrap
+                width: parent.width; horizontalAlignment: Text.AlignHCenter
             }
-
-            // 其他签到信息
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Text { text: "连续签到："; font.pixelSize: 18; color: "white"; font.bold: true }
                 Text { text: signConstant + " 天"; font.pixelSize: 18; color: "#3A6EA5"; font.bold: true }
@@ -295,19 +368,202 @@ W.PageBase {
                 Text { text: "上次看不见的手："; font.pixelSize: 16; color: "white"; font.bold: true }
                 Text { text: lastHandDate || "暂无"; font.pixelSize: 16; color: "#3A6EA5"; font.bold: true }
             }
-
             Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
                 Button {
-                    text: "签到"
-                    width: 100; height: 40
+                    text: "签到"; width: 100; height: 40
                     background: Rectangle { color: "#FF9800"; radius: 4; border.color: "#E67E22" }
                     contentItem: Text { text: parent.text; color: "white"; font.bold: true; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
                     onClicked: signIn()
                 }
                 Button {
-                    text: "刷新"
-                    width: 100; height: 40
+                    text: "刷新"; width: 100; height: 40
                     onClicked: requestSaintQuartz()
+                }
+            }
+        }
+    }
+    // ==================== 概念礼装页面 ====================
+    Item {
+        id: conceptClothesPage
+        anchors.top: parent.top; anchors.bottom: menuArea.top
+        anchors.left: parent.left; anchors.right: parent.right
+        visible: currentPage === 2
+
+        Rectangle { anchors.fill: parent; color: "#AA87CEEB"; radius: 10 }
+
+        // 标题
+        Text {
+            anchors.top: parent.top; anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: "概念礼装"
+            font.pixelSize: 28; color: "white"; font.bold: true
+            style: Text.Outline; styleColor: "black"
+        }
+
+        // 礼装详情弹窗（复用同一个）
+        Popup {
+            id: clothDetailPopup
+            modal: true
+            focus: true
+            width: 600
+            height: 400
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+            anchors.centerIn: parent
+
+            background: Rectangle {
+                color: "#EEEEEE"
+                radius: 12
+                border.color: "#AAAAAA"
+                border.width: 1
+            }
+
+            Row {
+                spacing: 20
+                anchors.fill: parent
+                anchors.margins: 20
+
+                // 左侧大图
+                Image {
+                    id: bigImage
+                    width: 200
+                    height: 340
+                    source: ""
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                // 右侧文本区域
+                Column {
+                    width: parent.width - 220
+                    spacing: 20
+                    Text {
+                        id: normalEffectText
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        font.pixelSize: 16
+                        color: "#333333"
+                    }
+                    Text {
+                        id: maxEffectText
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        font.pixelSize: 16
+                        color: "#333333"
+                    }
+                    Text {
+                        id: descText
+                        width: parent.width
+                        wrapMode: Text.WordWrap
+                        font.pixelSize: 14
+                        color: "#666666"
+                    }
+                }
+            }
+        }
+
+        // 网格显示礼装
+        GridView {
+            id: clothesGrid
+            anchors.top: parent.top; anchors.topMargin: 80
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 20
+            anchors.left: parent.left; anchors.right: parent.right
+            anchors.margins: 20
+            clip: true
+            cellWidth: 150; cellHeight: 220
+            model: clothesList
+            delegate: Item {
+                width: 140; height: 210
+                property int itemCount: Number(modelData.count)   // 确保为数字
+
+                Column {
+                    anchors.fill: parent; spacing: 5
+
+                    // 可点击的图片
+                    Image {
+                        width: 120; height: 120
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        source: modelData.image || (basePath + "clothes/" + modelData.name + ".jpg")
+                        fillMode: Image.PreserveAspectFit
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                // 获取大图路径（.png 格式）
+                                var bigImgPath = basePath + "clothes/" + modelData.name + ".png"
+                                bigImage.source = bigImgPath
+
+                                // 获取文本内容（优先从 modelData 读取，否则从映射表获取）
+                                var normalText = modelData.effectNormal || ""
+                                var maxText = modelData.effectMax || ""
+                                var description = modelData.description || ""
+
+                                if (normalText === "" || maxText === "" || description === "") {
+                                    // 内置映射表（可根据需要扩展）
+                                    var textMap = {
+                                        "wanhuajing": {
+                                            normal: "以蓄力点已达8点的状态开始战斗",
+                                            max: "集齐5张时，以蓄力点已达10点的状态开始战斗",
+                                            desc: "伟大的魔道元帅。\n守护多种可能性、多种未来的存在。\n其存在方式犹如万花筒。"
+                                        }
+                                    }
+                                    var data = textMap[modelData.name]
+                                    if (data) {
+                                        if (normalText === "") normalText = data.normal
+                                        if (maxText === "") maxText = data.max
+                                        if (description === "") description = data.desc
+                                    }
+                                }
+
+                                normalEffectText.text = normalText
+                                maxEffectText.text = maxText
+                                descText.text = description
+
+                                clothDetailPopup.open()
+                            }
+                        }
+                    }
+
+                    // 礼装名称
+                    Text {
+                        width: parent.width
+                        text: modelData.displayName
+                        font.pixelSize: 14; color: "white"; font.bold: true
+                        horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap
+                    }
+
+                    // 星星和加号放在同一行
+                    Row {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: 8
+                        Row {
+                            spacing: 2
+                            Repeater {
+                                model: 5
+                                Image {
+                                    source: index < itemCount ? "../image/icon/star_filled.png" : "../image/icon/star_empty.png"
+                                    width: 20; height: 20
+                                }
+                            }
+                        }
+                        Rectangle {
+                            visible: itemCount < 5
+                            width: 24; height: 24
+                            radius: 4
+                            color: "#4CAF50"
+                            border.color: "white"
+                            border.width: 1
+                            Text {
+                                text: "+"
+                                anchors.centerIn: parent
+                                color: "white"
+                                font.bold: true
+                                font.pixelSize: 16
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: exchangeClothes(modelData.name, itemCount, modelData.price)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -316,21 +572,16 @@ W.PageBase {
     // 关闭按钮
     Image {
         id: closeButton
-        anchors.left: parent.left
-        anchors.top: parent.top
-        width: 80
-        height: 80
+        anchors.left: parent.left; anchors.top: parent.top
+        width: 80; height: 80
         source: root.basePath + "close.png"
         fillMode: Image.PreserveAspectFit
         z: 200
-        MouseArea {
-            anchors.fill: parent
-            onClicked: App.quitPage()
-        }
+        MouseArea { anchors.fill: parent; onClicked: App.quitPage() }
     }
 
     Component.onCompleted: {
-        // 获取圣晶石数据回调
+        // 圣晶石数据回调
         addCallback("get_player_SaintQuartz_callback", function(sender, data) {
             if (typeof data === "string") {
                 try {
@@ -353,7 +604,7 @@ W.PageBase {
                 try {
                     var obj = JSON.parse(data);
                     if (obj.success) {
-                        quartzNum = obj.quartz_num;
+                        quartzNum = parseInt(obj.quartz_num) || 0;
                         signConstant = obj.sign_constant;
                         signTotal = obj.sign_total;
                         todaySigned = obj.sign_in;
@@ -369,7 +620,7 @@ W.PageBase {
             App.setBusy(false);
         });
 
-        // 兑换回调
+        // 兑换回调（金币↔圣晶石）
         addCallback("exchange_callback", function(sender, data) {
             if (typeof data === "string") {
                 try {
@@ -386,7 +637,34 @@ W.PageBase {
             App.setBusy(false);
         });
 
-        requestSaintQuartz();
+        // 概念礼装数据回调
+        addCallback("get_concept_clothes_callback", function(sender, data) {
+            if (typeof data === "string") {
+                try {
+                    var obj = JSON.parse(data);
+                    clothesList = obj.clothes || [];
+                } catch(e) {}
+            }
+            App.setBusy(false);
+        });
+
+        // 概念礼装交换回调
+        addCallback("exchange_concept_clothes_callback", function(sender, data) {
+            if (typeof data === "string") {
+                try {
+                    var obj = JSON.parse(data);
+                    if (obj.success) {
+                        requestClothes();   // 刷新礼装列表
+                        App.showToast(obj.message || "交换成功");
+                    } else {
+                        App.showToast(obj.message || "交换失败");
+                    }
+                } catch(e) {}
+            }
+            App.setBusy(false);
+        });
+
+        requestSaintQuartz();  // 初始加载圣晶石页面数据
     }
 
     function loadData(data) {
