@@ -181,15 +181,15 @@ function HegLogic:chooseGenerals()
   local usableKingdoms = { humanKingdom, "god", "evil" } -- 包含共同势力的势力
   local humans = {} ---@type ServerPlayer[] 真人玩家数组
   local compPlayers = {} ---@type ServerPlayer[] 小杀数组
+  for _, p in ipairs(players) do
+    if p.id > 0 then
+      table.insert(humans, p)
+    else
+      table.insert(compPlayers, p)
+    end
+  end
   -- 如果是抗金模式
   if room:getSettings("kangjin_mode") then
-    for _, p in ipairs(players) do
-      if p.id > 0 then
-        table.insert(humans, p)
-      else
-        table.insert(compPlayers, p)
-      end
-    end
     generalNames = {}
     for _, g in ipairs(Fk:getAllGenerals()) do
       if table.contains(usableKingdoms, g.kingdom) or table.contains(usableKingdoms, g.subkingdom) then
