@@ -11,6 +11,10 @@ local zhugeliang = { "zhugeliang" }
 for _, prefix in pairs(AllPrefixs) do
   table.insertIfNeed(zhugeliang, prefix .. "__zhugeliang")
 end
+local simayi = { "simayi" }
+for _, prefix in pairs(AllPrefixs) do
+  table.insertIfNeed(simayi, prefix .. "__simayi")
+end
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
 --- enabled_generals GeneralID[] 启用此皮肤的武将ID列表
@@ -64,6 +68,10 @@ local content = {
   {
     skins = { "caoshuang__anyishemi.jpg", "caoshuang__shouzhaozhuanquan.gif" },
     enabled_generals = { "caoshuang", "tymou__caoshuang", "qshm__caoshuang", "yyfy_ex__caoshuang"}
+  },
+  {
+    skins = { "simayi__lainisi1.png", "simayi__lainisi2.png", "simayi__lainisi3.png", "simayi__lainisi4.png"},
+    enabled_generals = simayi
   }
 }
 
@@ -109,7 +117,11 @@ Fk:loadTranslationTable {
   ["zhugeliang__WaverVelvet"] = "韦伯·维尔维特",
   ["zhugeliang__zuizhongzailin"] = "最终再临",
   ["caoshuang__anyishemi"] = "安逸奢靡",
-  ["caoshuang__shouzhaozhuanquan"] = "受诏专权"
+  ["caoshuang__shouzhaozhuanquan"] = "受诏专权",
+  ["simayi__lainisi1"] = "莱妮丝(一)",
+  ["simayi__lainisi2"] = "莱妮丝(二)",
+  ["simayi__lainisi3"] = "莱妮丝(三)",
+  ["simayi__lainisi4"] = "莱妮丝(终)"
 }
 
 return extension

@@ -111,9 +111,7 @@ local spec = {
     if not F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml", true) then
       toast = toast.."购买皮肤可以开启炫酷特效！"
     end
-    if ok and player._splayer:getScreenName() == "八云立层云涌" then
-      F.ChangePlayerMoney(player, 1000000) -- 买下皮肤测试一下
-    end
+
     room:doBroadcastNotify("ShowToast", toast)
     F.setEmotion(player, "yyfy_ex__nanhualaoxian__1", yyfy_qingshu.name, 0, "qingshu.qml")
     F.broadcastInOrder(player, yyfy_qingshu.name, 6, "yyfy_qingshu-sound")
@@ -163,7 +161,7 @@ local spec = {
     })
     local effect = tonumber(string.sub(choice_effect, 21))
 
-    -- 房间记录技能信息（不再记录次数，仅记录组合）
+    -- 房间记录技能信息
     local banner = room:getBanner("yyfy_tianshu_skills") or {}
     local name = "yyfy_tianshu"
     for i = 1, 30, 1 do
@@ -199,7 +197,7 @@ yyfy_qingshu:addEffect(fk.EventPhaseStart, {
   on_use = spec.on_use,
 })
 
--- 天书的实现保持不变
+-- 天书的实现
 yyfy_qingshu:addEffect(fk.TurnStart, {
   mute = true,
   can_refresh = function (self, event, target, player, data)

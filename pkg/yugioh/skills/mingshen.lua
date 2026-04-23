@@ -117,9 +117,11 @@ mingshen:addEffect(fk.AfterPlayerRevived, {
 
 mingshen:addEffect(fk.SkillEffect, {
   anim_type = "control",
+  mute = true,
   can_trigger = function(self, event, target, player, data)
     return target and player and player:hasSkill(self, true, true) and (target.dying or target.dead or target.rest > 0)
     and data.skill:isPlayerSkill(target) and target:hasSkill(data.skill:getSkeleton().name, true, true)
+    and target ~= player and data.skill.name ~= mingshen.name
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)

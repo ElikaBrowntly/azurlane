@@ -16,7 +16,7 @@ gate:addEffect(fk.GameFinished, {
   priority = 0.00001,
   global = true,
   can_refresh = function(self, event, target, player, data)
-    return not player.room:getSettings("enableFreeAssign") and player.id > 0
+    return player and not player.room:getSettings("enableFreeAssign") and player.id > 0
   end,
   on_refresh = function(self, event, target, player, data)
     local winners = data:split("+")
