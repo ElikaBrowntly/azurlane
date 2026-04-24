@@ -142,7 +142,7 @@ lan__fangzhu:addEffect(fk.TurnEnd, {
 
 -- 限牌型
 lan__fangzhu:addEffect("prohibit", {
-  prohibit_use = function(self, player, card) 
+  prohibit_use = function(self, player, card)
     if card.type == Card.TypeBasic then -- 基本牌
       return not (player:getMark("@@lan__fangzhu_trick") == 0 and player:getMark("@@lan__fangzhu_equip") == 0)
     elseif card.type == Card.TypeTrick then -- 锦囊牌

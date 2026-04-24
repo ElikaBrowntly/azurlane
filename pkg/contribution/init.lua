@@ -29,50 +29,6 @@ Fk:loadTranslationTable
   ["~yyfy_mou__wupu"] = "五禽犹在，此戏传于后来人。",
 }
 
-local lan__tengfanglan = General:new(extension, "lan__tengfanglan", "wu", 3, 3, General.Female)
-lan__tengfanglan:addSkills { "lan__luochong", "lan__aichen" }
-Fk:loadTranslationTable
-{
-  ["lan"] = "烂",
-  ["lan__tengfanglan"] = "烂滕芳兰",
-  ["#lan__tengfanglan"] = "滕子布兰德",
-  ["designer:lan__tengfanglan"] = "水上由岐",
-  ["~lan__tengfanglan"] = "封侯归命，夫妻同归。",
-}
-
-local lan__xunyou = General:new(extension, "lan__xunyou", "wei", 3)
-lan__xunyou:addSkills { "lan__baichu", "yyfy_qice", "lan__zhiyu", "yyfy_daojie" }
-Fk:loadTranslationTable
-{
-  ["lan__xunyou"] = "烂荀攸",
-  ["#lan__xunyou"] = "荀攸布兰德",
-  ["designer:lan__xunyou"] = "水上由岐",
-  ["illustrator:lan__xunyou"] = "错落宇宙",
-  ["$yyfy_qice_lan__xunyou1"] = "二袁相争，此曹公得利之时",
-  ["$yyfy_qice_lan__xunyou2"] = "穷寇宜追，需防死蛇之不僵",
-  ["$yyfy_qice_lan__xunyou3"] = "颜良兵围白马，今兵少不敌，分其势乃可",
-  ["$yyfy_qice_lan__xunyou4"] = "文丑疲军而来，此所以擒敌，奈何去之",
-  ["$yyfy_daojie_lan__xunyou1"] = "秉忠正之心，可抚宁内外",
-  ["$yyfy_daojie_lan__xunyou2"] = "贤者，温良恭俭让以得之",
-  ["~lan__xunyou"] = "北雁南顾，当折彭䗍之滨……",
-}
-
-local lan__zhonghui = General:new(extension, "lan__zhonghui", "wei", 3, 4)
-lan__zhonghui:addSkills { "lan__yuzhi", "lan__xieshu", "lan__quanji", "lan__paiyi", "yyfy_baozu" }
-Fk:loadTranslationTable
-{
-  ["lan__zhonghui"] = "烂钟会",
-  ["#lan__zhonghui"] = "钟会布兰德",
-  ["designer:lan__zhonghui"] = "水上由岐",
-  ["~lan__zhonghui"] = "棋差一着，棋差一着呀",
-  ["$yyfy_baozu_lan__zhonghui1"] = "吾族恒大，谁敢欺之？",
-  ["$yyfy_baozu_lan__zhonghui2"] = "动我钟家的人，哼，你长了几个脑袋？",
-  ["$yyfy_baozu_lan__zhonghui3"] = "有我在一日，谁也动不得吾族分毫。",
-  ["$yyfy_baozu_lan__zhonghui4"] = "诸位同门，随我钟会赌一遭如何？",
-  ["$yyfy_baozu_lan__zhonghui5"] = "钟门三世皆为佐国之臣，彼可取而代之",
-  ["$yyfy_baozu_lan__zhonghui6"] = "司马氏已居大，我族岂逊他三分！",
-}
-
 local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4)
 lijueguosi:addSkills { "yyfy_xiongxi", "yyfy_yisuan" }
 Fk:loadTranslationTable{
@@ -94,34 +50,6 @@ xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
 Fk:loadTranslationTable{
   ["yyfy_xunshengshouwei"] = "循声守卫",
   ["designer:yyfy_xunshengshouwei"] = "一维无限",
-}
-
-local caomao = General:new(extension, "lan__caomao", "wei", 4)
-caomao:addSkills {"lan__qianlong", "lan__juetao", "lan__fensi", "lan__weitong"}
-Fk:loadTranslationTable{
-  ["lan__caomao"] = "烂曹髦",
-  ["#lan__caomao"] = "曹髦布兰德",
-  ["designer:lan__caomao"] = "水上由岐",
-  ["!lan__caomao"] = "少康诛寒浞以中兴，朕夷司马未尝不可！",
-  ["~lan__caomao"] = "纵不成身死，朕亦为太祖子孙，大魏君王……"
-}
-
-local huanggai = General:new(extension, "lan__huanggai", "wu", 4)
-huanggai:addSkills {"kurou", "lan__zhaxiang", "lan__lieji", "lan__quzhou"}
-Fk:loadTranslationTable{
-  ["lan__huanggai"] = "烂黄盖",
-  ["#lan__huanggai"] = "盖子布兰德",
-  ["designer:lan__huanggai"] = "水上由岐",
-  ["~lan__huanggai"] = "哈哈哈哈，公瑾计成，老夫死也无憾了……"
-}
-
-local dengai = General:new(extension, "lan__dengai", "wei", 4)
-dengai:addSkills {"lan__neyan", "lan__tuntian", "lan__zaoxian", "lan__jixi", "ty__zhouxi"}
-Fk:loadTranslationTable{
-  ["lan__dengai"] = "烂邓艾",
-  ["#lan__dengai"] = "邓艾布兰德",
-  ["designer:lan__dengai"] = "水上由岐",
-  ["~lan__dengai"] = "钟会！你为何害我！"
 }
 
 local pianye = General:new(extension, "yyfy_pianye", "god", 1, 999)
@@ -211,7 +139,7 @@ caoshuang:addRelatedSkill("ex__biyue")
 local end_jiaxu = General:new(extension, "yyfy_end__jiaxu", "qun", 3)
 end_jiaxu:addSkills {"yyfy_wansha", "yyfy_weimu", "yyfy_luanwu"}
 Fk:loadTranslationTable{
-  ["yyfy_end"] = "",
+  ["yyfy_end"] = "终",
   ["yyfy_end__jiaxu"] = "终贾诩",
   ["#yyfy_end__jiaxu"] = " ",
   ["designer:yyfy_end__jiaxu"] = "一维无限",
@@ -429,16 +357,6 @@ Fk:loadTranslationTable{
   ["designer:yyfy_chengxiaoshi"] = "青菜白玉汤"
 }
 
-local caoxiancaohua = General:new(extension, "lan__caoxiancaohua", "qun", 3)
-caoxiancaohua:addSkills {"lan__huamu", "lan__liangyuan", "lan__jisi", "lan__lingxi",
-"lan__zhifou", "lan__caiyi", "lan__guili"}
-Fk:loadTranslationTable{
-  ["lan__caoxiancaohua"] = "曹宪曹华",
-  ["#lan__caoxiancaohua"] = "木石前盟",
-  ["designer:lan__caoxiancaohua"] = "夜隐浮云",
-  ["~lan__caoxiancaohua"] = "无情总是帝王家。"
-}
-
 local feiyi = General:new(extension, "yyfy_mou__feiyi", "shu", 3)
 feiyi:addSkills {"yyfy_yanru", "yyfy_hezhong"}
 Fk:loadTranslationTable{
@@ -455,6 +373,15 @@ Fk:loadTranslationTable{
   ["#yyfy_mou__guanyu"] = "从风傲苍穹",
   ["designer:yyfy_mou__guanyu"] = "牢天师（Ark）",
   ["~yyfy_mou__guanyu"] = "今为小人所伤，皆酒醉之误……"
+}
+
+local wolongfengchu = General:new(extension, "yyfy_end__wolongfengchu", "shu", 3)
+wolongfengchu:addSkills {"yyfy_tiansuo", "yyfy_longfeng", "yyfy_qizhen"}
+Fk:loadTranslationTable{
+  ["yyfy_end__wolongfengchu"] = "终卧龙凤雏",
+  ["#yyfy_end__wolongfengchu"] = "一匡天下",
+  ["designer:yyfy_end__wolongfengchu"] = "一维无限",
+  ["~yyfy_end__wolongfengchu"] = "天意难违，卧龙凤雏兼得又如何……"
 }
 
 local Keynes = General:new(extension, "yyfy_Keynes", "west", 3)

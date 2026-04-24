@@ -6,7 +6,7 @@ local yyfy_mou_qingshu = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["yyfy_mou_qingshu"] = "青书",
   [":yyfy_mou_qingshu"] = "持恒技，获得此技能时，你获得所有可能存在的<a href='yyfy_tianshu_href'>“天书”</a>组合。"
-  .."<font color='red'>700+技能对服务器影响太大，故此技能不会发动。</font>"
+  .."<font color='red'>700+技能对服务器影响太大，此技能其实是白板。</font>"
 }
 
 -- 太逆天了，737个技能，不能上线
