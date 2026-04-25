@@ -17,7 +17,7 @@ Fk:loadTranslationTable{
   ["#yyfy_shanzhixinzang_yili_revive"] = "由于「山之心脏」的「毅力」效果，%from 复活并将体力值改为1",
   ["#yyfy_shanzhixinzang_damage_boost"] = "%from 的「%arg」效果触发，伤害+1",
   
-  ["$yyfy_shanzhixinzang1"] = "心脏！　献上闪耀的心脏！",
+  ["$yyfy_shanzhixinzang1"] = "心脏！ 献上闪耀的心脏！",
   ["$yyfy_shanzhixinzang2"] = "呜啊啊啊——！",
   ["$yyfy_shanzhixinzang3"] = "积攒点力量吧。",
   ["$yyfy_shanzhixinzang4"] = "准备顶级的活祭吧。"
