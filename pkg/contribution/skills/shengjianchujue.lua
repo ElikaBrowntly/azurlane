@@ -1,11 +1,11 @@
 local shengjianchujue = fk.CreateSkill{
-  name = "shengjianchujue",
+  name = "yyfy_shengjianchujue",
   tags = { Skill.Compulsory },
 }
 
 Fk:loadTranslationTable{
-  ["shengjianchujue"] = "圣剑处决",
-  [":shengjianchujue"] = "锁定技，当你造成或受到伤害后，你获得一层「圣剑」，对方获得一层「处决」。"..
+  ["yyfy_shengjianchujue"] = "圣剑处决",
+  [":yyfy_shengjianchujue"] = "锁定技，当你造成或受到伤害后，你获得一层「圣剑」，对方获得一层「处决」。"..
   "每名角色每拥有一层「圣剑」/「处决」则造成/受到的伤害+1。",
   
   ["@shengjian"] = "圣剑",
@@ -18,9 +18,7 @@ shengjianchujue:addEffect(fk.Damage, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    
     room:addPlayerMark(player, "@shengjian", 1)
-
     if data.to and not data.to.dead then
       room:addPlayerMark(data.to, "@chujue", 1)
     end
@@ -33,9 +31,7 @@ shengjianchujue:addEffect(fk.Damaged, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-
     room:addPlayerMark(player, "@shengjian", 1)
-    
     if data.from and not data.from.dead then
       room:addPlayerMark(data.from, "@chujue", 1)
     end

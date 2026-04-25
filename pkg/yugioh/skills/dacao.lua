@@ -44,11 +44,10 @@ dacao:addEffect(fk.Damaged, {
 
     local choice
     if room:getSettings('enableFreeAssign') then
-      local sum = #generalNames
       local randomNames = {}
       if #generalNames > 16 then
         while #randomNames < 16 do
-          local index = math.random(sum)
+          local index = math.random(#generalNames)
           local one = table.remove(generalNames, index)
           table.insertIfNeed(randomNames, one)
         end
@@ -63,6 +62,7 @@ dacao:addEffect(fk.Damaged, {
       local finalGenerals = generalNames
       if #generalNames > 100 then
         local inputReq = Request:new(player, "CustomDialog")
+        inputReq.focus_text = dacao.name
         inputReq:setData(player, {
           path = "packages/hidden-clouds/qml/InputSearch.qml",
           data = {
@@ -91,6 +91,7 @@ dacao:addEffect(fk.Damaged, {
 
       -- 弹出武将选择对话框
       local req = Request:new(player, "CustomDialog")
+      req.focus_text = dacao.name
       req:setData(player, {
         path = "packages/hidden-clouds/qml/GeneralChoice.qml",
         data = {
