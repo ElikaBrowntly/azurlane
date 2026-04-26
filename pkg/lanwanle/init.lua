@@ -87,4 +87,13 @@ Fk:loadTranslationTable {
   ["~lan__caoxiancaohua"] = "无情总是帝王家。"
 }
 
+local xuncai = General:new(extension, "lan__xuncai", "qun", 3, 3, General.Female)
+xuncai:addSkills { "lan__lieshi", "lan__dianzhan", "lan__huanyin", "yyfy_daojie" }
+Fk:loadTranslationTable {
+  ["lan__xuncai"] = "族荀采",
+  ["#lan__xuncai"] = "怀刃自誓",
+  ["designer:lan__xuncai"] = "水上由岐",
+  ["~lan__xuncai"] = "苦难已过，世间大好……"
+}
+
 return extension

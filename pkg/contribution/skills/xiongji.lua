@@ -48,6 +48,7 @@ xiongji:addEffect(fk.GameStart, {
 
 xiongji:addEffect("viewas", {
   mute = true,
+  pattern = ".",
   interaction = function(self, player)
     local all_choices = Fk:getAllCardNames("bt")
     if #all_choices == 0 then return end
