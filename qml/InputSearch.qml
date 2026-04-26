@@ -19,7 +19,7 @@ GraphicsBox {
     spacing: 20
 
     Text {
-      text: "打草惹蛇：请宣言一个武将名（至少一个字）："
+      text: "请宣言一个武将名（至少一个字）："
       color: "#E4D5A0"
       font.pixelSize: 16
       wrapMode: Text.WordWrap

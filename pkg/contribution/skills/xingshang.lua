@@ -1,215 +1,206 @@
-local mouXingshang = fk.CreateSkill({
-  name = "lan__xingshang",
+local xingshang = fk.CreateSkill({
+  name = "yyfy_xingshang",
+  tags = { Skill.Permanent },
 })
 
-Fk:loadTranslationTable{
-  ["lan__xingshang"] = "行殇",
-  [":lan__xingshang"] = "当其他角色死亡时，你可以获得其所有牌。当一名角色受到伤害后（每回合限一次）" ..
-  "或死亡时，你获得两枚“颂”标记（你至多拥有9枚“颂”标记）；出牌阶段限两次，你可选择一名角色" ..
-  "并移去至少一枚“颂”令其执行对应操作：2枚，复原武将牌或摸三张牌；3枚，增加1点体力上限并回复1点体力，" ..
-  "然后随机恢复一个已废除的装备栏；4枚，<a href='memorialize'>追思</a>一名已阵亡的角色"..
-  "（你的武将牌上有〖行殇〗时方可选择此项），获得其武将牌上除主公技外的所有技能，然后你失去〖行殇〗。",
+Fk:loadTranslationTable {
+  ["yyfy_xingshang"] = "行商",
+  [":yyfy_xingshang"] = "持恒技，游戏开始时或出牌阶段，你可以花费货币购买一个技能获得；<br>" ..
+      "你以此法获得的技能不会因对局结束而失去，当你获得本技能后获得这些技能。<br>" ..
+      "出牌阶段，你可以以一半的价格出售这些技能。",
 
-  ["memorialize"] = "#<b>追思</b>：被追思过的角色本局游戏不能再成为追思的目标。",
-  ["#lan__xingshang"] = "放逐：你可选择一名角色，消耗一定数量的“颂”标记对其进行增益",
-  ["$LanXingshang"] = "行殇",
-  ["@lan__xingshang_song"] = "颂",
-  ["@lan__xingshang_memorialized"] = "行殇",
-  ["lan__xingshang_restore"] = "2枚：复原武将牌",
-  ["lan__xingshang_draw"] = "2枚：摸三张牌",
-  ["lan__xingshang_recover"] = "3枚：恢复体力与区域",
-  ["lan__xingshang_memorialize"] = "4枚：追思一名已阵亡的角色",
-  ["#xingshang-obtain"] = "行殇：是否获得 %dest 的所有牌？",
-
-  ["$lan__xingshang1"] = "我的是我的，你的还是我的。",
-  ["$lan__xingshang2"] = "纵是身死，仍要为我所用。",
-  ["$lan__xingshang3"] = "汝九泉之下，定会感朕之情。",
-  ["$lan__xingshang4"] = "众士出生入死，孤当敛而奠之。",
-  ["$lan__xingshang5"] = "身既死兮神以灵，魂魄毅兮为鬼雄。"
+  ["$yyfy_xingshang1"] = "（叮）",
 }
 
+local F = require "packages.hidden-clouds.functions"
+local U = require "packages.utility.utility"
 
-mouXingshang:addEffect("active", {
-  anim_type = "support",
-  prompt = "#lan__xingshang",
-  card_num = 0,
-  min_target_num = 0,
-  max_target_num = 1,
-  interaction = function(self, player)
-    local choiceList = {
-      "lan__xingshang_restore",
-      "lan__xingshang_draw",
-      "lan__xingshang_recover",
-      "lan__xingshang_memorialize",
-    }
-    local choices = {}
-    local markValue = player:getMark("@lan__xingshang_song")
-    if markValue > 1 then
-      table.insertTable(choices, { choiceList[1], choiceList[2] })
-    end
-    if markValue > 2 then
-      table.insert(choices, choiceList[3])
-    end
-    if markValue > 3 then
-      if table.find(Fk:currentRoom().players, function(p)
-        return p.dead and p.rest < 1 and not table.contains(Fk:currentRoom():getBanner("memorializedPlayers") or {}, p.id)
-      end) then
-        local skills = Fk.generals[player.general]:getSkillNameList()
-        if player.deputyGeneral ~= "" then
-          table.insertTableIfNeed(skills, Fk.generals[player.deputyGeneral]:getSkillNameList())
-        end
-
-        if table.find(skills, function(skillName) return skillName == mouXingshang.name end) then
-          table.insert(choices, "lan__xingshang_memorialize")
-        end
+--- 购买技能
+---@param player ServerPlayer
+---@return nil
+local function buy(player)
+  local room = player.room
+  local generals = Fk:getAllGenerals()
+  local choice = ""
+  if false then--room:getSettings('enableFreeAssign')
+    local randomNames = {}
+    if #generals > 16 then
+      while #randomNames < 16 do
+        local index = math.random(#generals)
+        local one = table.remove(generals, index) ---@type General
+        table.insertIfNeed(randomNames, one.name)
       end
-    end
-
-    return UI.ComboBox { choices = choices, all_choices = choiceList }
-  end,
-  times = function(self, player)
-    return player.phase == Player.Play and 2 - player:usedEffectTimes(self.name, Player.HistoryPhase) or -1
-  end,
-  can_use = function(self, player)
-    return player:usedEffectTimes(self.name, Player.HistoryPhase) < 2 and player:getMark("@lan__xingshang_song") > 1
-  end,
-  card_filter = Util.FalseFunc,
-  target_filter = function(self, player, to_select, selected, selected_cards)
-    if #selected > 0 then
-      return false
-    end
-    if self.interaction.data == "lan__xingshang_memorialize" then
-      return false
-    end
-
-    return true
-  end,
-  feasible = function (self, player, selected, selected_cards, card)
-    if self.interaction.data == "lan__xingshang_memorialize" then
-      return #selected == 0
     else
-      return #selected == 1
+      for _, g in ipairs(generals) do
+        table.insert(randomNames, g.name)
+      end
     end
-  end,
-  on_use = function(self, room, effect)
-    ---@type string
-    local skillName = self.name
-    local player = effect.from
-    local target = effect.tos[1]
-
-    local choice = self.interaction.data
-    if choice == "lan__xingshang_restore" then
-      room:removePlayerMark(player, "@lan__xingshang_song", 2)
-      target:reset()
-    elseif choice:startsWith("lan__xingshang_draw") then
-      room:removePlayerMark(player, "@lan__xingshang_song", 2)
-      target:drawCards(3, skillName)
-    elseif choice == "lan__xingshang_recover" then
-      room:changeMaxHp(target, 1)
-      room:removePlayerMark(player, "@lan__xingshang_song", 3)
-      room:recover({
-        who = target,
-        num = 1,
-        recoverBy = player,
-        skillName = skillName,
-      })
-      if target.dead then return end
-
-      if not target.dead and #target.sealedSlots > 0 then
-        room:resumePlayerArea(target, {table.random(target.sealedSlots)})
-      end
-    elseif choice == "lan__xingshang_memorialize" then
-      room:removePlayerMark(player, "@lan__xingshang_song", 4)
-
-      local availablePlayers = table.map(table.filter(room.players, function(p)
-        return not p:isAlive() and p.rest < 1 and not table.contains(room:getBanner('memorializedPlayers') or {}, p.id)
-      end), Util.IdMapper)
-      local toId
-      local result = room:askToCustomDialog(player, {
-        qml_path = "packages/mougong/qml/ZhuiSiBox.qml",
-        skill_name = skillName,
-        extra_data = { availablePlayers, "$LanXingshang" }
-      })
-
-      if result == "" then
-        toId = table.random(availablePlayers)
-      else
-        toId = result.playerId
-      end
-
-      local to = room:getPlayerById(toId)
-      local zhuisiPlayers = room:getBanner('memorializedPlayers') or {}
-      table.insertIfNeed(zhuisiPlayers, to.id)
-      room:setBanner('memorializedPlayers', zhuisiPlayers)
-      local skills = Fk.generals[to.general]:getSkillNameList()
-      if to.deputyGeneral ~= "" then
-        table.insertTableIfNeed(skills, Fk.generals[to.deputyGeneral]:getSkillNameList())
-      end
-      skills = table.filter(skills, function(skill_name)
-        local skill = Fk.skills[skill_name]
-        local attachedKingdom = skill:getSkeleton().attached_kingdom or {}
-        return not skill:hasTag(Skill.Lord) and not (#attachedKingdom > 0 and not table.contains(attachedKingdom, player.kingdom))
-      end)
-      if #skills > 0 then
-        room:handleAddLoseSkills(player, table.concat(skills, "|"))
-      end
-
-      room:setPlayerMark(player, "@lan__xingshang_memorialized", to.deputyGeneral ~= "" and "seat#" .. to.seat or to.general)
-      -- 修改：只失去行殇，不放逐和颂威
-      room:handleAddLoseSkills(player, "-" .. skillName)
+    ---@diagnostic disable-next-line: cast-local-type
+    choice = room:askToChooseGeneral(player, {
+      generals = randomNames,
+    })
+  else
+    local inputReq = Request:new(player, "CustomDialog")
+    inputReq.focus_text = xingshang.name
+    inputReq:setData(player, {
+      path = "packages/hidden-clouds/qml/InputSearch.qml",
+      data = {
+        num = #generals
+      },
+    })
+    inputReq:setDefaultReply(player, "")
+    local input = inputReq:getResult(player)
+    if input == nil or input == "" then
+      return nil -- 取消或未输入，结束技能
     end
-  end,
-})
-
-local spec = function (self, event, target, player, data)
-  player.room:addPlayerMark(player, "@lan__xingshang_song", math.min(2, 9 - player:getMark("@lan__xingshang_song")))
+    local keyword = input:lower()
+    local filtered = {}
+    for _, gen in ipairs(generals) do
+      local translated = Fk:translate(gen.name):lower()
+      if translated:find(keyword, 1, true) then
+        table.insert(filtered, gen.name)
+      end
+    end
+    if #filtered == 0 then
+      room:doBroadcastNotify("ShowToast", "没有符合宣言的武将，请重新查找")
+      return
+    end
+    local req = Request:new(player, "CustomDialog")
+    req.focus_text = xingshang.name
+    req:setData(player, {
+      path = "packages/hidden-clouds/qml/GeneralChoice.qml",
+      skill_name = xingshang.name,
+      data = {
+        generals = filtered,
+        freeAssign = true
+      },
+    })
+    req:setDefaultReply(player, "")
+    choice = req:getResult(player)
+  end
+  if choice == nil or choice == "" then
+    return nil -- 取消选择
+  end
+  local skillnames = Fk.generals[choice]:getSkillNameList(true)
+  local skills = {}
+  for _, s in ipairs(skillnames) do
+    if not player:hasSkill(s) then
+      table.insert(skills, s)
+    end
+  end
+  local choices = U.askToChooseGeneralSkills(player, {
+    generals = { choice },
+    skills = { skills },
+    min_num = 1,
+    max_num = #skills,
+    skill_name = xingshang.name,
+    prompt = "交易：请选择要购买的技能",
+    cancelable = true
+  })
+  if #choices == 0 then
+    return nil
+  end
+  local gold = F.ChangePlayerMoney(player, 0)
+  local globalData = player:getGlobalSaveState("hidden-clouds") or {}
+  local quartz = globalData["SaintQuartz"] or {}
+  local saintQuartz = quartz.quartz_num
+  local pay1 = "通过" .. tostring(#choices * 10000) .. "金币支付"
+  local pay2 = "通过" .. tostring(#choices) .. "圣晶石支付"
+  local usablePay = {}
+  if gold >= #choices * 10000 then
+    table.insert(usablePay, pay1)
+  end
+  if saintQuartz >= #choices then
+    table.insert(usablePay, pay2)
+  end
+  if #usablePay == 0 then
+    room:doBroadcastNotify("ShowToast", "货币不足！")
+    return nil
+  end
+  choice = room:askToChoice(player, {
+    choices = usablePay,
+    all_choices = { pay1, pay2 },
+    cancelable = true
+  })
+  if choice == "Cancel" then return nil end
+  if choice == pay1 then
+    F.ChangePlayerMoney(player, - #choices * 10000)
+  end
+  if choice == pay2 then
+    F.ChangePlayerSaintQuartz(player, - #choices)
+  end
+  room:handleAddLoseSkills(player, choices)
+  local state = player:getGlobalSaveState("hidden-clouds") or {}
+  local save = state["yyfy_xingshang"] or {}
+  for _, s in ipairs(choices) do
+    table.insertIfNeed(save, s)
+  end
+  state["yyfy_xingshang"] = save
+  player:saveGlobalState("hidden-clouds", state)
 end
 
-mouXingshang:addEffect(fk.Damaged, {
-  mute = true,
-  can_trigger = function(self, event, target, player, data)
+--- 出售技能
+---@param player ServerPlayer
+local function sell(player)
+  local room = player.room
+  local state = player:getGlobalSaveState("hidden-clouds") or {}
+  local save = state["yyfy_xingshang"] or {}
+  if #save == 0 then
+    room:doBroadcastNotify("ShowToast", "没有可出售的技能！")
     return
-      player:hasSkill(mouXingshang.name) and
-      player:getMark("@lan__xingshang_song") < 9 and
-      player:usedEffectTimes(self.name) < 1 and
-      data.to:isAlive()
-  end,
-  on_cost = Util.TrueFunc,
-  on_use = spec,
-})
+  end
+  local sname = room:askToCustomDialog(player, {
+    skill_name = xingshang.name,
+    qml_path = "packages/utility/qml/ChooseSkillBox.qml",
+    extra_data = { save, 0, 1, "交易：请选择要出售的技能" }
+  })
+  if not sname or sname == "" then return end
+  if type(sname) == "table" then
+    sname = sname[1]
+  end
+  room:handleAddLoseSkills(player, "-" .. sname, nil, false, true)
+  table.removeOne(save, sname)
+  state["yyfy_xingshang"] = save
+  player:saveGlobalState("hidden-clouds", state)
+  F.ChangePlayerMoney(player, 5000)
+end
 
-mouXingshang:addEffect(fk.Death, {
-  mute = true,
-  can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(mouXingshang.name) and player:getMark("@lan__xingshang_song") < 9
-  end,
-  on_cost = Util.TrueFunc,
-  on_use = spec,
-})
-
--- 添加原版行殇的效果：当其他角色死亡时，可以获得其所有牌
-mouXingshang:addEffect(fk.Death, {
-  anim_type = "drawcard",
-  can_trigger = function(self, event, target, player, data)
-    return target ~= player and player:hasSkill(mouXingshang.name) and not target:isNude()
-  end,
-  on_cost = function(self, event, target, player, data)
-    return player.room:askToSkillInvoke(player, {
-      skill_name = mouXingshang.name,
-      data,
-      prompt = "#xingshang-obtain::"..target.id
-    })
-  end,
-  on_use = function(self, event, target, player, data)
-    player.room:obtainCard(player, target:getCardIds("he"), false, fk.ReasonPrey, player, mouXingshang.name)
-    
-    -- 播放原版行殇的音效
-    player:broadcastSkillInvoke(mouXingshang.name, 3)
-  end,
-})
-
-mouXingshang:addLoseEffect(function (self, player)
-  player.room:setPlayerMark(player, "@lan__xingshang_song", 0)
+xingshang:addAcquireEffect(function(self, player, is_start)
+  local state = player:getGlobalSaveState("hidden-clouds") or {}
+  local save = state["yyfy_xingshang"] or {}
+  if #save == 0 then return end
+  player.room:handleAddLoseSkills(player, save)
 end)
 
-return mouXingshang
+xingshang:addEffect(fk.GameStart, {
+  can_trigger = function(self, event, target, player, data)
+    return player and player:hasSkill(self)
+  end,
+  on_use = function(self, event, target, player, data)
+    buy(player)
+  end,
+})
+
+xingshang:addEffect("active", {
+  card_num = 0,
+  target_num = 0,
+  can_use = Util.TrueFunc,
+  prompt = "交易：请选择要进行的操作",
+  interaction = function(self, player)
+    return UI.ComboBox {
+      choices = { "购买技能", "出售技能" },
+      default_choice = "购买技能",
+    }
+  end,
+  on_use = function(self, room, effect)
+    local player = effect.from
+    local operation = self.interaction.data
+    if operation == "购买技能" then
+      buy(player)
+      return
+    end
+    sell(player)
+  end,
+})
+
+return xingshang

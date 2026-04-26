@@ -86,6 +86,7 @@ quanneng:addEffect(fk.TurnStart, {
       end
     end
     local req = Request:new(player, "CustomDialog")
+    req.focus_text = quanneng.name
     req:setData(player, {
       path = "packages/hidden-clouds/qml/quanneng.qml",
       data = { available_skills, disabled_skills }, -- 传递可用技能和禁用技能

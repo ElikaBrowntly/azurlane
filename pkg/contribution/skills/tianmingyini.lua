@@ -1,17 +1,17 @@
 local tianmingyini = fk.CreateSkill{
-  name = "tianmingyini",
+  name = "yyfy_tianmingyini",
 }
 
 Fk:loadTranslationTable{
-  ["tianmingyini"] = "天命已拟",
-  [":tianmingyini"] = "当你受到伤害时，若伤害来源有「处决」，你可以防止此伤害并令其失去所有「处决」；"
+  ["yyfy_tianmingyini"] = "天命已拟",
+  [":yyfy_tianmingyini"] = "当你受到伤害时，若伤害来源有「处决」，你可以防止此伤害并令其失去所有「处决」；"
   .."否则你可以对其造成1点伤害。",
   
-  ["#tianmingyini-prevent"] = "天命已拟：是否防止此伤害并移除其所有「处决」？",
-  ["#tianmingyini-damage"] = "天命已拟：是否对伤害来源造成1点伤害？",
+  ["#yyfy_tianmingyini-prevent"] = "天命已拟：是否防止此伤害并移除其所有「处决」？",
+  ["#yyfy_tianmingyini-damage"] = "天命已拟：是否对伤害来源造成1点伤害？",
 
-  ["#TianmingyiniPrevent"] = "%from 发动了「%arg」，防止了来自 %to 的伤害并移除了其所有「处决」标记",
-  ["#TianmingyiniDamage"] = "%from 发动了「%arg」，对 %to 造成了1点伤害",
+  ["#yyfy_TianmingyiniPrevent"] = "%from 发动了「%arg」，防止了来自 %to 的伤害并移除了其所有「处决」标记",
+  ["#yyfy_TianmingyiniDamage"] = "%from 发动了「%arg」，对 %to 造成了1点伤害",
 }
 
 tianmingyini:addEffect(fk.DetermineDamageInflicted, {
@@ -26,11 +26,11 @@ tianmingyini:addEffect(fk.DetermineDamageInflicted, {
     if source:getMark("@chujue") > 0 then
 
       return room:askToSkillInvoke(player, {
-        skill_name = self.name, data, "#tianmingyini-prevent"})
+        skill_name = self.name, data, "#yyfy_tianmingyini-prevent"})
     else
 
       return room:askToSkillInvoke(player, {
-        skill_name = self.name, data, "#tianmingyini-damage"})
+        skill_name = self.name, data, "#yyfy_tianmingyini-damage"})
     end
   end,
   on_use = function(self, event, target, player, data)
@@ -43,7 +43,7 @@ tianmingyini:addEffect(fk.DetermineDamageInflicted, {
       data.damage = 0
       room:setPlayerMark(source, "@chujue", 0)
       room:sendLog{
-        type = "#TianmingyiniPrevent",
+        type = "#yyfy_TianmingyiniPrevent",
         from = player.id,
         to = {source.id},
         arg = self.name,
@@ -57,7 +57,7 @@ tianmingyini:addEffect(fk.DetermineDamageInflicted, {
         skillName = self.name,
       }
       room:sendLog{
-        type = "#TianmingyiniDamage",
+        type = "#yyfy_TianmingyiniDamage",
         from = player.id,
         to = {source.id},
         arg = self.name,

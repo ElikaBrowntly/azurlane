@@ -56,43 +56,35 @@ GraphicsBox {
       model: generals
 
       delegate: GeneralCardItem {
+        id: cardItem
         width: 120
         height: 150
         name: modelData
         selectable: true
-        chosenInBox: selectedItem.includes(modelData)
+        chosenInBox: root.selectedItem.includes(modelData)
 
-        // 点击时显示技能描述 ToolTip
-        onClicked: {
-          selectedItem = [modelData];
-          skillTip.text = getSkillDesc(modelData);
-          skillTip.visible = true;
-          skillTipTimer.restart();
-        }
+        // 使用标准 ToolTip（附加属性）
+        ToolTip.visible: cardItem.showToolTip
+        ToolTip.text: getSkillDesc(modelData)
+        ToolTip.delay: 0
+        ToolTip.timeout: 3000
 
-        ToolTip {
-          id: skillTip
-          parent: this
-          visible: false
-          delay: 0
-          timeout: 3000
-          contentItem: Text {
-            text: skillTip.text
-            font.family: Config.libianName
-            font.pixelSize: 14
-            color: "white"
-          }
-          background: Rectangle {
-            color: "#6B5D42"
-            radius: 4
-            opacity: 0.9
+        // 自定义标志，控制 ToolTip 显示
+        property bool showToolTip: false
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: {
+            root.selectedItem = [modelData];
+            cardItem.showToolTip = true;
+            toolTipTimer.restart();
           }
         }
 
         Timer {
-          id: skillTipTimer
+          id: toolTipTimer
           interval: 3000
-          onTriggered: skillTip.visible = false
+          onTriggered: cardItem.showToolTip = false
         }
       }
     }
@@ -104,12 +96,12 @@ GraphicsBox {
 
       MetroButton {
         text: "确定"
-        enabled: selectedItem.length > 0
+        enabled: root.selectedItem.length > 0
 
         onClicked: {
           close();
           roomScene.state = "notactive";
-          const reply = { general: selectedItem[0] };
+          const reply = { general: root.selectedItem[0] };
           ClientInstance.replyToServer("", reply);
         }
       }
