@@ -399,7 +399,8 @@ Fk:loadTranslationTable{
   ["#yyfy_longchens"] = "祖龙武者",
   ["designer:yyfy_longchen"] = "青菜白玉汤",
 }
-longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi"}
+longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
+"yyfy_hualong_yongheng"}
 
 local longchen1 = General:new(extension, "yyfy_longchen1", "god", 3)
 longchen1:addSkills {"yyfy_qiyuan", "yyfy_linghun"}

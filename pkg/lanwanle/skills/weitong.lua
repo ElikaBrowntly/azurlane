@@ -1,6 +1,6 @@
 local weitong = fk.CreateSkill {
   name = "lan__weitong",
-  tags = { Skill.Lord, Skill.Permanent },
+  tags = { Skill.Permanent },
 }
 
 Fk:loadTranslationTable{

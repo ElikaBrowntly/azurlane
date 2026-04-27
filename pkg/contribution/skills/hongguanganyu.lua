@@ -6,7 +6,7 @@ local CS = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_hongguanganyu"] = "宏观干预",
-  [":yyfy_hongguanganyu"] = "游戏结束后，若你的金币与<a href='yyfy_hongguanganyu_start'>游戏开始时"..
+  [":yyfy_hongguanganyu"] = "共鸣技，游戏结束后，你的金币与<a href='yyfy_hongguanganyu_start'>游戏开始时"..
     "</a>相比：<br><font color = '#32CD32'><b>顺差</b></font>：你获得加倍的金币；"..
     "<font color = 'red'><b>逆差</b></font>：你获得失去的金币。",
   ["yyfy_hongguanganyu_start"] = "<br><b>注：</b>实际为获得此技能时。<br><br><font color='blue'>"..
@@ -25,7 +25,8 @@ local sayings = {
 ganyu:addEffect(fk.GameStart, {
   priority = 100000,
   can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self)
+    return player and player:hasSkill(self) and
+    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
@@ -38,7 +39,8 @@ ganyu:addEffect(fk.GameStart, {
 ganyu:addEffect(fk.GameFinished, {
   priority = 0.00001,
   can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self)
+    return player and player:hasSkill(self) and
+    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
@@ -51,7 +53,8 @@ ganyu:addEffect(fk.GameFinished, {
 
 ganyu:addEffect(fk.TurnStart, {
   can_refresh = function(self, event, target, player, data)
-    return target == player and player:hasSkill(self)
+    return target == player and player:hasSkill(self) and
+    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_refresh = function(self, event, target, player, data)
     player:chat(sayings[math.random(4)])

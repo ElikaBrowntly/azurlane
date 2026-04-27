@@ -7,8 +7,8 @@ Fk:loadTranslationTable {
   ["lan__huanyin"] = "还阴",
   [":lan__huanyin"] = "锁定技，有角色进入濒死状态时，你从牌堆获得4种花色的牌各一张。",
 
-  ["$lan__huanyin1"] = "世间千百物，物物皆相思。",
-  ["$lan__huanyin2"] = "伊人将逝，何物为葬？",
+  ["$lan__huanyin1"] = "且将此身，还于阴氏。",
+  ["$lan__huanyin2"] = "生不得同户，死可葬同穴乎？",
 }
 
 huanyin:addEffect(fk.EnterDying, {
