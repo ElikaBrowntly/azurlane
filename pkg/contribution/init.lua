@@ -471,6 +471,16 @@ Fk:loadTranslationTable{
   ["designer:yyfy_yuanxingshangren"] = "曹宪咬我",
 }
 
+local weiwenzhugezhi = General:new(extension, "yyfy_dream__weiwenzhugezhi", "wu", 4)
+weiwenzhugezhi:addSkill ("yyfy_fuhai")
+Fk:loadTranslationTable{
+  ["yyfy_dream"] = "梦",
+  ["yyfy_dream__weiwenzhugezhi"] = "梦卫温诸葛直",
+  ["#yyfy_dream__weiwenzhugezhi"] = "新航路的开辟",
+  ["designer:yyfy_dream__weiwenzhugezhi"] = "水上由岐",
+  ["~yyfy_dream__weiwenzhugezhi"] = "吾皆海岱清士，岂料生死易逝。"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

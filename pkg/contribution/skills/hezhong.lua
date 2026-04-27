@@ -49,8 +49,7 @@ hezhong:addEffect(fk.CardUsing, {
     })
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    room:addPlayerMark(player, "yyfy_hezhong-turn")
+    player.room:addPlayerMark(player, "yyfy_hezhong-turn")
     data.additionalEffect = (data.additionalEffect or 0) + 1
   end,
 })

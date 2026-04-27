@@ -192,16 +192,14 @@ yyfy_toutu:addEffect(fk.DamageCaused, {
 
 -- 战斗机
 yyfy_toutu:addEffect(fk.DamageInflicted, {
-  mute =true,
+  mute = true,
   on_cost = function(self, event, target, player, data)
-    return data.to == player and player:hasSkill(yyfy_toutu.name) and
-           player:getMark("@yyfy_toutu_zhandouji") > 0
+    return data.to == player and player:hasSkill(self) and player:getMark("@yyfy_toutu_zhandouji") > 0
   end,
   on_use = function(self, event, target, player, data)
-    player.room:notifySkillInvoked(player, "@yyfy_toutu_zhandouji")
-    player:broadcastSkillInvoke(self.name, 2)
-    local X = player:getMark("@yyfy_toutu_zhandouji")
-    data.damage = math.max(0, data.damage - X)
+    player.room:notifySkillInvoked(player, "@yyfy_toutu_zhandouji", "defensive")
+    player:broadcastSkillInvoke(yyfy_toutu.name, 2)
+    data:changeDamage(- player:getMark("@yyfy_toutu_zhandouji"))
   end,
 })
 
