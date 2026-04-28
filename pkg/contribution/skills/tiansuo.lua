@@ -34,10 +34,10 @@ tiansuo:addEffect("prohibit", {
   prohibit_use = function(self, player, card)
     local room = Fk:currentRoom()
     local red = table.find(room.alive_players, function (p)
-      return p ~= player and p:getMark("yyfy_tiansuo_red-turn") > 0 and p:hasSkill(tiansuo.name)
+      return p and p:getMark("yyfy_tiansuo_red-turn") > 0 and p:hasSkill(tiansuo.name)
     end) and true or false
     local black = table.find(room.alive_players, function (p)
-      return p ~= player and p:getMark("yyfy_tiansuo_black-turn") > 0 and p:hasSkill(tiansuo.name)
+      return p and p:getMark("yyfy_tiansuo_black-turn") > 0 and p:hasSkill(tiansuo.name)
     end) and true or false
     return card.color == Card.Red and red or card.color == Card.Black and black
   end

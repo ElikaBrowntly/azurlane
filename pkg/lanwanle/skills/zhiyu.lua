@@ -44,9 +44,8 @@ zhiyu:addEffect(fk.Damaged, {
     player:drawCards(damage, self.name)
     if player.dead then return end
     -- 检查手牌颜色
-    local allSameColor = false
-    if #cards > 0 then
-      allSameColor = true
+    local allSameColor = true
+    if #cards > 1 then
       local firstColor = Fk:getCardById(cards[1]).color
       for i = 2, #cards do
         if Fk:getCardById(cards[i]).color ~= firstColor then
@@ -55,12 +54,12 @@ zhiyu:addEffect(fk.Damaged, {
         end
       end
     end
-    
+
     if allSameColor then
       -- 永久增加奇策
       room:addPlayerMark(player, "@lan__zhiyu_permanent", 1)
       -- 获得弃置的牌
-      if discardedCard and #discardedCard > 0 then
+      if discardedCard and #discardedCard == 1 then
         local cardId = discardedCard[1]
         if table.contains(room.discard_pile, cardId) then
           room:obtainCard(player, cardId, false, fk.ReasonPrey, player, self.name)

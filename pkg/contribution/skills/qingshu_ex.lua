@@ -4,7 +4,6 @@ local yyfy_qingshu = fk.CreateSkill{
 }
 
 local F = require("packages.hidden-clouds.functions")
-local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 Fk:loadTranslationTable{
   ["yyfy_qingshu"] = "青书",

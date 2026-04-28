@@ -30,7 +30,7 @@ qizhen:addEffect(fk.CardUseFinished, {
     if not (target == player and player:hasSkill(self)) then return false end
     local black = 0
     local red = 0
-    for _, c in ipairs(player:getCardIds()) do
+    for _, c in ipairs(player:getCardIds("h")) do
       local color = Fk:getCardById(c).color
       if color == Card.Black then
         black = black + 1

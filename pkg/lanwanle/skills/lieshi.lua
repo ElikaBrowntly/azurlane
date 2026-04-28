@@ -57,14 +57,17 @@ lieshi:addEffect("active", {
     for i = 1, 2, 1 do
       if i == 2 then
         if player.dead then return end
-        to = room:askToChoosePlayers(player, {
+        local tos = room:askToChoosePlayers(player, {
           min_num = 1,
           max_num = 1,
           targets = room.alive_players,
           skill_name = lieshi.name,
           prompt = "#lan__lieshi-choose",
           cancelable = false,
-        })[1]
+        })
+        if #tos == 1 then
+          to = tos[1]
+        end
         local choices, all_choices = { "lan__lieshi_damage" },
             { "lan__lieshi_abolish", "lan__lieshi_damage", "lan__lieshi_slash", "lan__lieshi_jink" }
         if not table.contains(to.sealedSlots, Player.JudgeSlot) then
