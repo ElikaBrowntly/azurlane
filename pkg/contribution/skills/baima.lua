@@ -5,7 +5,7 @@ local baima = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_baima"] = "白马",
-  [":yyfy_baima"] = "其他角色造成伤害结算后，你可以对其造成等量火焰伤害。",
+  [":yyfy_baima"] = "其他角色造成的伤害结算结束后，你可以对其造成等量火焰伤害。",
   ["#yyfy_baima-invoke"] = "白马：是否要对 %dest 造成 %arg 点火焰伤害？",
 }
 

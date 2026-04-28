@@ -23,11 +23,6 @@ yanru:addEffect("active", {
 
 yanru:addAI(Fk.Ltk.AI.newActiveStrategy {
   think = function(self, ai)
-    local player = ai.player
-    local cards = ai:getEnabledCards()
-
-    -- cards = ai:getChoiceCardsByKeepValue(cards, #cards, function(value) return value < 45 end)
-
     return { }, 10
   end,
 })

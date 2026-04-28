@@ -81,8 +81,8 @@ local caoxiancaohua = General:new(extension, "lan__caoxiancaohua", "qun", 3)
 caoxiancaohua:addSkills { "lan__huamu", "lan__liangyuan", "lan__jisi", "lan__lingxi",
   "lan__zhifou", "lan__caiyi", "lan__guili" }
 Fk:loadTranslationTable {
-  ["lan__caoxiancaohua"] = "曹宪曹华",
-  ["#lan__caoxiancaohua"] = "木石前盟",
+  ["lan__caoxiancaohua"] = "烂二曹",
+  ["#lan__caoxiancaohua"] = "二曹布兰德",
   ["designer:lan__caoxiancaohua"] = "夜隐浮云",
   ["~lan__caoxiancaohua"] = "无情总是帝王家。"
 }
@@ -90,10 +90,12 @@ Fk:loadTranslationTable {
 local xuncai = General:new(extension, "lan__xuncai", "qun", 3, 3, General.Female)
 xuncai:addSkills { "lan__lieshi", "lan__dianzhan", "lan__huanyin", "yyfy_daojie" }
 Fk:loadTranslationTable {
-  ["lan__xuncai"] = "族荀采",
-  ["#lan__xuncai"] = "怀刃自誓",
+  ["lan__xuncai"] = "烂荀采",
+  ["#lan__xuncai"] = "荀采布兰德",
   ["designer:lan__xuncai"] = "水上由岐",
-  ["~lan__xuncai"] = "苦难已过，世间大好……"
+  ["~lan__xuncai"] = "苦难已过，世间大好……",
+  ["$yyfy_daojie_lan__xuncai1"] = "女子有节，宁死蹈之。",
+  ["$yyfy_daojie_lan__xuncai2"] = "荀氏三纲，死不贰嫁。",
 }
 
 return extension

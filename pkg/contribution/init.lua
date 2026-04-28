@@ -399,7 +399,8 @@ Fk:loadTranslationTable{
   ["#yyfy_longchens"] = "祖龙武者",
   ["designer:yyfy_longchen"] = "青菜白玉汤",
 }
-longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi"}
+longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
+"yyfy_hualong_yongheng"}
 
 local longchen1 = General:new(extension, "yyfy_longchen1", "god", 3)
 longchen1:addSkills {"yyfy_qiyuan", "yyfy_linghun"}
@@ -468,6 +469,16 @@ Fk:loadTranslationTable{
   ["yyfy_yuanxingshangren"] = "远行商人",
   ["#yyfy_yuanxingshangren"] = "",
   ["designer:yyfy_yuanxingshangren"] = "曹宪咬我",
+}
+
+local weiwenzhugezhi = General:new(extension, "yyfy_dream__weiwenzhugezhi", "wu", 4)
+weiwenzhugezhi:addSkill ("yyfy_fuhai")
+Fk:loadTranslationTable{
+  ["yyfy_dream"] = "梦",
+  ["yyfy_dream__weiwenzhugezhi"] = "梦卫温诸葛直",
+  ["#yyfy_dream__weiwenzhugezhi"] = "新航路的开辟",
+  ["designer:yyfy_dream__weiwenzhugezhi"] = "水上由岐",
+  ["~yyfy_dream__weiwenzhugezhi"] = "吾皆海岱清士，岂料生死易逝。"
 }
 
 Fk:loadTranslationTable {
