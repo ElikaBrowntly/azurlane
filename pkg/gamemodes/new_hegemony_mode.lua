@@ -318,8 +318,8 @@ function HegLogic:chooseGenerals()
       local deputyGen = Fk.generals[p:getMark("__heg_deputy")]
       -- 收集主将势力列表（去 nil）
       local mainKingdoms = {}
-      if mainGen.kingdom then table.insert(mainKingdoms, mainGen.kingdom) end
-      if mainGen.subkingdom then table.insert(mainKingdoms, mainGen.subkingdom) end
+      if mainGen and mainGen.kingdom then table.insert(mainKingdoms, mainGen.kingdom) end
+      if mainGen and mainGen.subkingdom then table.insert(mainKingdoms, mainGen.subkingdom) end
 
       -- 收集副将势力列表（去 nil）
       local deputyKingdoms = {}
@@ -389,11 +389,9 @@ function HegLogic:broadcastGeneral()
     local deputy = Fk.generals[p:getMark("__heg_deputy")]
     local dmaxHp = deputy.maxHp + deputy.deputyMaxHpAdjustedValue
     local gmaxHp = general.maxHp + general.mainMaxHpAdjustedValue
-    p.maxHp = (dmaxHp + gmaxHp) // 2
-    -- p.hp = math.floor((deputy.hp + general.hp) / 2)
-    p.hp = p.maxHp
-    -- p.shield = math.min(general.shield + deputy.shield, 5)
-    p.shield = 0
+    p.maxHp = (dmaxHp + gmaxHp) // 2 -- Lua5.3版本之后，向下取整的除法
+    p.hp = (general.hp + deputy.hp) // 2
+    p.shield = general.shield + deputy.shield
     -- TODO: setup AI here
 
     room:broadcastProperty(p, "general")
@@ -578,7 +576,7 @@ heg = fk.CreateGameMode {
   rule = "heg_rule",
   logic = heg_getLogic,
   is_counted = function(self, room)
-    return #room.players >= 6
+    return #room.players >= 5
   end,
   whitelist = function(self, pkg)
     return pkg.name == "hegemony_cards" or pkg.type ~= Package.CardPack
@@ -661,12 +659,21 @@ heg = fk.CreateGameMode {
   build_draw_pile = function(self)
     local room = Fk:currentRoom()
     local draw, void = GameMode.buildDrawPile(self)
-    if not Fk.packages["hegemony_cards"] then return draw, void end
+    -- if not Fk.packages["hegemony_cards"] then return draw, void end
     local thickness = room:getSettings('deckThickness')
     local cards = table.simpleClone(Fk.packages["hegemony_cards"].cards)
     if Fk.packages["lord_cards"] and table.contains(room.disabled_packs, "lord_cards") then
       table.insertTable(cards, Fk.packages["lord_cards"].cards)
     end
+    local universe = {} ---@type integer[]
+    local already = {} ---@type string[]
+    for _, c in ipairs(cards) do
+      if c.type ~= Card.TypeEquip and not table.contains(already, c.name) then
+        table.insert(universe, c.id)
+        table.insert(already, c.name)
+      end
+    end
+    room:setBanner("universal_cards", universe)
     table.removeOne(Fk:currentRoom().disabled_packs, "hegemony_cards")
     local printed = table.simpleClone(cards)
     while thickness > 1 do

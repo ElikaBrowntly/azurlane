@@ -25,7 +25,7 @@ longfeng:addEffect("viewas", {
   end,
   card_filter = function(self, player, to_select, selected, selected_targets)
     local color = table.contains({ "nullification", "iron_chain" }, self.interaction.data) and 1 or 2
-    return #selected == 0 and Fk:getCardById(to_select).color == color
+    return Fk:getCardById(to_select).color == color
   end,
   view_as = function(self, player, cards)
     if #cards == 0 then return end

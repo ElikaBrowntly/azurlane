@@ -21,12 +21,12 @@ Fk:loadTranslationTable {
 
 }
 
-local JL = require "packages.jilve_caidog.util"
+local ok, JL = pcall(require, "packages.jilve_caidog.util")
 
 JL.addBeforeNegativeEffect(yongheng, {
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(self) and (player == target or event == fk.BeforeCardsMove)
-        and JL.ConvertToNegativeData(event, player, data) and player.id > 0 -- 防止人机死循环
+    return ok and player:hasSkill(self) and (player == target or event == fk.BeforeCardsMove)
+        and JL.ConvertToNegativeData(event, player, data) and player.id > 0-- 防止人机死循环
   end,
   on_cost = function(self, event, target, player, data)
     local negdata = JL.ConvertToNegativeData(event, player, data)
