@@ -34,7 +34,7 @@ W.PageBase {
     ]
 
     // 概念礼装数据
-    property var clothesList: []      // 存储礼装数据 [{ name, displayName, image, count, price }]
+    property var clothesList: []
 
     function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
@@ -68,13 +68,11 @@ W.PageBase {
         Cpp.notifyServer("LobbyTask", ["sign_in_SaintQuartz", []]);
     }
 
-    // 请求礼装数据
     function requestClothes() {
         App.setBusy(true);
         Cpp.notifyServer("LobbyTask", ["get_concept_clothes", []]);
     }
 
-    // 交换礼装（弹出对话框）
     function exchangeClothes(clothName, currentCount, pricePerOne) {
         var maxBuy = 5 - currentCount;
         if (maxBuy <= 0) {
@@ -82,7 +80,7 @@ W.PageBase {
             return;
         }
 
-        var currentValue = 1; // 用外部变量存值，不靠id
+        var currentValue = 1;
 
         var dialog = Qt.createQmlObject(`
         import QtQuick 2.15
@@ -120,7 +118,6 @@ W.PageBase {
             }
         }`, root);
 
-        // 关键：不用id，直接获取contentItem的孩子！
         var spinBox = dialog.contentItem.children[1];
         spinBox.onValueChanged.connect(function() {
             currentValue = spinBox.value;
@@ -159,18 +156,10 @@ W.PageBase {
         gachaPage.resultPopup.visible = true;
     }
 
-    // 背景
+    // 背景色
     Rectangle { anchors.fill: parent; color: "#87CEEB"; z: -2 }
 
-    // 抽卡背景图片
-    Image {
-        width: parent.width; anchors.top: parent.top
-        source: basePath + "gacha_bg.jpg"
-        fillMode: Image.PreserveAspectFit
-        z: -1; visible: currentPage === 0
-    }
-
-    // 底部菜单（三个等宽按钮）
+    // 底部菜单（不变）
     Rectangle {
         id: menuArea
         anchors.bottom: parent.bottom
@@ -196,7 +185,6 @@ W.PageBase {
         Row {
             anchors.bottom: parent.bottom; anchors.left: parent.left; anchors.right: parent.right
             height: parent.height * 0.6; spacing: 2
-            // 三个按钮等宽
             Rectangle {
                 width: (parent.width - 4) / 3; height: parent.height
                 color: currentPage === 0 ? "#4CAF50" : "#3A6EA5"; radius: 8
@@ -221,6 +209,54 @@ W.PageBase {
         }
     }
 
+    // ==================== 统一的关闭区域（覆盖三个页面，位置固定） ====================
+    Item {
+        id: closeAreaContainer
+        // 与抽卡页面区域完全重叠（顶部到菜单栏顶部之间）
+        anchors.top: parent.top
+        anchors.bottom: menuArea.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        z: 200  // 保证在最上层
+
+        // 根据背景图原始尺寸 1604x720 计算相对比例
+        // 关闭字样在原图的矩形区域：x:95~260 (宽165), y:7~80 (高73)
+        readonly property real buttonWidthRatio: 165 / 1604      // 宽度比例
+        readonly property real buttonHeightRatio: 73 / 1604       // 高度比例（但实际 y 坐标也基于宽度）
+        // 注意：背景图在容器中宽度撑满，高度按比例缩放，因此关闭区域的绝对位置和大小与容器宽度成正比
+        property real btnX: parent.width * (95 / 1604)
+        property real btnY: parent.width * (7 / 1604)      // 基于宽度计算，与背景图实际显示位置一致
+        property real btnW: parent.width * buttonWidthRatio
+        property real btnH: parent.width * buttonHeightRatio
+
+        // 第一页：热区（不带图片，利用背景已有的关闭字样）
+        MouseArea {
+            id: closeHotArea
+            visible: root.currentPage === 0
+            x: closeAreaContainer.btnX
+            y: closeAreaContainer.btnY
+            width: closeAreaContainer.btnW
+            height: closeAreaContainer.btnH
+            onClicked: App.quitPage()
+        }
+
+        // 第二、三页：关闭图片按钮（用户需自行替换图片为 165x73 尺寸）
+        Image {
+            id: closeImage
+            visible: root.currentPage !== 0
+            x: closeAreaContainer.btnX
+            y: closeAreaContainer.btnY
+            width: closeAreaContainer.btnW
+            height: closeAreaContainer.btnH
+            source: root.basePath + "close.png"
+            fillMode: Image.Stretch   // 拉伸填充，用户替换图片后效果更佳
+            MouseArea {
+                anchors.fill: parent
+                onClicked: App.quitPage()
+            }
+        }
+    }
+
     // ==================== 抽卡页面 ====================
     Item {
         id: gachaPage
@@ -232,30 +268,61 @@ W.PageBase {
         property alias singleResultImage: singleResultImage
         property alias resultGrid: resultGrid
 
-        MouseArea {
-            x: parent.width * (363 / 1450); y: parent.height * (475 / 720)
-            width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
-            onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
-        }
-        MouseArea {
-            x: parent.width * (603 / 1450); y: parent.height * (475 / 720)
-            width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
-            onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
-        }
-        MouseArea {
-            x: parent.width * (842 / 1450); y: parent.height * (475 / 720)
-            width: parent.width * (207 / 1450); height: parent.height * (85 / 720)
-            onClicked: { var icons = drawMultiple(10); root.showGachaResult(icons); }
-            Rectangle { anchors.fill: parent; color: "red"; opacity: 0.3; visible: false }
+        // 抽卡背景和热区容器
+        Item {
+            id: gachaContainer
+            anchors.fill: parent
+
+            // 背景图片（跟随窗口自动缩放）
+            Image {
+                id: gachaBg
+                width: parent.width
+                anchors.top: parent.top
+                source: basePath + "gacha_bg.jpg"
+                fillMode: Image.PreserveAspectFit
+                z: -1
+            }
+
+            // 抽卡热区容器（基于背景图片实际显示区域）
+            Item {
+                id: hotZoneContainer
+                anchors.fill: gachaBg
+
+                // 第一个单抽区域
+                MouseArea {
+                    x: gachaBg.width * (458 / 1604)
+                    y: gachaBg.height * (505 / 720)
+                    width: gachaBg.width * (206 / 1604)
+                    height: gachaBg.height * (80 / 720)
+                    onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
+                }
+
+                // 第二个单抽区域
+                MouseArea {
+                    x: gachaBg.width * (697 / 1604)
+                    y: gachaBg.height * (505 / 720)
+                    width: gachaBg.width * (206 / 1604)
+                    height: gachaBg.height * (80 / 720)
+                    onClicked: { var icon = drawOne(); root.showGachaResult([icon]); }
+                }
+
+                // 十连抽区域
+                MouseArea {
+                    x: gachaBg.width * (939 / 1604)
+                    y: gachaBg.height * (505 / 720)
+                    width: gachaBg.width * (206 / 1604)
+                    height: gachaBg.height * (80 / 720)
+                    onClicked: { var icons = drawMultiple(10); root.showGachaResult(icons); }
+                }
+            }
         }
 
+        // 抽卡结果弹窗
         Rectangle {
             id: resultPopup
             anchors.centerIn: parent
             width: parent.width * 0.8; height: parent.height * 0.7
-            color: "#CC000000"; radius: 10; visible: false; z: 10
+            color: "#CC000000"; radius: 10; visible: false; z: 20
 
             Image {
                 id: singleResultImage
@@ -382,6 +449,7 @@ W.PageBase {
             }
         }
     }
+
     // ==================== 概念礼装页面 ====================
     Item {
         id: conceptClothesPage
@@ -391,7 +459,6 @@ W.PageBase {
 
         Rectangle { anchors.fill: parent; color: "#AA87CEEB"; radius: 10 }
 
-        // 标题
         Text {
             anchors.top: parent.top; anchors.topMargin: 20
             anchors.horizontalCenter: parent.horizontalCenter
@@ -400,7 +467,7 @@ W.PageBase {
             style: Text.Outline; styleColor: "black"
         }
 
-        // 礼装详情弹窗（复用同一个）
+        // 礼装详情弹窗
         Popup {
             id: clothDetailPopup
             modal: true
@@ -422,7 +489,6 @@ W.PageBase {
                 anchors.fill: parent
                 anchors.margins: 20
 
-                // 左侧大图
                 Image {
                     id: bigImage
                     width: 200
@@ -431,7 +497,6 @@ W.PageBase {
                     fillMode: Image.PreserveAspectFit
                 }
 
-                // 右侧文本区域
                 Column {
                     width: parent.width - 220
                     spacing: 20
@@ -472,12 +537,11 @@ W.PageBase {
             model: clothesList
             delegate: Item {
                 width: 140; height: 210
-                property int itemCount: Number(modelData.count)   // 确保为数字
+                property int itemCount: Number(modelData.count)
 
                 Column {
                     anchors.fill: parent; spacing: 5
 
-                    // 可点击的图片
                     Image {
                         width: 120; height: 120
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -487,17 +551,14 @@ W.PageBase {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                // 获取大图路径（.png 格式）
                                 var bigImgPath = basePath + "clothes/" + modelData.name + ".png"
                                 bigImage.source = bigImgPath
 
-                                // 获取文本内容（优先从 modelData 读取，否则从映射表获取）
                                 var normalText = modelData.effectNormal || ""
                                 var maxText = modelData.effectMax || ""
                                 var description = modelData.description || ""
 
                                 if (normalText === "" || maxText === "" || description === "") {
-                                    // 内置映射表（可根据需要扩展）
                                     var textMap = {
                                         "wanhuajing": {
                                             normal: "以蓄力点已达8点的状态开始战斗",
@@ -522,7 +583,6 @@ W.PageBase {
                         }
                     }
 
-                    // 礼装名称
                     Text {
                         width: parent.width
                         text: modelData.displayName
@@ -530,7 +590,6 @@ W.PageBase {
                         horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap
                     }
 
-                    // 星星和加号放在同一行
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 8
@@ -567,17 +626,6 @@ W.PageBase {
                 }
             }
         }
-    }
-
-    // 关闭按钮
-    Image {
-        id: closeButton
-        anchors.left: parent.left; anchors.top: parent.top
-        width: 80; height: 80
-        source: root.basePath + "close.png"
-        fillMode: Image.PreserveAspectFit
-        z: 200
-        MouseArea { anchors.fill: parent; onClicked: App.quitPage() }
     }
 
     Component.onCompleted: {
@@ -654,7 +702,7 @@ W.PageBase {
                 try {
                     var obj = JSON.parse(data);
                     if (obj.success) {
-                        requestClothes();   // 刷新礼装列表
+                        requestClothes();
                         App.showToast(obj.message || "交换成功");
                     } else {
                         App.showToast(obj.message || "交换失败");
@@ -664,7 +712,7 @@ W.PageBase {
             App.setBusy(false);
         });
 
-        requestSaintQuartz();  // 初始加载圣晶石页面数据
+        requestSaintQuartz();
     }
 
     function loadData(data) {

@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 local baofa = fk.CreateSkill({
   name = "yyfy_baofa",
   tags = { Skill.Charge },
@@ -5,7 +6,7 @@ local baofa = fk.CreateSkill({
 
 Fk:loadTranslationTable {
   ["yyfy_baofa"] = "爆发",
-  [":yyfy_baofa"] = "蓄力技（0/5），回合结束时，你获得1点蓄力点。" ..
+  [":yyfy_baofa"] = "蓄力技（0/5），敌方角色回合结束时，你获得1点蓄力点。" ..
       "你可以消耗5点蓄力点，对所有敌方角色造成2点伤害，然后令这些角色无法获得蓄力点。",
   ["$yyfy_baofa1"] = "宇宙射线爆裂",
   ["$yyfy_baofa2"] = "宇宙线爆发",
@@ -48,7 +49,7 @@ baofa:addEffect("active", {
 
 baofa:addEffect(fk.TurnEnd, {
   can_trigger = function (self, event, target, player, data)
-    return target == player and player:hasSkill(self)
+    return target ~= player and player and player:hasSkill(self) and F.isEnemy(player, target)
   end,
   on_cost = Util.TrueFunc,
   on_use = function (self, event, target, player, data)

@@ -14,7 +14,7 @@ Fk:loadTranslationTable
   ["yyfy"] = "",
   ["yyfy_exgod_zhangliao"] = "界神张辽",
   ["#yyfy_exgod_zhangliao"] = "美食家",
-  ["designer:yyfy_exgod_zhangliao"] = "投稿者",
+  ["designer:yyfy_exgod_zhangliao"] = "水上由岐",
   ["~yyfy_exgod_zhangliao"] = "我也有……被孙仲谋所伤之时",
 }
 
@@ -400,7 +400,7 @@ Fk:loadTranslationTable{
   ["designer:yyfy_longchen"] = "青菜白玉汤",
 }
 longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
-"yyfy_hualong_yongheng", "yyfy_mingyun"}
+"yyfy_hualong_yongheng", "yyfy_mingyun", "yyfy_yinguo"}
 
 local longchen1 = General:new(extension, "yyfy_longchen1", "god", 3)
 longchen1:addSkills {"yyfy_qiyuan", "yyfy_linghun"}
