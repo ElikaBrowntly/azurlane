@@ -18,7 +18,7 @@ Fk:loadTranslationTable{
 -- 获取所有可用势力
 local function getAllKingdoms()
   local kingdoms = { "wei", "shu", "wu", "qun" }
-    for _, g in pairs(Fk.generals) do
+    for _, g in pairs(Fk:getAllGenerals()) do
       if not g.total_hidden then
         table.insertIfNeed(kingdoms, g.kingdom)
       end
