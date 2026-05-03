@@ -9,7 +9,7 @@ Fk:loadTranslationTable {
   ["yyfy_ChaldeaGate"] = "迦勒底之门",
   [":yyfy_ChaldeaGate"] = "①游戏结束后，若本局游戏没有开启自由选将，所有玩家获得1圣晶石。" ..
       "胜者额外获得1圣晶石。<br>②你可以于游戏菜单的“迦勒底之门”内交换概念礼装，概念礼装所持有的"..
-      "技能将在你参与的所有模式生效。<font color = 'red'>若不想获取圣晶石，可以禁用此武将</font>",
+      "技能将在你参与的所有模式生效。<font color = 'red'><br>若不想获取圣晶石，可以禁用此武将</font>",
 }
 
 gate:addEffect(fk.GameFinished, {

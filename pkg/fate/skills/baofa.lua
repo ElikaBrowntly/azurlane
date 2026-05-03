@@ -5,7 +5,7 @@ local baofa = fk.CreateSkill({
 })
 
 Fk:loadTranslationTable {
-  ["yyfy_baofa"] = "爆发",
+  ["yyfy_baofa"] = "宇宙线爆发",
   [":yyfy_baofa"] = "蓄力技（0/5），敌方角色回合结束时，你获得1点蓄力点。" ..
       "你可以消耗5点蓄力点，对所有敌方角色造成2点伤害，然后令这些角色无法获得蓄力点。",
   ["$yyfy_baofa1"] = "宇宙射线爆裂",

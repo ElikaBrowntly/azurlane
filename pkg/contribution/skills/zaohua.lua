@@ -9,7 +9,7 @@ Fk:loadTranslationTable {
 }
 
 zaohua:addEffect(fk.BeforeGameOverJudge, {
-  priority = 3,
+  priority = 4,
   anim_type = "support",
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(self, true, true) and (player.tag[zaohua.name] or 0) == 0

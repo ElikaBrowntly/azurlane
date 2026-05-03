@@ -349,7 +349,7 @@ Fk:loadTranslationTable
 }
 
 local mobileORT = General:new(extension, "yyfy_mobileORT", "moon", 10, 10, General.Agender) -- ORT无性别
-mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_baofa" }
+mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo", "yyfy_baofa", "yyfy_xietiao_mobileORT" }
 Fk:loadTranslationTable
 {
   ["yyfy_mobileORT"] = "移动O R T",
@@ -357,6 +357,17 @@ Fk:loadTranslationTable
   ["designer:yyfy_mobileORT"] = "夜隐浮云",
 }
 mobileORT.hidden = true
+
+local flyingORT = General:new(extension, "yyfy_flyingORT", "moon", 12, 12, General.Agender) -- ORT无性别
+flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian",} --"yyfy_yinhedanti", "yyfy_PPliansuo",
+-- "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT" }
+Fk:loadTranslationTable
+{
+  ["yyfy_flyingORT"] = "飞行O R T",
+  ["#yyfy_flyingORT"] = "侵略型飞行生命体",
+  ["designer:flyingORT"] = "夜隐浮云",
+}
+flyingORT.hidden = true
 
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
 SaintQuartz:addSkills { "yyfy_ChaldeaGate" }
