@@ -31,81 +31,81 @@ Fk:loadTranslationTable
 
 local lijueguosi = General:new(extension, "yyfy_lijueguosi", "qun", 4)
 lijueguosi:addSkills { "yyfy_xiongxi", "yyfy_yisuan" }
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_lijueguosi"] = "李傕郭汜",
   ["#yyfy_lijueguosi"] = "犯祚倾祸",
   ["designer:yyfy_lijueguosi"] = "多喝热水",
   ["~yyfy_lijueguosi"] = "一心相争，兵败战损",
 }
 
-local zhixushenghua =  General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Female)
+local zhixushenghua = General:new(extension, "yyfy_zhixushenghua", "god", 5, 5, General.Female)
 zhixushenghua:addSkills { "yyfy_shengjianchujue", "yyfy_tianmingyini", "yyfy_shengshayuduo" }
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_zhixushenghua"] = "至序圣华",
   ["designer:yyfy_zhixushenghua"] = "一维无限",
 }
 
 local xunshengshouwei = General:new(extension, "yyfy_xunshengshouwei", "god", 4, 4, General.Female)
-xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang"}
-Fk:loadTranslationTable{
+xunshengshouwei:addSkills { "yyfy_jianjiao", "yyfy_wusheng", "yyfy_huixiang" }
+Fk:loadTranslationTable {
   ["yyfy_xunshengshouwei"] = "循声守卫",
   ["designer:yyfy_xunshengshouwei"] = "一维无限",
 }
 
 local pianye = General:new(extension, "yyfy_pianye", "god", 1, 999)
-pianye:addSkills {"yyfy_gouyun", "yyfy_haopai", "yyfy_huangdou"}
-Fk:loadTranslationTable{
+pianye:addSkills { "yyfy_gouyun", "yyfy_haopai", "yyfy_huangdou" }
+Fk:loadTranslationTable {
   ["yyfy_pianye"] = "偏✌️",
   ["#yyfy_pianye"] = "偏将军就是✌️",
   ["designer:yyfy_pianye"] = "幻矩",
 }
 
 local piangrandpa = General:new(extension, "yyfy_piangrandpa", "god", 4)
-piangrandpa:addSkills {"yyfy_gouyun", "yyfy_haopai↓", "yyfy_huangdou"}
-Fk:loadTranslationTable{
+piangrandpa:addSkills { "yyfy_gouyun", "yyfy_haopai↓", "yyfy_huangdou" }
+Fk:loadTranslationTable {
   ["yyfy_piangrandpa"] = "偏爷",
   ["#yyfy_piangrandpa"] = "偏将军就是爷",
   ["designer:yyfy_piangrandpa"] = "幻矩",
 }
 
 local youlewangzi = General:new(extension, "yyfy_youlewangzi", "god", 4)
-youlewangzi:addSkills {"yyfy_mianjv", "yyfy_miyu"}
-Fk:loadTranslationTable{
+youlewangzi:addSkills { "yyfy_mianjv", "yyfy_miyu" }
+Fk:loadTranslationTable {
   ["yyfy_youlewangzi"] = "游乐王子",
   ["#yyfy_youlewangzi"] = "谜语人",
   ["designer:yyfy_youlewangzi"] = "夜隐浮云",
 }
 
 local ex_simashi = General:new(extension, "yyfy_ex__simashi", "wei", 4)
-ex_simashi:addSkills {"yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli"}
-Fk:loadTranslationTable{
+ex_simashi:addSkills { "yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli" }
+Fk:loadTranslationTable {
   ["yyfy_ex__simashi"] = "界司马师",
   ["designer:yyfy_ex__simashi"] = "非电竞恐龙",
   ["~yyfy_ex__simashi"] = "子上，先之则太过，后之则不及……"
 }
 
 local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
-gaodaerhao:addSkills {"yyfy_shelie", "yyfy_gongxin"}
-Fk:loadTranslationTable{
+gaodaerhao:addSkills { "yyfy_shelie", "yyfy_gongxin" }
+Fk:loadTranslationTable {
   ["yyfy_gaodaerhao"] = "高达二号",
   ["~yyfy_gaodaerhao"] = "终是逃不开，追魂索命之咒……"
 }
 
 local KusanagiGodou = General:new(extension, "yyfy_KusanagiGodou", "evil", 4)
-KusanagiGodou:addSkills {"yyfy_shishen", "yyfy_quanneng"}
-Fk:loadTranslationTable{
+KusanagiGodou:addSkills { "yyfy_shishen", "yyfy_quanneng" }
+Fk:loadTranslationTable {
   ["yyfy_KusanagiGodou"] = "草薙护堂",
   ["#yyfy_KusanagiGodou"] = "弑神者",
   ["designer:yyfy_KusanagiGodou"] = "夜隐浮云",
 }
-KusanagiGodou:addRelatedSkills{
+KusanagiGodou:addRelatedSkills {
   "yyfy_qiangfeng", "yyfy_gongniu", "yyfy_baima", "yyfy_luotuo", "yyfy_shanzhu",
   "yyfy_shaonian", "yyfy_fenghuang", "yyfy_muyang", "yyfy_shanyang", "yyfy_zhanshi"
 }
 
 local yueCaocao = General:new(extension, "yyfy_yue__caocao", "wei", 4)
-yueCaocao:addSkills {"yyfy_yanjv", "yyfy_hejue"}
-Fk:loadTranslationTable{
+yueCaocao:addSkills { "yyfy_yanjv", "yyfy_hejue" }
+Fk:loadTranslationTable {
   ["yyfy_yue"] = "",
   ["yyfy_yue__caocao"] = "乐曹操",
   ["designer:yyfy_yue__caocao"] = "幻矩",
@@ -121,11 +121,11 @@ Fk:loadTranslationTable{
   ["$guixin_yyfy_yue__caocao2"] = "周公吐哺，天下归心。",
   ["~yyfy_yue__caocao"] = "安敢败我诗兴？（我...）"
 }
-yueCaocao:addRelatedSkills({"xixiang", "zhubei", "duoyue", "guixin"})
+yueCaocao:addRelatedSkills({ "xixiang", "zhubei", "duoyue", "guixin" })
 
 local caoshuang = General:new(extension, "yyfy_ex__caoshuang", "wei", 4)
-caoshuang:addSkills {"yyfy_tuogu", "yyfy_shanzhuan"}
-Fk:loadTranslationTable{
+caoshuang:addSkills { "yyfy_tuogu", "yyfy_shanzhuan" }
+Fk:loadTranslationTable {
   ["yyfy_ex__caoshuang"] = "界曹爽",
   ["#yyfy_ex__caoshuang"] = "托孤辅政",
   ["designer:yyfy_ex__caoshuang"] = "夜隐浮云",
@@ -137,8 +137,8 @@ Fk:loadTranslationTable{
 caoshuang:addRelatedSkill("ex__biyue")
 
 local end_jiaxu = General:new(extension, "yyfy_end__jiaxu", "qun", 3)
-end_jiaxu:addSkills {"yyfy_wansha", "yyfy_weimu", "yyfy_luanwu"}
-Fk:loadTranslationTable{
+end_jiaxu:addSkills { "yyfy_wansha", "yyfy_weimu", "yyfy_luanwu" }
+Fk:loadTranslationTable {
   ["yyfy_end"] = "终",
   ["yyfy_end__jiaxu"] = "终贾诩",
   ["#yyfy_end__jiaxu"] = " ",
@@ -147,16 +147,16 @@ Fk:loadTranslationTable{
 }
 
 local god_zhangfei = General:new(extension, "yyfy__godzhangfei", "god", 4)
-god_zhangfei:addSkills {"yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou"}
-Fk:loadTranslationTable{
+god_zhangfei:addSkills { "yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou" }
+Fk:loadTranslationTable {
   ["yyfy__godzhangfei"] = "神张飞",
   ["#yyfy__godzhangfei"] = "傲凌世间",
   ["~yyfy__godzhangfei"] = "桃花今又开，不见结义人。",
 }
 
 local god_machao = General:new(extension, "yyfy__godmachao", "god", 4)
-god_machao:addSkills {"yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu"}
-Fk:loadTranslationTable{
+god_machao:addSkills { "yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu" }
+Fk:loadTranslationTable {
   ["yyfy__godmachao"] = "神马超",
   ["#yyfy__godmachao"] = "壮志凌云",
   ["!yyfy__godmachao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
@@ -164,33 +164,34 @@ Fk:loadTranslationTable{
 }
 
 local gaoshou = General:new(extension, "yyfy_gaoshou", "god", 4)
-gaoshou:addSkills {"yyfy_konggou"}
-Fk:loadTranslationTable{
+gaoshou:addSkills { "yyfy_konggou" }
+Fk:loadTranslationTable {
   ["yyfy_gaoshou"] = "高手",
   ["#yyfy_gaoshou"] = "",
   ["designer:yyfy_gaoshou"] = "幻矩"
 }
 
 local woyeyaosima = General:new(extension, "yyfy_woyeyaosima", "god", 4, 4, General.Female)
-woyeyaosima:addSkills {"yyfy_woyeyaogeima", "yyfy_woyeyaosima"}
-Fk:loadTranslationTable{
+woyeyaosima:addSkills { "yyfy_woyeyaogeima", "yyfy_woyeyaosima" }
+Fk:loadTranslationTable {
   ["yyfy_woyeyaosima"] = "我也要死吗",
   ["#yyfy_woyeyaosima"] = "对！",
   ["designer:yyfy_woyeyaosima"] = "夜隐浮云"
 }
 
 local puni = General:new(extension, "yyfy_shenglingpuni", "god", 1)
-puni:addSkills {"yyfy_shenglingfengyin", "yyfy_luofangtianhua", "yyfy_guangrongzhimeng", "yyfy_jiushishenling"}
-Fk:loadTranslationTable{
+puni:addSkills { "yyfy_shenglingfengyin", "yyfy_luofangtianhua", "yyfy_guangrongzhimeng", "yyfy_jiushishenling" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni"] = "传说",
   ["designer:yyfy_shenglingpuni"] = "一维无限"
 }
-puni:addRelatedSkills({"yyfy_xuwu", "yyfy_yuansu", "yyfy_nengliang", "yyfy_shengming", "yyfy_lunhui", "yyfy_yongheng", "yyfy_shengjie"})
+puni:addRelatedSkills({ "yyfy_xuwu", "yyfy_yuansu", "yyfy_nengliang", "yyfy_shengming", "yyfy_lunhui", "yyfy_yongheng",
+  "yyfy_shengjie" })
 
 local puni1 = General:new(extension, "yyfy_shenglingpuni1", "god", 1)
-puni1:addSkills {"yyfy_xuwu"}
-Fk:loadTranslationTable{
+puni1:addSkills { "yyfy_xuwu" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni1"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni1"] = "虚无",
   ["designer:yyfy_shenglingpuni1"] = "一维无限"
@@ -198,8 +199,8 @@ Fk:loadTranslationTable{
 puni1.total_hidden = true
 
 local puni2 = General:new(extension, "yyfy_shenglingpuni2", "god", 1)
-puni2:addSkills {"yyfy_yuansu"}
-Fk:loadTranslationTable{
+puni2:addSkills { "yyfy_yuansu" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni2"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni2"] = "元素",
   ["designer:yyfy_shenglingpuni2"] = "一维无限"
@@ -207,8 +208,8 @@ Fk:loadTranslationTable{
 puni2.total_hidden = true
 
 local puni3 = General:new(extension, "yyfy_shenglingpuni3", "god", 1)
-puni3:addSkills {"yyfy_nengliang"}
-Fk:loadTranslationTable{
+puni3:addSkills { "yyfy_nengliang" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni3"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni3"] = "能量",
   ["designer:yyfy_shenglingpuni3"] = "一维无限"
@@ -216,8 +217,8 @@ Fk:loadTranslationTable{
 puni3.total_hidden = true
 
 local puni4 = General:new(extension, "yyfy_shenglingpuni4", "god", 1)
-puni4:addSkills {"yyfy_shengming"}
-Fk:loadTranslationTable{
+puni4:addSkills { "yyfy_shengming" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni4"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni4"] = "生命",
   ["designer:yyfy_shenglingpuni4"] = "一维无限"
@@ -225,8 +226,8 @@ Fk:loadTranslationTable{
 puni4.total_hidden = true
 
 local puni5 = General:new(extension, "yyfy_shenglingpuni5", "god", 1)
-puni5:addSkills {"yyfy_lunhui"}
-Fk:loadTranslationTable{
+puni5:addSkills { "yyfy_lunhui" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni5"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni5"] = "轮回",
   ["designer:yyfy_shenglingpuni5"] = "一维无限"
@@ -234,8 +235,8 @@ Fk:loadTranslationTable{
 puni5.total_hidden = true
 
 local puni6 = General:new(extension, "yyfy_shenglingpuni6", "god", 1)
-puni6:addSkills {"yyfy_yongheng"}
-Fk:loadTranslationTable{
+puni6:addSkills { "yyfy_yongheng" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni6"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni6"] = "永恒",
   ["designer:yyfy_shenglingpuni6"] = "一维无限"
@@ -243,8 +244,8 @@ Fk:loadTranslationTable{
 puni6.total_hidden = true
 
 local puni7 = General:new(extension, "yyfy_shenglingpuni7", "god", 1)
-puni7:addSkills {"yyfy_shengjie"}
-Fk:loadTranslationTable{
+puni7:addSkills { "yyfy_shengjie" }
+Fk:loadTranslationTable {
   ["yyfy_shenglingpuni7"] = "圣灵谱尼",
   ["#yyfy_shenglingpuni7"] = "圣洁",
   ["designer:yyfy_shenglingpuni7"] = "一维无限"
@@ -252,8 +253,8 @@ Fk:loadTranslationTable{
 puni7.total_hidden = true
 
 local yoshino = General:new(extension, "yyfy_TomotakeYoshino", "moe", 3, 3, General.Female)
-yoshino:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino"] = "朝武芳乃",
   ["#yyfy_TomotakeYoshino"] = "穗织的巫女",
   ["designer:yyfy_TomotakeYoshino"] = "夜隐浮云",
@@ -262,32 +263,32 @@ Fk:loadTranslationTable{
 }
 
 local yoshino1 = General:new(extension, "yyfy_TomotakeYoshino1", "moe", 3, 3, General.Female)
-yoshino1:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino1:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino1"] = "朝武芳乃",
   ["~yyfy_TomotakeYoshino2"] = "",
 }
 local yoshino2 = General:new(extension, "yyfy_TomotakeYoshino2", "moe", 3, 3, General.Female)
-yoshino2:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino2:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino2"] = "朝武芳乃",
   ["~yyfy_TomotakeYoshino2"] = "",
 }
 local yoshino3 = General:new(extension, "yyfy_TomotakeYoshino3", "moe", 3, 3, General.Female)
-yoshino3:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino3:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino3"] = "朝武芳乃",
   ["~yyfy_TomotakeYoshino3"] = "",
 }
 local yoshino4 = General:new(extension, "yyfy_TomotakeYoshino4", "moe", 3, 3, General.Female)
-yoshino4:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino4:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino4"] = "朝武芳乃",
   ["~yyfy_TomotakeYoshino4"] = "",
 }
 local yoshino5 = General:new(extension, "yyfy_TomotakeYoshino5", "moe", 3, 3, General.Female)
-yoshino5:addSkills {"yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721"}
-Fk:loadTranslationTable{
+yoshino5:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
+Fk:loadTranslationTable {
   ["yyfy_TomotakeYoshino5"] = "朝武芳乃",
   ["~yyfy_TomotakeYoshino5"] = "",
 }
@@ -298,24 +299,24 @@ yoshino4.total_hidden = true
 yoshino5.total_hidden = true
 
 local AdamSmith = General:new(extension, "yyfy_AdamSmith", "west", 3)
-AdamSmith:addSkills {"yyfy_kanbujiandeshou"}
-Fk:loadTranslationTable{
+AdamSmith:addSkills { "yyfy_kanbujiandeshou" }
+Fk:loadTranslationTable {
   ["yyfy_AdamSmith"] = "亚当·斯密",
   ["#yyfy_AdamSmith"] = "古典经济学之父",
   ["designer:yyfy_AdamSmith"] = "夜隐浮云"
 }
 
 local maoyidawang = General:new(extension, "yyfy_maoyidawang", "qun", 3)
-maoyidawang:addSkills {"yyfy_market"}
-Fk:loadTranslationTable{
+maoyidawang:addSkills { "yyfy_market" }
+Fk:loadTranslationTable {
   ["yyfy_maoyidawang"] = "贸易大王",
   ["#yyfy_maoyidawang"] = "",
   ["designer:yyfy_maoyidawang"] = "曹宪咬我"
 }
 
 local yuan__zhangliao = General:new(extension, "yyfy_yuan__zhangliao", "wei", 4)
-yuan__zhangliao:addSkills {"yyfy_xizhen"}
-Fk:loadTranslationTable{
+yuan__zhangliao:addSkills { "yyfy_xizhen" }
+Fk:loadTranslationTable {
   ["yyfy_yuan"] = "缘？",
   ["yyfy_yuan__zhangliao"] = "缘张辽",
   ["#yyfy_yuan__zhangliao"] = "破阵十万",
@@ -328,8 +329,8 @@ for _, skel in ipairs(tianshu_skels) do
   table.insert(extension.skill_skels, skel)
 end
 local nanhualaoxian = General:new(extension, "yyfy_ex__nanhualaoxian", "god", 4)
-nanhualaoxian:addSkills {"yyfy_qingshu", "yyfy_shoushu", "yyfy_hedao"}
-Fk:loadTranslationTable{
+nanhualaoxian:addSkills { "yyfy_qingshu", "yyfy_shoushu", "yyfy_hedao" }
+Fk:loadTranslationTable {
   ["yyfy_ex"] = "",
   ["yyfy_mou"] = "",
   ["yyfy_ex__nanhualaoxian"] = "界南华老仙",
@@ -341,25 +342,25 @@ Fk:loadTranslationTable{
 
 -- 太逆天了，737个技能，不能上线
 local mou_nanhualaoxian = General:new(extension, "yyfy_mou__nanhualaoxian", "god", 4)
-mou_nanhualaoxian:addSkills {"yyfy_mou_qingshu", "yyfy_shoushu"}
-Fk:loadTranslationTable{
+mou_nanhualaoxian:addSkills { "yyfy_mou_qingshu", "yyfy_shoushu" }
+Fk:loadTranslationTable {
   ["yyfy_mou__nanhualaoxian"] = "谋南华老仙",
   ["#yyfy_mou__nanhualaoxian"] = "终成正果",
   ["designer:yyfy_mou__nanhualaoxian"] = "水上由岐"
 }
 mou_nanhualaoxian.hidden = true
 
-local chengxiaoshi = General:new(extension, "yyfy_chengxiaoshi", "qun", 3)
-chengxiaoshi:addSkills {"yyfy_qizha", "yyfy_powang", "yyfy_chengzhen"}
-Fk:loadTranslationTable{
-  ["yyfy_chengxiaoshi"] = "程小实",
-  ["#yyfy_chengxiaoshi"] = "我从不骗人",
-  ["designer:yyfy_chengxiaoshi"] = "青菜白玉汤"
+local chengxiaoshi = General:new(extension, "qc__chengxiaoshi", "qun", 3)
+chengxiaoshi:addSkills { "yyfy_qizha", "yyfy_powang", "yyfy_chengzhen" }
+Fk:loadTranslationTable {
+  ["qc__chengxiaoshi"] = "程小实",
+  ["#qc__chengxiaoshi"] = "我从不骗人",
+  ["designer:qc__chengxiaoshi"] = "青菜白玉汤"
 }
 
 local feiyi = General:new(extension, "yyfy_mou__feiyi", "shu", 3)
-feiyi:addSkills {"yyfy_yanru", "yyfy_hezhong"}
-Fk:loadTranslationTable{
+feiyi:addSkills { "yyfy_yanru", "yyfy_hezhong" }
+Fk:loadTranslationTable {
   ["yyfy_mou__feiyi"] = "谋费祎",
   ["#yyfy_mou__feiyi"] = "志虑忠纯",
   ["designer:yyfy_mou__feiyi"] = "夜隐浮云/幻矩",
@@ -367,8 +368,8 @@ Fk:loadTranslationTable{
 }
 
 local guanyu = General:new(extension, "yyfy_mou__guanyu", "shu", 4)
-guanyu:addSkills {"yyfy_zhejiao", "yyfy_aozhan", "yyfy_yishi"}
-Fk:loadTranslationTable{
+guanyu:addSkills { "yyfy_zhejiao", "yyfy_aozhan", "yyfy_yishi" }
+Fk:loadTranslationTable {
   ["yyfy_mou__guanyu"] = "谋关羽",
   ["#yyfy_mou__guanyu"] = "从风傲苍穹",
   ["designer:yyfy_mou__guanyu"] = "牢天师（Ark）",
@@ -376,8 +377,8 @@ Fk:loadTranslationTable{
 }
 
 local wolongfengchu = General:new(extension, "yyfy_end__wolongfengchu", "shu", 3)
-wolongfengchu:addSkills {"yyfy_tiansuo", "yyfy_longfeng", "yyfy_qizhen"}
-Fk:loadTranslationTable{
+wolongfengchu:addSkills { "yyfy_tiansuo", "yyfy_longfeng", "yyfy_qizhen" }
+Fk:loadTranslationTable {
   ["yyfy_end__wolongfengchu"] = "终卧龙凤雏",
   ["#yyfy_end__wolongfengchu"] = "一匡天下",
   ["designer:yyfy_end__wolongfengchu"] = "一维无限",
@@ -385,100 +386,120 @@ Fk:loadTranslationTable{
 }
 
 local Keynes = General:new(extension, "yyfy_Keynes", "west", 3)
-Keynes:addSkills {"yyfy_hongguanganyu"}
-Fk:loadTranslationTable{
+Keynes:addSkills { "yyfy_hongguanganyu" }
+Fk:loadTranslationTable {
   ["yyfy_Keynes"] = "凯恩斯",
   ["#yyfy_Keynes"] = "宏观经济学之父",
   ["designer:yyfy_Keynes"] = "夜隐浮云",
 }
 
 local longchen = General:new(extension, "yyfy_longchen", "god", 3)
-longchen:addSkills{"yyfy_hualong", "yyfy_tian"}
-Fk:loadTranslationTable{
+longchen:addSkills { "yyfy_hualong", "yyfy_tian" }
+Fk:loadTranslationTable {
   ["yyfy_longchen"] = "龙辰",
   ["#yyfy_longchens"] = "祖龙武者",
   ["designer:yyfy_longchen"] = "青菜白玉汤",
 }
-longchen:addRelatedSkills{"yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
-"yyfy_hualong_yongheng", "yyfy_mingyun", "yyfy_yinguo", "yyfy_hualong_shengming"}
+longchen:addRelatedSkills { "yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
+  "yyfy_hualong_yongheng", "yyfy_mingyun", "yyfy_yinguo", "yyfy_hualong_shengming" }
 
 local longchen1 = General:new(extension, "yyfy_longchen1", "god", 3)
-longchen1:addSkills {"yyfy_qiyuan", "yyfy_linghun"}
-Fk:loadTranslationTable{
+longchen1:addSkills { "yyfy_qiyuan", "yyfy_linghun" }
+Fk:loadTranslationTable {
   ["yyfy_longchen1"] = "起源天龙",
 }
 longchen1.total_hidden = true
 local longchen2 = General:new(extension, "yyfy_longchen2", "god", 3)
-longchen2:addSkills {"yyfy_yuanshi", "yyfy_zaohua"}
-Fk:loadTranslationTable{
+longchen2:addSkills { "yyfy_yuanshi", "yyfy_zaohua" }
+Fk:loadTranslationTable {
   ["yyfy_longchen2"] = "元始祭龙",
 }
 longchen2.total_hidden = true
 local longchen3 = General:new(extension, "yyfy_longchen3", "god", 3)
-longchen3:addSkills {"yyfy_hualong_yongheng"}
-Fk:loadTranslationTable{
+longchen3:addSkills { "yyfy_hualong_yongheng" }
+Fk:loadTranslationTable {
   ["yyfy_longchen3"] = "太虚宙龙",
 }
 longchen3.total_hidden = true
 local longchen4 = General:new(extension, "yyfy_longchen4", "god", 3)
-longchen4:addSkills {"yyfy_mingyun"}
-Fk:loadTranslationTable{
+longchen4:addSkills { "yyfy_mingyun" }
+Fk:loadTranslationTable {
   ["yyfy_longchen4"] = "混元天命龙",
 }
 longchen4.total_hidden = true
 local longchen5 = General:new(extension, "yyfy_longchen5", "god", 3)
-longchen5:addSkills {"yyfy_yinguo"}
-Fk:loadTranslationTable{
+longchen5:addSkills { "yyfy_yinguo" }
+Fk:loadTranslationTable {
   ["yyfy_longchen5"] = "神道炼心龙",
 }
 longchen5.total_hidden = true
 local longchen6 = General:new(extension, "yyfy_longchen6", "god", 3)
-longchen6:addSkills {"yyfy_hualong_shengming"}
-Fk:loadTranslationTable{
+longchen6:addSkills { "yyfy_hualong_shengming" }
+Fk:loadTranslationTable {
   ["yyfy_longchen6"] = "太极生灵龙",
 }
 longchen6.total_hidden = true
 local longchen7 = General:new(extension, "yyfy_longchen7", "god", 3)
-longchen7:addSkills {"yyfy_tianzai"}
-Fk:loadTranslationTable{
+longchen7:addSkills { "yyfy_tianzai" }
+Fk:loadTranslationTable {
   ["yyfy_longchen7"] = "宇宙洪荒卍劫龙",
 }
 longchen7.total_hidden = true
 local longchen8 = General:new(extension, "yyfy_longchen8", "god", 3)
-longchen8:addSkills {"yyfy_xieshi"}
-Fk:loadTranslationTable{
+longchen8:addSkills { "yyfy_xieshi" }
+Fk:loadTranslationTable {
   ["yyfy_longchen8"] = "太古血灵龙",
 }
 longchen8.total_hidden = true
 local longchen9 = General:new(extension, "yyfy_longchen9", "god", 3)
-longchen9:addSkills {"yyfy_tianyou"}
-Fk:loadTranslationTable{
+longchen9:addSkills { "yyfy_tianyou" }
+Fk:loadTranslationTable {
   ["yyfy_longchen9"] = "幽影梦魅龙",
 }
 longchen9.total_hidden = true
 local longchen10 = General:new(extension, "yyfy_longchen10", "god", 3)
-longchen10:addSkills {"yyfy_tunshi"}
-Fk:loadTranslationTable{
+longchen10:addSkills { "yyfy_tunshi" }
+Fk:loadTranslationTable {
   ["yyfy_longchen10"] = "混沌吞天龙",
 }
 longchen10.total_hidden = true
 
 local yuanxingshangren = General:new(extension, "yyfy_yuanxingshangren", "god", 4)
-yuanxingshangren:addSkills {"yyfy_xingshang"}
-Fk:loadTranslationTable{
+yuanxingshangren:addSkills { "yyfy_xingshang" }
+Fk:loadTranslationTable {
   ["yyfy_yuanxingshangren"] = "远行商人",
   ["#yyfy_yuanxingshangren"] = "",
   ["designer:yyfy_yuanxingshangren"] = "曹宪咬我",
 }
 
 local weiwenzhugezhi = General:new(extension, "yyfy_dream__weiwenzhugezhi", "wu", 4)
-weiwenzhugezhi:addSkill ("yyfy_fuhai")
-Fk:loadTranslationTable{
+weiwenzhugezhi:addSkill("yyfy_fuhai")
+Fk:loadTranslationTable {
   ["yyfy_dream"] = "梦",
   ["yyfy_dream__weiwenzhugezhi"] = "梦卫温诸葛直",
   ["#yyfy_dream__weiwenzhugezhi"] = "新航路的开辟",
   ["designer:yyfy_dream__weiwenzhugezhi"] = "水上由岐",
   ["~yyfy_dream__weiwenzhugezhi"] = "吾皆海岱清士，岂料生死易逝。"
+}
+
+local qunyinglu = General:new(extension, "qc__qunyinglu", "god", 3)
+qunyinglu:addSkills { "QC_lingce", "QC_huishi", "QC_poxi", "QC_tamo", "QC_jiufa", "QC_shenpei", "QC_jishi",
+  "QC_taoxian", "QC_huoji", "QC_guanxing", "QC_pojun", "QC_tianjie", "QC_juejing", "QC_tianming", "QC_qingli"
+, "QC_yongsheng" }
+Fk:loadTranslationTable {
+  ["qc"] = "QC",
+  ["qc__qunyinglu"] = "群英录",
+  ["#qc__qunyinglu"] = "技多不压身",
+  ["designer:qc__qunyinglu"] = "青菜白玉汤",
+}
+
+local guihuangzhong = General:new(extension, "yyfy_guihuangzhong", "evil", 5)
+guihuangzhong:addSkill("yyfy_shengong")
+Fk:loadTranslationTable {
+  ["yyfy_guihuangzhong"] = "鬼黄忠",
+  ["#yyfy_guihuangzhong"] = "索命神射",
+  ["designer:yyfy_guihuangzhong"] = "大闲者八雲紫",
+  ["~yyfy_guihuangzhong"] = ""
 }
 
 Fk:loadTranslationTable {
@@ -593,7 +614,7 @@ if ok and U and type(U.RegisterAchievement) == "function" then
       local title = achievement.name
       local desc = achievement.desc
       local context = achievement.context or ""
-      U.RegisterAchievement("夜隐浮云", title, context, desc, "general:"..a.id, false, {}, true)
+      U.RegisterAchievement("夜隐浮云", title, context, desc, "general:" .. a.id, false, {}, true)
     end
   end
 end

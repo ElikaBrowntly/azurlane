@@ -302,6 +302,14 @@ Fk:loadTranslationTable
   ["hidden-clouds"] = "夜隐浮云",
   ["Chaldea Gate"] = "迦勒底之门",
   ["moon"] = "月",
+  ["Saber"] = "剑士",
+  ["Archer"] = "弓兵",
+  ["Lancer"] = "枪兵",
+  ["Rider"] = "骑兵",
+  ["Caster"] = "魔术师",
+  ["Assassin"] = "暗杀者",
+  ["Berserker"] = "狂战士",
+  ["Foreigner"] = "降临者",
   ["yyfy_CuChulainn"] = "库丘林",
   ["#yyfy_CuChulainn"] = "光之子",
   ["illustrator:yyfy_CuChulainn"] = "武内崇",
@@ -324,7 +332,7 @@ Fk:loadTranslationTable
   ["~yyfy_ArchetypeEarth"] = "……意料外的情况，格外有趣……",
 }
 
-local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "moon", 4, 4, General.Male)
+local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "Assassin", 4, 4, General.Male)
 Tezcatlipoca:addSkills { "yyfy_douzhengdemeili", "yyfy_heizhitaiyang", "yyfy_shanzhixinzang",
   "yyfy_diyitaiyang", "yyfy_zhanshizhisi", "yyfy_zhengwudetaiyang" }
 Fk:loadTranslationTable
@@ -339,7 +347,7 @@ Fk:loadTranslationTable
 }
 Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
-local ORT = General:new(extension, "yyfy_ORT", "moon", 2, 2, General.Agender) -- ORT无性别
+local ORT = General:new(extension, "yyfy_ORT", "Foreigner", 2, 2, General.Agender) -- ORT无性别
 ORT:addSkills { "yyfy_yuzhouxian", "yyfy_baofa", "yyfy_xietiao_ORT" }
 Fk:loadTranslationTable
 {
@@ -348,8 +356,9 @@ Fk:loadTranslationTable
   ["designer:yyfy_ORT"] = "夜隐浮云",
 }
 
-local mobileORT = General:new(extension, "yyfy_mobileORT", "moon", 10, 10, General.Agender) -- ORT无性别
-mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo", "yyfy_baofa", "yyfy_xietiao_mobileORT" }
+local mobileORT = General:new(extension, "yyfy_mobileORT", "Foreigner", 10, 10, General.Agender) -- ORT无性别
+mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo",
+"yyfy_jiexibianma", "yyfy_baofa", "yyfy_xietiao_mobileORT" }
 Fk:loadTranslationTable
 {
   ["yyfy_mobileORT"] = "移动O R T",
@@ -358,7 +367,7 @@ Fk:loadTranslationTable
 }
 mobileORT.hidden = true
 
-local flyingORT = General:new(extension, "yyfy_flyingORT", "moon", 12, 12, General.Agender) -- ORT无性别
+local flyingORT = General:new(extension, "yyfy_flyingORT", "Foreigner", 12, 12, General.Agender) -- ORT无性别
 flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian",} --"yyfy_yinhedanti", "yyfy_PPliansuo",
 -- "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT" }
 Fk:loadTranslationTable

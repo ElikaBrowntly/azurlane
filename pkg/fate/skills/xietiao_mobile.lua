@@ -6,9 +6,14 @@ local xietiao = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["yyfy_xietiao_mobileORT"] = "血条",
   [":yyfy_xietiao_mobileORT"] = "持恒技，你获得10个额外的血条。你死亡时，若血条已全被击破，则变更为“飞行ORT”；"
-  .."否则，你复活并随机变更为{剑、弓、枪、骑、术、杀、狂、降}中的一个势力。<br>若你不为：术/狂，你拥有〖优异的侵略〗；"
-  .."<br>剑/骑/杀，你拥有〖暗物质浮游〗；<br>弓/枪/骑，你拥有〖革命蛛网〗；<br>剑/杀/狂/降：你拥有〖严峻结合〗"
-  .."<br>弓/枪/术/降：你拥有〖以太酗饮〗。"}
+  .."否则，你复活并随机变更为{剑、弓、枪、骑、术、杀、狂、降}中的一个势力。<br>若你不为：术/狂，你拥有"
+  .."〖<a href=':yyfy_youyiqinlue'>优异的侵略</a>〗；<br>剑/骑/杀，你拥有〖<a href=':yyfy_anwuzhifuyou'>"
+  .."暗物质浮游</a>〗；<br>弓/枪/骑，你拥有〖<a href=':yyfy_gemingzhuwang'>革命蛛网</a>〗；<br>剑/杀/狂/降："
+  .."你拥有〖<a href=':yyfy_yanjunjiehe'>严峻结合</a>〗<br>弓/枪/术/降：你拥有〖<a href=':yyfy_yitaixuyin'>以太酗饮</a>〗。",
+
+  [":yyfy_yanjunjiehe"] = "(未实装)",
+  [":yyfy_yitaixuyin"] = "(未实装)"
+}
 
 xietiao:addAcquireEffect(function(self, player, is_start, src)
   player.tag["@yyfy_xietiao_mobileORT"] = 10
