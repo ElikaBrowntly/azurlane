@@ -75,9 +75,7 @@ jiushishenling:addEffect("active", {
         table.insert(targets, p)
       end
     end
-    if #targets > 0 then
-      return true
-    end
+    return #targets > 0
   end,
   on_use = function (self, room, data)
     doFuhuo(data.from)

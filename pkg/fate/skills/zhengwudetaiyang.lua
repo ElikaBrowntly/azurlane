@@ -18,6 +18,7 @@ xieitao2:addEffect(fk.BeforeGameOverJudge, {
   can_trigger = Util.TrueFunc,
   can_wake = function (self, event, target, player, data)
     return target == player and player:hasSkill(self, true, true) and player:getMark("@!fate_yili") == 0
+    and (player.tag[xieitao2.name] or 0) == 0
   end,
   on_use = function (self, event, target, player, data)
     local room = player.room
@@ -25,7 +26,9 @@ xieitao2:addEffect(fk.BeforeGameOverJudge, {
     room:revivePlayer(player, false)
     room:changeMaxHp(player, 1)
     room:changeHp(player, player.maxHp - player.hp, nil, xieitao2.name)
+    room:handleAddLoseSkills(player, "fate_fuxiaodetaiyang", xieitao2.name)
     room:addPlayerMark(player, "fate_bizhong")
+    player.tag[xieitao2.name] = 1
   end
 })
 

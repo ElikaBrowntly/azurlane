@@ -43,9 +43,9 @@ local function doCaiyi(player, target, state, choice)
       target:reset()
     end
   else
-    if choice == 1 then
+    if choice == 4 then
       room:loseHp(target, 4, caiyi.name)
-    elseif choice == 2 then
+    elseif choice == 5 then
       local cards = target:getCardIds("he")
       if #cards > 4 then
         room:askToDiscard(target, {
