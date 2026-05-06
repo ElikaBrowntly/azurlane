@@ -24,7 +24,6 @@ shengming:addEffect(fk.HpChanged, {
 
 shengming:addEffect("active", {
   anim_type = "support",
-  max_phase_use_time = 1,
   card_num = 0,
   target_num = 0,
   prompt = "生命：你可以令一名角色复活",

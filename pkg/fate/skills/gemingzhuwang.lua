@@ -106,6 +106,7 @@ zhuwang:addEffect(fk.BeforeGameOverJudge, {
   end,
   on_refresh = function (self, event, target, player, data)
     local room = player.room
+    room:setTag("SkipGameRule", true)
     room:setPlayerProperty(target, "dead", false)
     target._splayer:setDied(false)
     room:setPlayerProperty(target, "dying", false)
