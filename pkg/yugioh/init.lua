@@ -68,12 +68,21 @@ Fk:loadTranslationTable{
   ["designer:yyfy_dacaoreshe"] = "夜隐浮云"
 }
 
-local tianjiulong = General:new(extension, "yyfy__tianjiulong", "qun", 7, 7, General.Female)
+local tianjiulong = General:new(extension, "yyfy_tianjiulong", "qun", 7, 7, General.Female)
 tianjiulong:addSkills {"yyfy_bangshou", "yyfy_tianjiu"}
 Fk:loadTranslationTable{
-  ["yyfy__tianjiulong"] = "调和之天救龙",
-  ["#yyfy__tianjiulong"] = "调和之露露卡",
-  ["designer:yyfy__tianjiulong"] = "哈基米/玛格巨龙"
+  ["yyfy_tianjiulong"] = "调和之天救龙",
+  ["#yyfy_tianjiulong"] = "调和之露露卡",
+  ["designer:yyfy_tianjiulong"] = "哈基米/玛格巨龙"
+}
+
+local youguitu = General:new(extension, "yyfy_youguitu", "qun", 3, 3, General.Female)
+youguitu:addSkills {"yyfy_tu"}
+Fk:loadTranslationTable{
+  ["yyfy_youguitu"] = "幽鬼兔",
+  ["#yyfy_youguitu"] = "小木曾雪兔",
+  ["designer:yyfy_youguitu"] = "夜隐浮云",
+  ["illustrator:yyfy_youguitu"] = "藤原あき"
 }
 
 return extension
