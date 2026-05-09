@@ -115,4 +115,25 @@ zhuwang:addEffect(fk.BeforeGameOverJudge, {
   end
 })
 
+zhuwang:addEffect(fk.AfterSkillEffect, {
+  priority = 1.1,
+  can_refresh = function (self, event, target, player, data)
+    return table.find(player.room:getAllPlayers(), function (p)
+      return F.isEnemy(player, p) and p.rest > 0
+    end)
+  end,
+  on_refresh = function (self, event, target, player, data)
+    local room = player.room
+    local restEnemy = table.filter(room:getAllPlayers(), function (p)
+      return F.isEnemy(player, p) and p.rest > 0
+    end)
+    for _, p in ipairs(restEnemy) do
+      room:setPlayerProperty(p, "dead", false)
+      p._splayer:setDied(false)
+      room:setPlayerProperty(p, "dying", false)
+      room:setPlayerProperty(p, "rest", 0)
+    end
+  end
+})
+
 return zhuwang

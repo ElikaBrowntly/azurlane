@@ -50,7 +50,7 @@ yyfy_douzhengdemeili:addEffect("active", {
 yyfy_douzhengdemeili:addEffect(fk.DamageCaused, {
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
-    return data.from:getMark("@!fate_attack_end") > 0
+    return target and target:getMark("@!fate_attack_end") > 0
     and player and player:hasSkill(self.name)
   end,
   on_cost = Util.TrueFunc,
