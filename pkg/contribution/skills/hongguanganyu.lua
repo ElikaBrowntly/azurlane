@@ -25,8 +25,8 @@ local sayings = {
 ganyu:addEffect(fk.GameStart, {
   priority = 100000,
   can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self) and
-    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
+    return player and player:hasSkill(self) and player.id > 0 and
+    (player.general == "yyfy_Keynes" or player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
@@ -39,7 +39,7 @@ ganyu:addEffect(fk.GameStart, {
 ganyu:addEffect(fk.GameFinished, {
   priority = 0.00001,
   can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self) and
+    return player and player:hasSkill(self) and player.id > 0 and
     (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_cost = Util.TrueFunc,
@@ -54,7 +54,7 @@ ganyu:addEffect(fk.GameFinished, {
 ganyu:addEffect(fk.TurnStart, {
   can_refresh = function(self, event, target, player, data)
     return target == player and player:hasSkill(self) and
-    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
+    (player.general == "yyfy_Keynes" or player.deputyGeneral or "" == "yyfy_Keynes")
   end,
   on_refresh = function(self, event, target, player, data)
     player:chat(sayings[math.random(4)])

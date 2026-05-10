@@ -368,8 +368,7 @@ Fk:loadTranslationTable
 mobileORT.hidden = true
 
 local flyingORT = General:new(extension, "yyfy_flyingORT", "Foreigner", 12, 12, General.Agender) -- ORT无性别
-flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian",} --"yyfy_yinhedanti", "yyfy_PPliansuo",
--- "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT" }
+flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT"}
 Fk:loadTranslationTable
 {
   ["yyfy_flyingORT"] = "飞行O R T",
