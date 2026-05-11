@@ -4,7 +4,7 @@ local konggou = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_konggou"] = "控构",
-  [":yyfy_konggou"] = "你可以将体力值/手牌数变更为1，并视为使用一张不因对方使用牌而可以使体力值/手牌数变化的牌。（每回合每牌名限一次，限军争牌堆）",
+  [":yyfy_konggou"] = "你可以将体力值/手牌数变更为1，并视为使用一张可以使体力值/手牌数变化的牌（每回合每牌名限一次，限军争牌堆）",
 }
 
 local hand_change = { "dismantlement", "snatch", "ex_nihilo", "amazing_grace", -- 拆顺无中，五谷

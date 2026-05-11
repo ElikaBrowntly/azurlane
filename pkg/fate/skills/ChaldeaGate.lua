@@ -20,10 +20,7 @@ gate:addEffect(fk.GameFinished, {
   end,
   on_refresh = function(self, event, target, player, data)
     local winners = data:split("+")
-    local num = 1
-    if table.contains(winners, player.role) then
-      num = 2
-    end
+    local num = table.contains(winners, player.role) and 2 or 1
     CS.ChangePlayerSaintQuartz(player, num)
   end
 })

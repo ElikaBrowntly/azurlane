@@ -402,7 +402,7 @@ Fk:loadTranslationTable {
 }
 longchen:addRelatedSkills { "yyfy_qiyuan", "yyfy_linghun", "yyfy_yuanshi", "yyfy_zaohua",
   "yyfy_hualong_yongheng", "yyfy_mingyun", "yyfy_yinguo", "yyfy_hualong_shengming",
-  "yyfy_tianzai", "yyfy_xieshi" }
+  "yyfy_tianzai", "yyfy_xieshi", "yyfy_tianyou", "yyfy_tunshi" }
 
 local longchen1 = General:new(extension, "yyfy_longchen1", "god", 3)
 longchen1:addSkills { "yyfy_qiyuan", "yyfy_linghun" }
