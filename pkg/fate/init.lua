@@ -295,7 +295,7 @@ extension.customPages = {
   },
 }
 
-local CuChulainn = General:new(extension, "yyfy_CuChulainn", "moon", 4, 4, General.Male)
+local CuChulainn = General:new(extension, "yyfy_CuChulainn", "Lancer", 4, 4, General.Male)
 CuChulainn:addSkills { "yyfy_bishi", "yyfy_luen", "yyfy_siji" }
 Fk:loadTranslationTable
 {
@@ -310,6 +310,7 @@ Fk:loadTranslationTable
   ["Assassin"] = "暗杀者",
   ["Berserker"] = "狂战士",
   ["Foreigner"] = "降临者",
+  ["MoonCancer"] = "月之癌",
   ["yyfy_CuChulainn"] = "库丘林",
   ["#yyfy_CuChulainn"] = "光之子",
   ["illustrator:yyfy_CuChulainn"] = "武内崇",
@@ -319,7 +320,7 @@ Fk:loadTranslationTable
   ["!yyfy_CuChulainn"] = "什么嘛，真是不堪一击。"
 }
 
-local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "moon", 4, 4, General.Female)
+local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "MoonCancer", 4, 4, General.Female)
 ArchetypeEarth:addSkills { "yyfy_hongzhimoyan", "yyfy_xingzhituxi", "yyfy_FunnyVamp", "yyfy_kongxiangjvxianhua" }
 Fk:loadTranslationTable
 {
@@ -348,7 +349,7 @@ Fk:loadTranslationTable
 Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
 local ORT = General:new(extension, "yyfy_ORT", "Foreigner", 2, 2, General.Agender) -- ORT无性别
-ORT:addSkills { "yyfy_yuzhouxian", "yyfy_baofa", "yyfy_xietiao_ORT" }
+ORT:addSkills { "yyfy_yuzhouxian", "yyfy_PPliansuo", "yyfy_baofa", "yyfy_xietiao_ORT" }
 Fk:loadTranslationTable
 {
   ["yyfy_ORT"] = "O R T",
@@ -368,7 +369,8 @@ Fk:loadTranslationTable
 mobileORT.hidden = true
 
 local flyingORT = General:new(extension, "yyfy_flyingORT", "Foreigner", 12, 12, General.Agender) -- ORT无性别
-flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT"}
+flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo",
+"yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT"}
 Fk:loadTranslationTable
 {
   ["yyfy_flyingORT"] = "飞行O R T",

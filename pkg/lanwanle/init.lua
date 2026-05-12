@@ -98,4 +98,14 @@ Fk:loadTranslationTable {
   ["$yyfy_daojie_lan__xuncai2"] = "荀氏三纲，死不贰嫁。",
 }
 
+local sunquan = General:new(extension, "lan__sunquan", "wu", 4)
+sunquan:addSkills { "lan__zhiheng", "lan__woheng", "lan__yuhui", "lan__quanyu",
+ "lan__tianen", "lan__renxian", "lan__jiuyuan" }
+Fk:loadTranslationTable {
+  ["lan__sunquan"] = "烂孙权",
+  ["#lan__sunquan"] = "孙权布兰德",
+  ["designer:lan__sunquan"] = "幻矩",
+  ["~lan__sunquan"] = "朕非朕，天下皆朕！",
+}
+
 return extension

@@ -9,8 +9,8 @@ local yugioh = require "packages.hidden-clouds.pkg.yugioh"
 local skin = require "packages.hidden-clouds.pkg.hidden-clouds_skin"
 local modes = require "packages.hidden-clouds.pkg.gamemodes"
 
-Fk:appendKingdomMap("god", { "moon", "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner" })
-Fk:appendKingdomMap("evil", { "moon", "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner"})
+Fk:appendKingdomMap("god", { "moon", "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner", "MoonCancer" })
+Fk:appendKingdomMap("evil", { "moon", "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner", "MoonCancer"})
 
 return {
   contribution,
