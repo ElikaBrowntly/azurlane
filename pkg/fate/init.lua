@@ -375,9 +375,20 @@ Fk:loadTranslationTable
 {
   ["yyfy_flyingORT"] = "飞行O R T",
   ["#yyfy_flyingORT"] = "侵略型飞行生命体",
-  ["designer:flyingORT"] = "夜隐浮云",
+  ["designer:yyfy_flyingORT"] = "夜隐浮云",
 }
 flyingORT.hidden = true
+
+local XibalbaORT = General:new(extension, "yyfy_XibalbaORT", "Foreigner", 10, 10, General.Agender) -- ORT无性别
+XibalbaORT:addSkills { "yyfy_taiyangfengbao", "yyfy_xietiao_XibalbaORT", "yyfy_disanmiejue",
+"yyfy_chuangshiji", "yyfy_huangjinshuhai"}
+Fk:loadTranslationTable
+{
+  ["yyfy_XibalbaORT"] = "O R T希巴尔巴",
+  ["#yyfy_XibalbaORT"] = "冠位降临者",
+  ["designer:yyfy_XibalbaORT"] = "夜隐浮云",
+}
+XibalbaORT.hidden = true
 
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
 SaintQuartz:addSkills { "yyfy_ChaldeaGate" }

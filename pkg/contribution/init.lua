@@ -503,6 +503,15 @@ Fk:loadTranslationTable {
   ["~yyfy_guihuangzhong"] = ""
 }
 
+local yongyimoyi = General:new(extension, "yyfy_yongyimoyi", "wei", 3)
+yongyimoyi:addSkills{"yyfy_guopai", "yyfy_muban"}
+Fk:loadTranslationTable {
+  ["yyfy_yongyimoyi"] = "用一摸一",
+  ["#yyfy_yongyimoyi"] = "借族杨修原画",
+  ["designer:yyfy_yongyimoyi"] = "夜隐浮云",
+  ["~yyfy_yongyimoyi"] = "空晓事而未见老，枉少作而愧对君……"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",

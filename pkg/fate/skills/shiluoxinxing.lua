@@ -59,7 +59,7 @@ xinxing:addEffect(fk.TurnEnd, {
 
 -- 技能获得时初始化蓄力点
 xinxing:addAcquireEffect(function(self, player)
-  U.skillCharged(player, 5, 5)
+  U.skillCharged(player, 0, 5)
 end)
 
 -- 技能失去时移除蓄力点
