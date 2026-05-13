@@ -483,17 +483,6 @@ Fk:loadTranslationTable {
   ["~yyfy_dream__weiwenzhugezhi"] = "吾皆海岱清士，岂料生死易逝。"
 }
 
-local qunyinglu = General:new(extension, "qc__qunyinglu", "god", 3)
-qunyinglu:addSkills { "QC_lingce", "QC_huishi", "QC_poxi", "QC_tamo", "QC_jiufa", "QC_shenpei", "QC_jishi",
-  "QC_taoxian", "QC_huoji", "QC_guanxing", "QC_pojun", "QC_tianjie", "QC_juejing", "QC_tianming", "QC_qingli"
-, "QC_yongsheng" }
-Fk:loadTranslationTable {
-  ["qc"] = "QC",
-  ["qc__qunyinglu"] = "群英录",
-  ["#qc__qunyinglu"] = "技多不压身",
-  ["designer:qc__qunyinglu"] = "青菜白玉汤",
-}
-
 local guihuangzhong = General:new(extension, "yyfy_guihuangzhong", "evil", 5)
 guihuangzhong:addSkill("yyfy_shengong")
 Fk:loadTranslationTable {
@@ -501,6 +490,15 @@ Fk:loadTranslationTable {
   ["#yyfy_guihuangzhong"] = "索命神射",
   ["designer:yyfy_guihuangzhong"] = "大闲者八雲紫",
   ["~yyfy_guihuangzhong"] = ""
+}
+
+local yongyimoyi = General:new(extension, "yyfy_yongyimoyi", "wei", 3)
+yongyimoyi:addSkills{"yyfy_guopai", "yyfy_muban"}
+Fk:loadTranslationTable {
+  ["yyfy_yongyimoyi"] = "用一摸一",
+  ["#yyfy_yongyimoyi"] = "借族杨修原画",
+  ["designer:yyfy_yongyimoyi"] = "夜隐浮云",
+  ["~yyfy_yongyimoyi"] = "空晓事而未见老，枉少作而愧对君……"
 }
 
 Fk:loadTranslationTable {
