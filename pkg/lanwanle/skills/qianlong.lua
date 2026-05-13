@@ -88,9 +88,9 @@ end
 
 qianlong:addAcquireEffect(function(self, player, is_start)
   local wei_lord_skills = { "lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
-  "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
-  "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
-  "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju" }
+    "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
+    "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
+    "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju" }
   if #player:getTableMark("lan__qianlong_skills") == 0 then
     for _, skill in ipairs(wei_lord_skills) do
       player.room:addTableMark(player, "lan__qianlong_skills", skill)
@@ -167,10 +167,22 @@ qianlong:addEffect(fk.AfterCardsMove, {
 --- @param player ServerPlayer
 local function get_wei_lord_skills(player)
   local room = player.room
+  local skills = player:getTableMark("lan__qianlong_skills")
+  if not skills or #skills == 0 then return end
   local result = room:askToCustomDialog(player, {
     skill_name = qianlong.name,
-    qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-    extra_data = { player:getTableMark("lan__qianlong_skills"), 1, 1, "潜龙：请选择一个大胃菌王技能获得" }
+    component = {
+      url = "packages/utility/qml/ChooseSkillBox.qml",
+      model = {
+        url = "packages/utility/qml/models/ChooseSkillModel.qml",
+        prop = {
+          skills = skills,
+          min = 1,
+          max = 1,
+          prompt = "潜龙：请选择一个大胃菌王技能获得"
+        }
+      }
+    }
   })
   if result == "" then return end
   if type(result) == "table" then

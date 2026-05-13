@@ -41,12 +41,21 @@ duorui:addEffect(fk.Damage, {
           prompt = "#yyfy_duorui-choose::" .. target_player.id }) then
       return false
     end
-
     -- 选择技能
     local choice = room:askToCustomDialog(player, {
       skill_name = duorui.name,
-      qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-      extra_data = { skills, 1, 1, "#yyfy_duorui-skill::" .. target_player.id }
+      component = {
+        url = "packages/utility/qml/ChooseSkillBox.qml",
+        model = {
+          url = "packages/utility/qml/models/ChooseSkillModel.qml",
+          prop = {
+            skills = skills,
+            min = 1,
+            max = 1,
+            prompt = "#yyfy_duorui-skill::" .. target_player.id
+          }
+        }
+      }
     })
     if not choice or choice == "" then return end
     if type(choice) == "table" then
