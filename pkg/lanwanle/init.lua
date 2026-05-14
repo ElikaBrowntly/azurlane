@@ -108,4 +108,13 @@ Fk:loadTranslationTable {
   ["~lan__sunquan"] = "朕非朕，天下皆朕！",
 }
 
+local zhuzhi = General:new(extension, "lan__zhuzhi", "wu", 4)
+zhuzhi:addSkills { "lan__anguo", "lan__lingke" }
+Fk:loadTranslationTable {
+  ["lan__zhuzhi"] = "烂朱治",
+  ["#lan__zhuzhi"] = "穷哥们布兰德",
+  ["designer:lan__zhuzhi"] = "水上由岐",
+  ["~lan__zhuzhi"] = "集毕生之力，保国泰民安。",
+}
+
 return extension
