@@ -4,8 +4,8 @@ local woheng = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["lan__woheng"] = "斡衡",
-  [":lan__woheng"] = "出牌阶段或当你受到伤害后，你可以令一名其他角色摸或弃置X张牌（X为本轮发动此技能次数）。然后若其手牌数与你不同，" ..
-      "你摸两张牌且此技能本回合失效。",
+  [":lan__woheng"] = "出牌阶段或当你受到伤害后，你可以令一名其他角色摸或弃置X张牌（X为本轮发动此技能次数）。" ..
+      "然后若其手牌数与你相同，你摸两张牌；若不同且X>5，此技能本回合失效。",
 
   ["#lan__woheng"] = "斡衡：你可以令一名角色摸或弃置%arg张牌",
 
@@ -43,9 +43,12 @@ woheng:addEffect("active", {
       })
     end
     if player.dead then return end
-    if target:getHandcardNum() ~= player:getHandcardNum() then
-      room:invalidateSkill(player, woheng.name, "-turn")
+    if target:getHandcardNum() == player:getHandcardNum() then
       player:drawCards(2, woheng.name)
+      return
+    end
+    if n > 5 then
+      room:invalidateSkill(player, woheng.name, "-turn")
     end
   end,
 })

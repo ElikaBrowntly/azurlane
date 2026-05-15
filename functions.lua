@@ -74,7 +74,7 @@ function functions.isEnemy(from, to)
   elseif from.role == "renegade" then
     return true -- 内奸视所有其他角色为敌人
   end
-  return false -- 默认不是敌人
+  return false  -- 默认不是敌人
 end
 
 --- 获取 player 的存活队友数量，包括自己
@@ -231,7 +231,7 @@ local function parse_section(sec)
       elseif u == 100 or u == 1000 then
         val = val + (cur == 0 and u or cur * u)
         cur = 0
-      else       -- 万、亿（在段内出现时，作为乘法处理）
+      else -- 万、亿（在段内出现时，作为乘法处理）
         cur = cur == 0 and 1 or cur
         val = val + cur * u
         cur = 0
@@ -607,11 +607,11 @@ end
 --- @param dateStr string 格式 "YYYY-MM-DD"
 --- @return boolean
 function functions.isYesterday(dateStr)
-    local now = os.date("*t")
-    local today = os.time({year=now.year, month=now.month, day=now.day, hour=0, min=0, sec=0})
-    local yesterday = today - 86400
-    local yesterdayStr = os.date("%Y-%m-%d", yesterday)
-    return dateStr == yesterdayStr
+  local now = os.date("*t")
+  local today = os.time({ year = now.year, month = now.month, day = now.day, hour = 0, min = 0, sec = 0 })
+  local yesterday = today - 86400
+  local yesterdayStr = os.date("%Y-%m-%d", yesterday)
+  return dateStr == yesterdayStr
 end
 
 --- 改变玩家圣晶石
@@ -624,19 +624,19 @@ function functions.ChangePlayerSaintQuartz(player, num)
   local globalData = player:getGlobalSaveState("hidden-clouds") or {}
   local quartz = globalData["SaintQuartz"] or {}
   local before = quartz.quartz_num or 30
-    quartz.quartz_num = before + num
-    globalData["SaintQuartz"] = quartz
-    player:saveGlobalState("hidden-clouds", globalData)
-    local direction = "获得了"..tostring(num)
-    if num < 0 then
-      direction = "失去了"..tostring(math.abs(num))
-    end
-    if player.room then
-      player.room:sendLog {
-      type = player._splayer:getScreenName()..direction.."个<font color = 'blue'>圣晶石</font>",
+  quartz.quartz_num = before + num
+  globalData["SaintQuartz"] = quartz
+  player:saveGlobalState("hidden-clouds", globalData)
+  local direction = "获得了" .. tostring(num)
+  if num < 0 then
+    direction = "失去了" .. tostring(math.abs(num))
+  end
+  if player.room then
+    player.room:sendLog {
+      type = player._splayer:getScreenName() .. direction .. "个<font color = 'blue'>圣晶石</font>",
       toast = true,
     }
-    end
+  end
   return quartz.quartz_num
 end
 
@@ -712,6 +712,70 @@ function functions.setEmotion(player, names, skill_name, delay, atype, judge)
     end
   end
   return true
+end
+
+---获取一个武将的稀有度，OL以外的武将为"其他"
+---@param general string
+function functions.rareRank(general)
+  -- 界一将之前，未分类：界张松，界孙鲁班，界曹休，界全琮，界郭皇后，界辛宪英，界曹节
+  local normal = { "ol__menghuo", "ol__sunliang", "ol__gaoshun", "ol__yujin", "ol__guyong",
+    "ol_ex__lvmeng", "ol_ex__lidian" }
+  local rare = { "ol__caoren", "ol__zhoutai", "ol__dianwei", "ol__masu", "ol__guohuai",
+    "ol__caozhen", "ol__quancong", "ol__jikang", "ol__xinxianying", "ol_ex__caocao", "ol_ex__liubei",
+    "ol_ex__zhaoyun", "ol_ex__xiaoqiao", "ol_ex__yuji", "ol_ex__wolong", "ol_ex__pangtong",
+    "ol_ex__taishici", "ol_ex__yuanshao", "ol_ex__sunjian", "ol_ex__dongzhuo", "ol_ex__jiaxu",
+    "ol_ex__liushan", "ol_ex__sunce", "ol_ex__gaoshun", "ol_ex__caozhang" }
+  local epic = { "ol__luzhi", "ol__guanqiujian", "ol__zhoufei", "ol__godzhangliao", "ol_ex__huaxiong",
+    "ol_ex__xiahouyuan", "ol_ex__huangzhong", "ol_ex__weiyan", "ol_ex__zhangjiao", "ol_ex__dianwei",
+    "ol_ex__pangde", "ol_ex__yanliangwenchou", "ol_ex__xuhuang", "ol_ex__zhurong", "ol_ex__menghuo",
+    "ol_ex__lusu", "ol_ex__zhanghe", "ol_ex__dengai", "ol_ex__jiangwei", "ol_ex__zhangzhaozhanghong",
+    "ol_ex__caiwenji", "ol_ex__yujin", "ol_ex__fazheng", "ol_ex__lingtong", "ol_ex__wuguotai",
+    "ol_ex__madai", "ol_ex__liaohua", "ol_ex__guanxingzhangbao", "ol_ex__chengpu", "ol_ex__liubiao",
+    "ol_ex__caochong", "ol_ex__guohuai", "ol_ex__yufan", "ol_ex__jianyong", "ol_ex__fuhuanghou",
+    "ol_ex__liru", "ol_ex__caifuren", "ol_ex__xiahoushi" }
+  local legend = { "ol__godguanyu", "ol__godcaocao", "godsunquan", "ol__godzhangjiao",
+    "ol_ex__sunquan", "ol_ex__xunyu", "ol_ex__caozhi", "ol_ex__zhangchunhua", "ol_ex__xusheng",
+    "ol_ex__wangyi" }
+  local limited = { "ol_ex__zuoci" }
+  if table.contains(normal, general) then
+    return "普通"
+  end
+  if table.contains(rare, general) then
+    return "稀有"
+  end
+  if table.contains(epic, general) then
+    return "史诗"
+  end
+  if table.contains(legend, general) then
+    return "传说"
+  end
+  if table.contains(limited, general) then
+    return "限定"
+  end
+  return "其他"
+end
+
+---获取比一名玩家更稀有的数量，不包含等于，包括"其他"
+---@param player ServerPlayer
+---@param rank string?
+function functions.rarerCount(player, rank)
+  local room = player.room
+  local ranks = {
+    ["普通"] = 0,
+    ["稀有"] = 1,
+    ["史诗"] = 2,
+    ["传说"] = 3,
+    ["限定"] = 4,
+    ["其他"] = 5
+  }
+  local rank0 = rank and ranks[rank] or ranks[functions.rareRank(player.general)]
+  local count = 0
+  for _, p in ipairs(room:getOtherPlayers(player)) do
+    if ranks[functions.rareRank(p.general)] > rank0 then
+      count = count + 1
+    end
+  end
+  return count
 end
 
 return functions
