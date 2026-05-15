@@ -74,8 +74,12 @@ local content = {
     enabled_generals = simayi
   },
   {
-    skins = { "yyfy_end__wolongfengchu__1.gif", "yyfy_end__wolongfengchu__2.gif"},
+    skins = { "yyfy_end__wolongfengchu__1.gif", "yyfy_end__wolongfengchu__2.gif" },
     enabled_generals = {"wolongfengchu", "yyfy_end__wolongfengchu"}
+  },
+  {
+    skins = { "ex__yyfy_yongyimoyi__1.mp4" },
+    enabled_generals = {"yyfy_yongyimoyi", "ex__yyfy_yongyimoyi", "olz__yangxiu", "yangxiu"}
   }
 }
 
@@ -128,6 +132,7 @@ Fk:loadTranslationTable {
   ["simayi__lainisi4"] = "莱妮丝(终)",
   ["yyfy_end__wolongfengchu__1"] = "赤壁链火",
   ["yyfy_end__wolongfengchu__2"] = "青羽锦绣",
+  ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）"
 }
 
 return extension
