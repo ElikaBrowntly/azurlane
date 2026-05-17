@@ -5,8 +5,8 @@ local yyfy_zhiti = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_zhiti"] = "止啼",
-  [":yyfy_zhiti"] = "锁定技，若场上已受伤的角色数不小于：1，你使用装备牌时摸一张牌；2，你拥有技能"..
-  "〖<a href = 'yyfy_zhiti-wangxi'>忘隙</a>〗；3，你跳过弃牌阶段；4，出牌阶段限一次，"..
+  [":yyfy_zhiti"] = "锁定技，若场上已受伤的角色数不小于：0，你受到伤害后可以对来源造成等量伤害；1，你使用装备牌时摸一张牌；"..
+  "2，你拥有技能〖<a href ='yyfy_zhiti-wangxi'>忘隙</a>〗；3，你跳过弃牌阶段；4，出牌阶段限一次，"..
   "你可以令一名角色增加1点体力上限并恢复所有装备栏；5，结束阶段，你可以废除一名其他角色一个指定的装备栏。",
 
   ["yyfy_zhiti-wangxi"] = "<br>游戏开始时，可以自选本局游戏要获得标·忘隙还是界·忘隙<br><br>"..
@@ -39,6 +39,28 @@ yyfy_zhiti:addEffect(fk.GameStart, {
     }) == "标·忘隙（操作简单，适合pve）" then
       room:setPlayerMark(player, "yyfy_zhiti-wangxi", 1)
     end
+  end
+})
+
+-- 0. 受伤后反弹伤害
+yyfy_zhiti:addEffect(fk.Damaged, {
+  anim_type = "masochism",
+  can_trigger = function (self, event, target, player, data)
+    return target == player and player:hasSkill(self) and data.damage > 0 and data.from and data.from:isAlive()
+  end,
+  on_cost = function (self, event, target, player, data)
+    return player.room:askToSkillInvoke(player, {
+      skill_name = yyfy_zhiti.name,
+      prompt = "止啼：是否要对伤害来源造成等量伤害？"
+    })
+  end,
+  on_use = function (self, event, target, player, data)
+    player.room:damage({
+      from = player,
+      to = data.from,
+      damage = data.damage,
+      skillName = yyfy_zhiti.name
+    })
   end
 })
 
