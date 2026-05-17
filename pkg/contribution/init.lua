@@ -493,12 +493,21 @@ Fk:loadTranslationTable {
 }
 
 local yongyimoyi = General:new(extension, "yyfy_yongyimoyi", "wei", 3)
-yongyimoyi:addSkills{"yyfy_guopai", "yyfy_muban"}
+yongyimoyi:addSkills{"yyfy_jiewu"}
 Fk:loadTranslationTable {
   ["yyfy_yongyimoyi"] = "用一摸一",
-  ["#yyfy_yongyimoyi"] = "借族杨修原画",
+  ["#yyfy_yongyimoyi"] = "原画为族杨修",
   ["designer:yyfy_yongyimoyi"] = "夜隐浮云",
   ["~yyfy_yongyimoyi"] = "空晓事而未见老，枉少作而愧对君……"
+}
+
+local ex__yongyimoyi = General:new(extension, "ex__yyfy_yongyimoyi", "wei", 4)
+ex__yongyimoyi:addSkills{"yyfy_guopai", "paoxiao"}
+Fk:loadTranslationTable {
+  ["ex__yyfy_yongyimoyi"] = "界用一摸一",
+  ["#ex__yyfy_yongyimoyi"] = "四血过牌多刀",
+  ["designer:ex__yyfy_yongyimoyi"] = "夜隐浮云",
+  ["~ex__yyfy_yongyimoyi"] = "葬得青山一抔土，销尽宏图万古愁。"
 }
 
 Fk:loadTranslationTable {

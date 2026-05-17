@@ -5,8 +5,8 @@ local xieitao2 = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_zhengwudetaiyang"] = "<font color='red'>正午的太阳</font>",
-  [":yyfy_zhengwudetaiyang"] = "觉醒技，你死亡后，加一点体力上限并复活，然后获得技能〖拂晓的太阳〗。"..
-  "此后，你使用的牌不可被响应。",
+  [":yyfy_zhengwudetaiyang"] = "觉醒技，你死亡后，加一点体力上限并复活，然后获得技能〖拂晓的太阳〗，"..
+  "终止一切结算并结束该回合。此后，你使用的牌不可被响应。",
 
   ["yyfy_zhengwudetaiyang1"] = "正午的太阳",
   ["yyfy_zhengwudetaiyang2"] = "特斯卡特利波卡"
@@ -24,11 +24,15 @@ xieitao2:addEffect(fk.BeforeGameOverJudge, {
     local room = player.room
     room:setTag("SkipGameRule", true)
     room:revivePlayer(player, false)
-    room:changeMaxHp(player, 1)
-    room:changeHp(player, player.maxHp - player.hp, nil, xieitao2.name)
+    room:setPlayerProperty(player, "dead", false)
+    player._splayer:setDied(false)
+    room:setPlayerProperty(player, "dying", false)
+    room:setPlayerProperty(player, "maxHp", math.max(player.maxHp, 1) + 1)
+    room:setPlayerProperty(player, "hp", player.maxHp)
     room:handleAddLoseSkills(player, "fate_fuxiaodetaiyang", xieitao2.name)
     room:addPlayerMark(player, "fate_bizhong")
     player.tag[xieitao2.name] = 1
+    room.logic:breakTurn()
   end
 })
 

@@ -226,7 +226,7 @@ function HegLogic:chooseGenerals()
       local info = {}
       for _, name in ipairs(arg) do
         local g = Fk.generals[name]
-        table.insert(info, { name = name, kingdom = g.kingdom, subkingdom = g.subkingdom or "" })
+        table.insert(info, { name = name }) --, kingdom = g.kingdom, subkingdom = g.subkingdom or ""
       end
       playerGeneralsInfo[p.id] = info
     end
@@ -252,10 +252,16 @@ function HegLogic:chooseGenerals()
   req.timeout = room:getSettings('generalTimeout')
   for _, p in ipairs(humans) do
     req:setData(p, {
-      path = "packages/hidden-clouds/qml/HegemonyGeneralChoose.qml",
-      data = {
-        generals = playerGeneralsInfo[p.id],
-        prompt = "请选择主将"
+      skill_name = "选将",
+      component = {
+        url = "packages/hidden-clouds/qml/HegemonyGeneralChooseBox.qml",
+        model = {
+          url = "packages/hidden-clouds/qml/models/HegemonyGeneralChooseModel.qml",
+          prop = {
+            generals = playerGeneralsInfo[p.id],
+            prompt = "请选择主将"
+          }
+        }
       }
     })
     req:setDefaultReply(p, getDefaultPair(playerGeneralPool[p.id]))
@@ -281,37 +287,37 @@ function HegLogic:chooseGenerals()
       --room:notifyProperty(p, p, "kingdom")
     end
   else
-    req = Request:new(players, "AskForChoice")
-    req.focus_text = "AskForKingdom"
+    req = Request:new(players, "AskForChoices")
+    req.focus_text = "选择势力"
     req.receive_decode = false
 
-    -- 确保 allKingdoms 包含所有玩家武将的势力（避免遗漏自定义势力）
-    local function ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
-      for _, p in ipairs(players) do
+    -- 确保 allKingdoms 包含所有玩家武将的势力
+    local function ensureAllKingdomsContainsPlayerKingdoms(ps, ks)
+      for _, p in ipairs(ps) do
         local mainName = p:getMark("__heg_general")
         local deputyName = p:getMark("__heg_deputy")
         if mainName and mainName ~= "anjiang" then
           local g = Fk.generals[mainName]
           if g then
-            table.insertIfNeed(allKingdoms, g.kingdom)
-            if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
+            table.insertIfNeed(ks, g.kingdom)
+            if g.subkingdom then table.insertIfNeed(ks, g.subkingdom) end
           end
         end
         if deputyName and deputyName ~= "anjiang" then
           local g = Fk.generals[deputyName]
           if g then
-            table.insertIfNeed(allKingdoms, g.kingdom)
-            if g.subkingdom then table.insertIfNeed(allKingdoms, g.subkingdom) end
+            table.insertIfNeed(ks, g.kingdom)
+            if g.subkingdom then table.insertIfNeed(ks, g.subkingdom) end
           end
         end
       end
-      table.removeOne(allKingdoms, "wild")
-      table.sort(allKingdoms)
+      table.removeOne(ks, "wild")
+      table.sort(ks)
     end
 
     -- 在调用 ensureAllKingdomsContainsPlayerKingdoms 之前，先确保 allKingdoms 已包含基础势力
     -- 原代码中 allKingdoms 已从 room.general_pile 获取，这里再补充玩家武将中的势力
-    ensureAllKingdomsContainsPlayerKingdoms(room, players, allKingdoms)
+    ensureAllKingdomsContainsPlayerKingdoms(players, allKingdoms)
 
     for _, p in ipairs(players) do
       local mainGen = Fk.generals[p:getMark("__heg_general")]
@@ -365,12 +371,15 @@ function HegLogic:chooseGenerals()
       if #kingdoms == 0 then
         kingdoms = table.clone(allKingdoms)
       end
-      req:setData(p, { kingdoms, allKingdoms, "AskForKingdom", "#ChooseHegInitialKingdom" })
+      req:setData(p, { kingdoms, allKingdoms, {1, 1}, false, "选择势力", "#ChooseHegInitialKingdom", false, true })
       req:setDefaultReply(p, kingdoms[1])
     end
 
     for _, p in ipairs(players) do
       local kingdomChosen = req:getResult(p)
+      if type(kingdomChosen) ~= "string" then
+        kingdomChosen = kingdomChosen[1]
+      end
       room:setPlayerMark(p, "__heg_kingdom", kingdomChosen)      -- 变野后变为wild
       room:setPlayerMark(p, "__heg_init_kingdom", kingdomChosen) -- 保存初始势力
       -- p.kingdom = kingdomChosen
