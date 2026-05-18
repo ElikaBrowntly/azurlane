@@ -72,7 +72,10 @@ yanjv:addEffect(fk.GameStart, {
 yanjv:addEffect(fk.AfterCardsMove, {
   mute = true,
   can_trigger = function(self, event, target, player, data)
-    if player:hasSkill(yanjv.name) and #player:getCardIds("h") > 0 then
+    if player:hasSkill(yanjv.name) and #player:getCardIds("h") > 0 and
+    table.find(data, function (d)
+      return d.to == player and d.toArea == Player.Hand
+    end) then
       local cards = {}
       table.insertTable(cards, player:getCardIds("h"))
       cards = player.room.logic:moveCardsHoldingAreaCheck(cards)

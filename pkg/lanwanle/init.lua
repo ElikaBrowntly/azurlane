@@ -117,4 +117,15 @@ Fk:loadTranslationTable {
   ["~lan__zhuzhi"] = "集毕生之力，保国泰民安。",
 }
 
+local machao = General:new(extension, "lan__machao", "qun", 2, 4)
+machao.shield = 3
+machao:addSkills { "lan__zhongtao" }
+Fk:loadTranslationTable{
+  ["lan__machao"] = "烂马超",
+  ["#lan__machao"] = "雄烈盖世",
+  ["illustrator:lan__machao"] = "维柯托骑士",
+  ["designer:lan__machao"] = "幻矩",
+  ["~lan__machao"] = "战马不休，唯死方卧……",
+}
+
 return extension

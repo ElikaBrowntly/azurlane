@@ -396,11 +396,13 @@ function HegLogic:broadcastGeneral()
     assert(p.general ~= "")
     local general = Fk.generals[p:getMark("__heg_general")]
     local deputy = Fk.generals[p:getMark("__heg_deputy")]
-    local dmaxHp = deputy.maxHp + deputy.deputyMaxHpAdjustedValue
-    local gmaxHp = general.maxHp + general.mainMaxHpAdjustedValue
+    local dmaxHp = deputy and deputy.maxHp + deputy.deputyMaxHpAdjustedValue or 4
+    local gmaxHp = general and general.maxHp + general.mainMaxHpAdjustedValue or 4
+    local dHp = deputy and deputy.hp or dmaxHp
+    local gHp = general and general.hp or gmaxHp
     p.maxHp = (dmaxHp + gmaxHp) // 2 -- Lua5.3版本之后，向下取整的除法
-    p.hp = (general.hp + deputy.hp) // 2
-    p.shield = general.shield + deputy.shield
+    p.hp = (gHp + dHp) // 2
+    p.shield = (general and general.shield or 0) + (deputy and deputy.shield or 0)
     -- TODO: setup AI here
 
     room:broadcastProperty(p, "general")
@@ -415,7 +417,7 @@ function HegLogic:broadcastGeneral()
       p:setMark("HalfMaxHpLeft", 1)
       p:doNotify("SetPlayerMark", { p.id, "HalfMaxHpLeft", 1 })
     end
-    if general:isCompanionWith(deputy) then
+    if general and general:isCompanionWith(deputy) then
       p:setMark("CompanionEffect", 1)
       p:doNotify("SetPlayerMark", { p.id, "CompanionEffect", 1 })
     end
@@ -465,7 +467,7 @@ function HegLogic:attachSkillToPlayers()
     p:doNotify("SetPlayerMark", { p.id, "@seat", "seat#" .. tostring(p.seat) })
 
     local general = Fk.generals[p:getMark("__heg_general")]
-    local skills = general:getSkillNameList(true)
+    local skills = general and general:getSkillNameList(true) or {}
     local hasRevealSkill = false
     for _, sn in ipairs(skills) do
       local s = Fk.skills[sn]

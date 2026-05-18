@@ -5,9 +5,10 @@ local lingke = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["lan__lingke"] = "零氪",
-  [":lan__lingke"] = "锁定技，场上每存在一个<a href='lan_xiyou'>比你稀有</a>的武将，" ..
-      "你令〖安国〗中的数字+1；你对这些角色造成的伤害+X（X为这些角色的数量）。",
-  ["lan_xiyou"] = "分为普通、稀有、史诗、传说、限定五档，非OL武将会被分为“其他”，视为比朱治稀有。",
+  [":lan__lingke"] = "锁定技，场上每存在一个<a href='lan_xiyou'><font color='#A07ED6'><b>比你稀有" ..
+      "</b></font></a>的武将，你令〖安国〗中的数字+1；你对这些角色造成的伤害+X（X为这些角色的数量）。",
+  ["lan_xiyou"] = "分为普通、<font color='#A07ED6'>稀有</font>、<font color='#FFA500'>史诗</font>、"..
+  "<font color='#FE6340'>传说</font>、<font color='#DD222C'>限定</font>五档，非OL武将会被分为“其他”，视为比朱治稀有。",
   ["$lan__lingke1"] = "祭祀吧。开启战士的时间吧。",
   ["$lan__lingke2"] = "——不错，非常好。",
 }
