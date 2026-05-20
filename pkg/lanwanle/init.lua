@@ -119,7 +119,8 @@ Fk:loadTranslationTable {
 
 local machao = General:new(extension, "lan__machao", "qun", 2, 4)
 machao.shield = 3
-machao:addSkills { "lan__zhongtao" }
+machao:addSkills { "lan__shouli", "lan__hengwu", "lan__zhongtao", "lan__jizhan" ,"dlmou__tieji",
+"lan__zhuiji", "ol__shichou", "lan__tingwei", "lan__jimie" }
 Fk:loadTranslationTable{
   ["lan__machao"] = "烂马超",
   ["#lan__machao"] = "雄烈盖世",

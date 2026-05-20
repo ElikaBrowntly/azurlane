@@ -80,6 +80,10 @@ local content = {
   {
     skins = { "ex__yyfy_yongyimoyi__1.mp4" },
     enabled_generals = {"yyfy_yongyimoyi", "ex__yyfy_yongyimoyi", "olz__yangxiu", "yangxiu"}
+  },
+  {
+    skins = { "lan__xuncai__1.gif" },
+    enabled_generals = {"lan__xuncai", "olz__xuncai"}
   }
 }
 
@@ -132,7 +136,8 @@ Fk:loadTranslationTable {
   ["simayi__lainisi4"] = "莱妮丝(终)",
   ["yyfy_end__wolongfengchu__1"] = "赤壁链火",
   ["yyfy_end__wolongfengchu__2"] = "青羽锦绣",
-  ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）"
+  ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）",
+  ["lan__xuncai__1"] = "雅柔映采"
 }
 
 return extension
