@@ -129,4 +129,15 @@ Fk:loadTranslationTable{
   ["~lan__machao"] = "战马不休，唯死方卧……",
 }
 
+local ganfuren = General:new(extension, "lan__ganfurenmifuren", "shu", 3, 3, General.Female)
+ganfuren:addSkills { "lan__chanjuan", "lan__xunbie" }
+ganfuren:addRelatedSkills{ "dl__shushen", "dl__huangsi", "dl__guixiu", "dl__cunsi", "dl__yongjue" }
+Fk:loadTranslationTable{
+  ["lan__ganfurenmifuren"] = "烂甘夫人糜夫人",
+  ["#lan__ganfurenmifuren"] = "千里婵娟",
+  ["illustrator:lan__ganfurenmifuren"] = "七兜豆",
+  ["designer:lan__ganfurenmifuren"] = "神狐月",
+  ["~lan__ganfurenmifuren"] = "人生百年，奈何于我十不存一……",
+}
+
 return extension
