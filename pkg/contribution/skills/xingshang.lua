@@ -22,7 +22,7 @@ local function buy(player)
   local room = player.room
   local generals = Fk:getAllGenerals()
   local choice = ""
-  if false then--room:getSettings('enableFreeAssign')
+  if false then --room:getSettings('enableFreeAssign')
     local randomNames = {}
     if #generals > 16 then
       while #randomNames < 16 do
@@ -43,10 +43,16 @@ local function buy(player)
     local inputReq = Request:new(player, "CustomDialog")
     inputReq.focus_text = xingshang.name
     inputReq:setData(player, {
-      path = "packages/hidden-clouds/qml/InputSearch.qml",
-      data = {
-        num = #generals
-      },
+      skill_name = xingshang.name,
+      component = {
+        url = "packages/hidden-clouds/qml/InputSearchBox.qml",
+        model = {
+          url = "packages/hidden-clouds/qml/models/InputSearchModel.qml",
+          prop = {
+            prompt = "请宣言一个武将名（至少一个字）："
+          }
+        }
+      }
     })
     inputReq:setDefaultReply(player, "")
     local input = inputReq:getResult(player)
@@ -68,12 +74,18 @@ local function buy(player)
     local req = Request:new(player, "CustomDialog")
     req.focus_text = xingshang.name
     req:setData(player, {
-      path = "packages/hidden-clouds/qml/GeneralChoice.qml",
       skill_name = xingshang.name,
-      data = {
-        generals = filtered,
-        freeAssign = true
-      },
+      component = {
+        url = "packages/hidden-clouds/qml/GeneralChoiceBox.qml",
+        model = {
+          url = "packages/hidden-clouds/qml/models/GeneralChoiceModel.qml",
+          prop = {
+            generals = filtered,         -- 每个玩家独立的武将列表
+            freeAssign = true,
+            prompt = "选择武将"
+          }
+        }
+      }
     })
     req:setDefaultReply(player, "")
     choice = req:getResult(player)
@@ -151,10 +163,20 @@ local function sell(player)
   end
   local sname = room:askToCustomDialog(player, {
     skill_name = xingshang.name,
-    qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-    extra_data = { save, 0, 1, "交易：请选择要出售的技能" }
+    component = {
+      url = "packages/utility/qml/ChooseSkillBox.qml",
+      model = {
+        url = "packages/utility/qml/models/ChooseSkillModel.qml",
+        prop = {
+          skills = save,
+          min = 0,
+          max = 1,
+          prompt = "行商：请选择要出售的技能"
+        }
+      }
+    }
   })
-  if not sname or sname == "" then return end
+  if not sname or sname == "" or type(sname) == "table" and #table == 0 then return end
   if type(sname) == "table" then
     sname = sname[1]
   end

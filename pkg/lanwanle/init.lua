@@ -140,4 +140,14 @@ Fk:loadTranslationTable{
   ["~lan__ganfurenmifuren"] = "人生百年，奈何于我十不存一……",
 }
 
+local lvbu = General:new(extension, "lan__lvbu", "qun", 5)
+lvbu:addSkills { "lan__feijiang", "lan__shenji", "lan__zhenguan", "lan__wushuang", "lan__xiuluo", "mashu" }
+Fk:loadTranslationTable {
+  ["lan__lvbu"] = "烂吕布",
+  ["#lan__lvbu"] = "无双飞将",
+  ["designer:lan__lvbu"] = "焉民",
+  ["~lan__lvbu"] = "且慢，君若不弃，布愿拜为义父啊，义父！",
+  ["!lan__lvbu"] = "这大好江山，我何不可一览！",
+}
+
 return extension
