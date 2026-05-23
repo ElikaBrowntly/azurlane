@@ -28,7 +28,7 @@ qizha:addEffect("active", {
   prompt = "欺诈：你可与一名角色谋弈",
   card_num = 0,
   target_num = 1,
-  times = function (self, player)
+  times = function(self, player)
     return player.hp - player:usedSkillTimes(qizha.name, Player.HistoryPhase)
   end,
   can_use = function(self, player)
@@ -85,8 +85,18 @@ qizha:addEffect("active", {
     local skills = to:getSkillNameList()
     local result = room:askToCustomDialog(player, {
       skill_name = qizha.name,
-      qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-      extra_data = { skills, 0, #skills, "欺诈：请选择对方任意个技能获得" }
+      component = {
+        url = "packages/utility/qml/ChooseSkillBox.qml",
+        model = {
+          url = "packages/utility/qml/models/ChooseSkillModel.qml",
+          prop = {
+            skills = skills,
+            min = 0,
+            max = #skills,
+            prompt = "欺诈：请选择对方任意个技能获得"
+          }
+        }
+      }
     })
     if result ~= {} then
       for _, s in ipairs(result) do
