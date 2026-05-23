@@ -10,7 +10,7 @@ exgod_zhangliao:addRelatedSkill("yyfy_wangxi")
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
-  ["contribution"] = "夜隐浮云-投稿",
+  ["contribution"] = "投稿 1",
   ["yyfy"] = "",
   ["yyfy_exgod_zhangliao"] = "界神张辽",
   ["#yyfy_exgod_zhangliao"] = "美食家",

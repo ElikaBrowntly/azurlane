@@ -1,4 +1,5 @@
 local contribution = require "packages.hidden-clouds.pkg.contribution"
+local contribution2 = require "packages.hidden-clouds.pkg.contribution2"
 local lan = require "packages.hidden-clouds.pkg.lanwanle"
 local fate = require "packages.hidden-clouds.pkg.fate"
 local RoyalNavy = require "packages.hidden-clouds.pkg.RoyalNavy"
@@ -14,6 +15,7 @@ Fk:appendKingdomMap("evil", { "moon", "Saber", "Archer", "Lancer", "Rider", "Cas
 
 return {
   contribution,
+  contribution2,
   lan,
   fate,
   yugioh,
