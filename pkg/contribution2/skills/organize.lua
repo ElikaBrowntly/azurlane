@@ -5,8 +5,8 @@ local yyfy_organize = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_organize"] = "组织",
-  [":yyfy_organize"] = "限定技，出牌阶段，你可以令一名角色增加1点体力上限、回复1点体力并摸三张牌，若其为："..
-  "忠臣，当主公死亡时与主公交换身份牌；反贼，其获得一个额外回合，当其被主公或忠臣杀死时，主公方获胜；内奸：其公开身份牌且杀死主公以外的角色时获胜。",
+  [":yyfy_organize"] = "限定技，出牌阶段，你可以发动一次〖<a href=':zaowang'>造王</a>〗，并获得额外效果："..
+  "若其为反贼，其获得一个额外回合；若其为内奸：其公开身份牌且杀死主公以外的角色时获胜。",
 
   ["#yyfy_organize"] = "组织：令一名角色加1点体力上限、回复1点体力并摸三张牌，根据其身份改变胜利条件！",
   ["@@yyfy_organize"] = "总经理",
@@ -51,6 +51,9 @@ yyfy_organize:addEffect("active", {
     target:drawCards(3, yyfy_organize.name)
     if target.role == "rebel" then
       target:gainAnExtraTurn(true, yyfy_organize.name)
+    elseif target.role == "renegade" then
+      room:setPlayerProperty(target, "role_shown", true)
+      room:broadcastProperty(target, "role")
     end
   end,
 })
