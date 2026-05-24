@@ -1,5 +1,5 @@
 // packages/hidden-clouds/qml/HegemonyGeneralChooseBox.qml
-import QtQuick 2.12
+import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Fk
