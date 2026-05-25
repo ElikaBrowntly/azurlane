@@ -1,73 +1,74 @@
-local yyfy_plan = fk.CreateSkill {
+local plan = fk.CreateSkill {
   name = "yyfy_plan",
 }
 
-Fk:loadTranslationTable{
+Fk:loadTranslationTable {
   ["yyfy_plan"] = "计划",
-  [":yyfy_plan"] = "一名角色的出牌阶段开始时，你可以令其“<a href='zhengsu_desc'>整肃</a>”；"..
-  "你与其共同获得“<a href='zhengsu_desc'>整肃</a>”奖励。",
+  [":yyfy_plan"] = "一名角色的回合开始时，你可以从三个“<a href='yyfy_shimingji'>使命技</a>”中选择一个令其获得。",
 
-  ["#yyfy_plan-invoke"] = "计划：你可令 %dest “整肃”，若成功则你与其获得整肃奖励",
-  ["@yyfy_plan-turn"] = "计划",
-  ["#yyfy_plan-choice"] = "计划：为 %dest 选择一项整肃条件",
-  ["#yyfy_plan-reward"] = "计划：整肃成功，你与 %src 共同执行整肃奖励",
-
-  ["$yyfy_plan1"] = "交汝统领，勿负我望！",
-  ["$yyfy_plan2"] = "有功自当行赏，来人呈上！",
-  ["$yyfy_plan3"] = "叉出去！罚其二十军杖！",
+  ["yyfy_shimingji"] = "<b>使命技</b><br>始计篇-信包最先提出的概念，技能的前半部分为普通技能（可以没有，普通技能部分存在" ..
+      "强制发动和可选择发动两种类型），后半部分为<b>使命成功</b>与<b>使命失败</b>的条件与对应效果，使命技类似觉醒技，" ..
+      "在使命成功或失败之后永远都会失去此技能。<br>使命技目前分为以下几种分支:<br>使命成功+使命失败：<br>" ..
+      "（1）王凌<br>" ..
+      "普通技能+使命成功+使命失败：<br>" ..
+      "（2）神太史慈<br>" ..
+      "（3）糜夫人<br>" ..
+      "（4）谋诸葛亮<br>" ..
+      "（5）周处<br>" ..
+      "（6）势魏延<br>" ..
+      "普通技能+使命失败：<br>（7）谋孙尚香",
+  
+  ["$yyfy_plan1"] = "博览群书，融会贯通。",
+  ["$yyfy_plan2"] = "博览于文，约之以礼。",
 }
 
-local U = require "packages.utility.utility"
-
-yyfy_plan:addEffect(fk.EventPhaseStart, {
-  mute = true,
+plan:addEffect(fk.TurnStart, {
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(yyfy_plan.name) and target.phase == Player.Play and not target.dead
-  end,
-  on_cost = function(self, event, target, player, data)
-    if player.room:askToSkillInvoke(player, {
-      skill_name = yyfy_plan.name,
-      prompt = "#yyfy_plan-invoke::"..target.id,
-    }) then
-      event:setCostData(self, {tos = {target}})
+    if not (player and player:hasSkill(self)) then return false end
+    local skills = {}
+    for _, general in ipairs(Fk:getAllGenerals()) do
+      for _, skName in ipairs(general:getSkillNameList(true)) do
+        local skill = Fk.skills[skName]
+        if skill then
+          if skill:hasTag(Skill.Quest) and not
+          table.contains(player.room:getBanner(plan.name) or {}, skName) then
+            table.insertIfNeed(skills, skill.name)
+            if #skills == 3 then
+              break
+            end
+          end
+        end
+      end
+      if #skills == 3 then
+        break
+      end
+    end
+    if #skills > 0 then
+      event:setCostData(self, {skills = skills})
       return true
     end
   end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    room:notifySkillInvoked(player, yyfy_plan.name, "support", {target.id})
-    player:broadcastSkillInvoke(yyfy_plan.name, 1)
-    U.startZhengsu(player, target, yyfy_plan.name, "#yyfy_plan-choice::"..target.id)
-    room:setPlayerMark(player, "@yyfy_plan-turn", target.general)
-  end,
-})
-
-yyfy_plan:addEffect(fk.EventPhaseEnd, {
-  mute = true,
-  is_delay_effect = true,
-  can_trigger = function(self, event, target, player, data)
-    return target.phase == Player.Discard and not target.dead and not player.dead and
-      U.checkZhengsu(player, target, yyfy_plan.name)
-  end,
-  on_use = function(self, event, target, player, data)
-    local room = player.room
-    room:notifySkillInvoked(player, yyfy_plan.name)
-    player:broadcastSkillInvoke(yyfy_plan.name, 2)
-    local choices = {"draw2"}
-    if player:isWounded() or (target:isWounded() and not target.dead) then
-      table.insert(choices, 1, "recover")
-    end
-    local reward = room:askToChoice(target, {
-      choices = choices,
-      skill_name = yyfy_plan.name,
-      prompt = "#yyfy_plan-reward:"..player.id,
-      all_choices = {"draw2", "recover"},
+  on_cost = function (self, event, target, player, data)
+    local skills = (event:getCostData(self) or {}).skills
+    local choice = player.room:askToChoice(player, {
+      choices = skills,
+      cancelable = true,
+      detailed = true,
+      prompt = "计划：你可以令其获得一个使命技"
     })
-    U.rewardZhengsu(player, target, reward, yyfy_plan.name)
-    if not player.dead then
-      U.rewardZhengsu(player, player, reward, yyfy_plan.name)
+    if choice and choice ~= "Cancel" then
+      event:setCostData(self, {skill = choice})
+      return true
     end
   end,
+  on_use = function (self, event, target, player, data)
+    local room = player.room
+    local skill = (event:getCostData(self) or {}).skill
+    local banner = room:getBanner(plan.name) or {}
+    table.insertIfNeed(banner, skill)
+    room:setBanner(plan.name, banner)
+    player.room:handleAddLoseSkills(target, skill, plan.name)
+  end
 })
 
-return yyfy_plan
+return plan

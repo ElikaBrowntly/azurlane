@@ -17,7 +17,7 @@ Fk:loadTranslationTable
 }
 
 local Robbins = General:new(extension, "yyfy__Robbins", "west", 3)
-Robbins:addSkills { "yyfy_plan", "yyfy_organize", "yyfy_lead",} --"yyfy_motivate", "control", "yyfy_coordinate" }
+Robbins:addSkills { "yyfy_plan", "yyfy_organize", "yyfy_lead", "yyfy_motivate", "control", "yyfy_coordinate" }
 Fk:loadTranslationTable
 {
   ["yyfy__"] = "",
