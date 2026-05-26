@@ -381,7 +381,7 @@ flyingORT.hidden = true
 
 local XibalbaORT = General:new(extension, "yyfy_XibalbaORT", "Foreigner", 10, 10, General.Agender) -- ORT无性别
 XibalbaORT:addSkills { "yyfy_taiyangfengbao", "yyfy_xietiao_XibalbaORT", "yyfy_disanmiejue",
-"yyfy_chuangshiji", "yyfy_huangjinshuhai"}
+"yyfy_chuangshiji", "yyfy_huangjinshuhai", "yyfy_leyuanji", "yyfy_heianji", "yyfy_baotouji", "yyfy_kuayuebianjiezhiren"}
 Fk:loadTranslationTable
 {
   ["yyfy_XibalbaORT"] = "O R T希巴尔巴",
