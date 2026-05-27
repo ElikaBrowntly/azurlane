@@ -4,7 +4,7 @@ local skill = fk.CreateSkill {
 }
 
 Fk:loadTranslationTable{
-  ["yyfy_chuangshiji"] = "<font color='#FF520B'>创世纪·起源</font>",
+  ["yyfy_chuangshiji"] = "<font color='#FF520B'>创世纪</font>",
   [":yyfy_chuangshiji"] = "<font color='#FF520B'>持恒技，你的第一血条被击破后，你令所有敌方角色在其"
   .."下两个回合无法使用【杀】，然后你接下来受到的5次伤害减少20%。</font>",
   ["@yyfy_chuangshiji"] = "创世纪"

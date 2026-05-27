@@ -13,6 +13,7 @@ buchang:addEffect(fk.EventPhaseChanging, {
     return target == player and player:hasSkill(self) and
         data.phase == Player.Judge and not data.skipped
   end,
+  on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     data.skipped = true
   end,
