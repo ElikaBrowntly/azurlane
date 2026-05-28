@@ -8,12 +8,23 @@ local mou__yongyimoyi = General:new(extension, "mou__yyfy_yongyimoyi", "god", 4,
 mou__yongyimoyi:addSkills { "yyfy_guopai", "beifen" }
 Fk:loadTranslationTable
 {
-  ["mou__yyfy"] = "谋？",
+  ["mou"] = "谋？",
   ["contribution2"] = "投稿 2",
   ["mou__yyfy_yongyimoyi"] = "谋用一摸一",
   ["#mou__yyfy_yongyimoyi"] = "四血过牌悲愤",
   ["designer:mou__yyfy_yongyimoyi"] = "名字加载中……",
   ["~mou__yyfy_yongyimoyi"] = "空晓事而未见老，枉少作而愧对君……",
+}
+
+local shi__yongyimoyi = General:new(extension, "shi__yyfy_yongyimoyi", "god", 4, 4)
+shi__yongyimoyi:addSkills { "yyfy_mingzhe", "beifen" }
+Fk:loadTranslationTable
+{
+  ["shi"] = "",
+  ["shi__yyfy_yongyimoyi"] = "失一摸一",
+  ["#shi__yyfy_yongyimoyi"] = "诸葛瑾（",
+  ["designer:shi__yyfy_yongyimoyi"] = "名字加载中……",
+  ["~shi__yyfy_yongyimoyi"] = "臣一心向吴，忠心青天可鉴。",
 }
 
 local Robbins = General:new(extension, "yyfy__Robbins", "west", 3)

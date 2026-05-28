@@ -30,4 +30,17 @@ Fk:loadTranslationTable
   ["!yyfy_yukikaze"] = "嗯！诶嘿嘿~最喜欢你了~"
 }
 
+local shinano = General:new(extension, "yyfy_shinano", "moe", 5, 5, General.Female)
+shinano:addSkills {"yyfy_xingyezhiyun", "yyfy_youdiezhimeng", "yyfy_shouhuzhiying"}
+Fk:loadTranslationTable
+{
+  ["yyfy_shinano"] = "信浓",
+  ["#yyfy_shinano"] = "蝶海梦花",
+  ["illustrator:yyfy_shinano"] = "侑了个侑",
+  ["cv:yyfy_shinano"] = "能登麻美子",
+  ["designer:yyfy_shinano"] = "夜隐浮云",
+  ["~yyfy_shinano"] = "在汝身旁，妾身看不到任何的光芒…",
+  ["!yyfy_shinano"] = "这便是，妾身的力量…？"
+}
+
 return extension

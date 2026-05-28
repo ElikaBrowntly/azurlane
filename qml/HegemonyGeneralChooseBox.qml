@@ -8,6 +8,7 @@ import Fk.Pages.LunarLTK
 import Fk.Components.Common
 import LunarLtk
 import LunarLtk.Components
+import LunarLtk.Pages.Popups
 import "models"
 
 GraphicsBox {
