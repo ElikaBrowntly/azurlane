@@ -321,7 +321,8 @@ Fk:loadTranslationTable
 }
 
 local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "MoonCancer", 4, 4, General.Female)
-ArchetypeEarth:addSkills { "yyfy_hongzhimoyan", "yyfy_xingzhituxi", "yyfy_FunnyVamp", "yyfy_kongxiangjvxianhua" }
+ArchetypeEarth:addSkills { "yyfy_hongzhimoyan", "yyfy_xingzhituxi", "yyfy_FunnyVamp",
+ "yyfy_kongxiangjvxianhua", "yyfy_guangzhihuihuang", "yyfy_xingzhishanshuo" }
 Fk:loadTranslationTable
 {
   ["yyfy_ArchetypeEarth"] = "爱尔奎特",

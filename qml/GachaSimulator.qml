@@ -5,6 +5,9 @@ import QtQuick.Controls 2.15
 import Fk
 import Fk.Components.LunarLTK
 import Fk.Widgets as W
+import LunarLtk
+import LunarLtk.Components
+import LunarLtk.Pages.Popups
 
 W.PageBase {
     id: root

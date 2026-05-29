@@ -44,8 +44,18 @@ jisi:addEffect(fk.EventPhaseStart, {
     if #skills > 0 then
       local result = room:askToCustomDialog(player, {
         skill_name = jisi.name,
-        qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-        extra_data = { skills, 0, 1, "羁肆：请选择1个技能令对方获得" }
+        component = {
+          url = "packages/utility/qml/ChooseSkillBox.qml",
+          model = {
+            url = "packages/utility/qml/models/ChooseSkillModel.qml",
+            prop = {
+              skills = skills,
+              min = 0,
+              max = 1,
+              prompt = "羁肆：请选择1个技能令对方获得"
+            }
+          }
+        }
       })
       room:handleAddLoseSkills(tos[1], result, jisi.name)
     end

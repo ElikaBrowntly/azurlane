@@ -681,9 +681,14 @@ function functions.setEmotion(player, names, skill_name, delay, atype, judge)
   local req = ""
   if player.id > 0 then
     req = room:askToCustomDialog(player, {
-      qml_path = "packages/hidden-clouds/qml/getSkin.qml",
       skill_name = "",
-      extra_data = extra_data,
+      component = {
+        url = "packages/hidden-clouds/qml/getSkinBox.qml",
+        model = {
+          url = "packages/hidden-clouds/qml/models/getSkinModel.qml",
+          prop = { generals = extra_data }
+        }
+      }
     })
   end
   if #extra_data > 1 and req ~= "" then
