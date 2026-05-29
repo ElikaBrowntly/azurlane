@@ -9,7 +9,8 @@ Fk:loadTranslationTable {
   [":yyfy_hongguanganyu"] = "共鸣技，游戏结束后，你的金币与<a href='yyfy_hongguanganyu_start'>游戏开始时"..
     "</a>相比：<br><font color = '#32CD32'><b>顺差</b></font>：你获得加倍的金币；"..
     "<font color = 'red'><b>逆差</b></font>：你获得失去的金币。",
-  ["yyfy_hongguanganyu_start"] = "<br><b>注：</b>实际为获得此技能时。<br><br><font color='blue'>"..
+  ["yyfy_hongguanganyu_start"] = "<br>约翰·梅纳德·凯恩斯（John Maynard Keynes，1883年6月5日—1946年4月21日），"
+  .."英国经济学家，其1936年出版的《就业、利息和货币通论》标志着宏观经济学的诞生。<br><br><font color='blue'>"..
     "<br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;长远来看，我们都已入土为安。"..
     "<div style = 'text-align:right;'>———凯恩斯《货币论》</div></i></font>",
   ["$yyfy_hongguanganyu"] = "叮~",
@@ -40,7 +41,7 @@ ganyu:addEffect(fk.GameFinished, {
   priority = 0.00001,
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self) and player.id > 0 and
-    (player.general == "yyfy_Keynes") or (player.deputyGeneral or "" == "yyfy_Keynes")
+    (player.general == "yyfy_Keynes") or ((player.deputyGeneral or "") == "yyfy_Keynes")
   end,
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
