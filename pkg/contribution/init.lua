@@ -84,12 +84,12 @@ Fk:loadTranslationTable {
   ["~yyfy_ex__simashi"] = "子上，先之则太过，后之则不及……"
 }
 
-local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
-gaodaerhao:addSkills { "yyfy_shelie", "yyfy_gongxin" }
-Fk:loadTranslationTable {
-  ["yyfy_gaodaerhao"] = "高达二号",
-  ["~yyfy_gaodaerhao"] = "终是逃不开，追魂索命之咒……"
-}
+-- local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
+-- gaodaerhao:addSkills { "yyfy_shelie", "yyfy_gongxin" }
+-- Fk:loadTranslationTable {
+--   ["yyfy_gaodaerhao"] = "高达二号",
+--   ["~yyfy_gaodaerhao"] = "终是逃不开，追魂索命之咒……"
+-- }
 
 local KusanagiGodou = General:new(extension, "yyfy_KusanagiGodou", "evil", 4)
 KusanagiGodou:addSkills { "yyfy_shishen", "yyfy_quanneng" }
@@ -146,22 +146,22 @@ Fk:loadTranslationTable {
   ["~yyfy_end__jiaxu"] = "天下大定，某，亦得功成名就。",
 }
 
-local god_zhangfei = General:new(extension, "yyfy__godzhangfei", "god", 4)
-god_zhangfei:addSkills { "yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou" }
-Fk:loadTranslationTable {
-  ["yyfy__godzhangfei"] = "神张飞",
-  ["#yyfy__godzhangfei"] = "傲凌世间",
-  ["~yyfy__godzhangfei"] = "桃花今又开，不见结义人。",
-}
+-- local god_zhangfei = General:new(extension, "yyfy__godzhangfei", "god", 4)
+-- god_zhangfei:addSkills { "yyfy_liyong", "yyfy_zhaifeng", "yyfy_xingshou" }
+-- Fk:loadTranslationTable {
+--   ["yyfy__godzhangfei"] = "神张飞",
+--   ["#yyfy__godzhangfei"] = "傲凌世间",
+--   ["~yyfy__godzhangfei"] = "桃花今又开，不见结义人。",
+-- }
 
-local god_machao = General:new(extension, "yyfy__godmachao", "god", 4)
-god_machao:addSkills { "yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu" }
-Fk:loadTranslationTable {
-  ["yyfy__godmachao"] = "神马超",
-  ["#yyfy__godmachao"] = "壮志凌云",
-  ["!yyfy__godmachao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
-  ["~yyfy__godmachao"] = "汉升！人间新酒如何？",
-}
+-- local god_machao = General:new(extension, "yyfy__godmachao", "god", 4)
+-- god_machao:addSkills { "yyfy_xiongji", "yyfy_zhuishi", "yyfy_hengwu" }
+-- Fk:loadTranslationTable {
+--   ["yyfy__godmachao"] = "神马超",
+--   ["#yyfy__godmachao"] = "壮志凌云",
+--   ["!yyfy__godmachao"] = "烽烟擦鞍过，独向玄黄证苍茫，夜驰欲饮天河浪！",
+--   ["~yyfy__godmachao"] = "汉升！人间新酒如何？",
+-- }
 
 local gaoshou = General:new(extension, "yyfy_gaoshou", "god", 4)
 gaoshou:addSkills { "yyfy_konggou" }
@@ -508,6 +508,27 @@ Fk:loadTranslationTable {
   ["#ex__yyfy_yongyimoyi"] = "四血过牌多刀",
   ["designer:ex__yyfy_yongyimoyi"] = "夜隐浮云",
   ["~ex__yyfy_yongyimoyi"] = "葬得青山一抔土，销尽宏图万古愁。"
+}
+
+local mou__yongyimoyi = General:new(extension, "mou__yyfy_yongyimoyi", "god", 4, 4)
+mou__yongyimoyi:addSkills { "yyfy_guopai", "beifen" }
+Fk:loadTranslationTable
+{
+  ["mou__yyfy_yongyimoyi"] = "谋用一摸一",
+  ["#mou__yyfy_yongyimoyi"] = "四血过牌悲愤",
+  ["designer:mou__yyfy_yongyimoyi"] = "名字加载中……",
+  ["~mou__yyfy_yongyimoyi"] = "空晓事而未见老，枉少作而愧对君……",
+}
+
+local shi__yongyimoyi = General:new(extension, "lost__yyfy_yongyimoyi", "god", 4, 4)
+shi__yongyimoyi:addSkills { "yyfy_mingzhe", "beifen" }
+Fk:loadTranslationTable
+{
+  ["lost"] = "",
+  ["lost__yyfy_yongyimoyi"] = "失一摸一",
+  ["#lost__yyfy_yongyimoyi"] = "诸葛瑾（",
+  ["designer:lost__yyfy_yongyimoyi"] = "名字加载中……",
+  ["~lost__yyfy_yongyimoyi"] = "臣一心向吴，忠心青天可鉴。",
 }
 
 Fk:loadTranslationTable {

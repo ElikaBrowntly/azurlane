@@ -33,15 +33,18 @@ plan:addEffect(fk.TurnStart, {
           if skill:hasTag(Skill.Quest) and not
           table.contains(player.room:getBanner(plan.name) or {}, skName) then
             table.insertIfNeed(skills, skill.name)
-            if #skills == 3 then
+            if #skills == 10 then
               break
             end
           end
         end
       end
-      if #skills == 3 then
+      if #skills == 10 then
         break
       end
+    end
+    if #skills > 3 then
+      skills = table.random(skills, 3)
     end
     if #skills > 0 then
       event:setCostData(self, {skills = skills})

@@ -150,4 +150,14 @@ Fk:loadTranslationTable {
   ["!lan__lvbu"] = "这大好江山，我何不可一览！",
 }
 
+local lvbu2 = General:new(extension, "lan2__lvbu", "qun", 5)
+lvbu2:addSkills { "lan__duoqi", "lan__gangquan" }
+Fk:loadTranslationTable {
+  ["lan2"] = "烂",
+  ["lan2__lvbu"] = "烂吕布",
+  ["#lan2__lvbu"] = "吕布布兰德",
+  ["designer:lan2__lvbu"] = "幻矩",
+  ["~lan2__lvbu"] = "你们的项上人头，我改日再取！"
+}
+
 return extension
