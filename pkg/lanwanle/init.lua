@@ -151,7 +151,7 @@ Fk:loadTranslationTable {
 }
 
 local lvbu2 = General:new(extension, "lan2__lvbu", "qun", 5)
-lvbu2:addSkills { "lan__duoqi", "lan__gangquan" }
+lvbu2:addSkills { "lan__duoqi", "lan__gangquan", "lan__xiaowu", "lan__baguan", "lan__fengzhu", "lan__jingjia" }
 Fk:loadTranslationTable {
   ["lan2"] = "烂",
   ["lan2__lvbu"] = "烂吕布",

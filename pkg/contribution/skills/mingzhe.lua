@@ -4,7 +4,7 @@ local hezhong = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_mingzhe"] = "明哲",
-  [":yyfy_mingzhe"] = "你失去牌后，可以摸1张牌。",
+  [":yyfy_mingzhe"] = "你失去牌后，可以摸等量张牌。",
 
   ["$yyfy_mingzhe1"] = "明以洞察，哲以保身。",
   ["$yyfy_mingzhe2"] = "塞翁失马，焉知非福。",
@@ -20,6 +20,7 @@ hezhong:addEffect(fk.AfterCardsMove, {
       if move.from == player then
         for _, info in ipairs(move.moveInfo) do
           if info.fromArea == Card.PlayerHand or info.fromArea == Card.PlayerEquip then
+            event:setCostData(self, {num = #move.moveInfo})
             return true
           end
         end
@@ -27,7 +28,8 @@ hezhong:addEffect(fk.AfterCardsMove, {
     end
   end,
   on_use = function(self, event, target, player, data)
-    player:drawCards(1, hezhong.name)
+    local num = (event:getCostData(self) or {}).num or 0
+    player:drawCards(num, hezhong.name)
   end,
 })
 
