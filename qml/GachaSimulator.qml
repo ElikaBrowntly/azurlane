@@ -1,9 +1,12 @@
 import QtQuick 2.15
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import Qt5Compat.GraphicalEffects
 import Fk
+import Fk.Pages.LunarLTK
 import Fk.Components.LunarLTK
+import Fk.Components.Common
 import Fk.Widgets as W
 import LunarLtk
 import LunarLtk.Components
