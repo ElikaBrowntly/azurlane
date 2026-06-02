@@ -11,6 +11,8 @@ local guangu = fk.CreateSkill {
   }
 }
 
+local F = require("packages.hidden-clouds.functions")
+
 Fk:loadTranslationTable {
   ["yyfy_guangu"] = "观骨",
   [":yyfy_guangu"] = "转换技，每回合各限一次，阳：你可以观看牌堆顶任意张牌；阴：你可以观看一名角色任意张手牌。然后你可以使用其中一张牌。",
@@ -23,6 +25,8 @@ Fk:loadTranslationTable {
 
   ["$yyfy_guangu1"] = "此才拔萃，然观其形骨，恐早夭。",
   ["$yyfy_guangu2"] = "绯衣者，汝所拔乎？",
+  ["$yyfy_guangu3"] = "骨相不言，万千因果皆作红粉骷髅。",
+  ["$yyfy_guangu4"] = "寿数贫贱之相，其孕于气运而显于骨相。",
 }
 
 guangu:addEffect("active", {
@@ -68,7 +72,8 @@ guangu:addEffect("active", {
         skill_name = guangu.name,
         min = 1,
         max = x,
-        prompt = "#yyfy_guangu-choice"
+        prompt = "#yyfy_guangu-choice",
+        cancelable = false
       })
       ids = room:getNCards(result or 1)
     else
@@ -105,6 +110,17 @@ guangu:addEffect("active", {
       room:useCard(use)
     end
   end,
+})
+
+-- 动皮登场
+guangu:addEffect(fk.TurnStart, {
+  priority = 11,
+  can_refresh = function (self, event, target, player, data)
+    return target == player and player:hasSkill(self, true)
+  end,
+  on_refresh = function (self, event, target, player, data)
+    F.setEmotion(player, "yyfy_end__zhongyan__2", guangu.name, 0, "yyfy_end__zhongyan__2.qml")
+  end
 })
 
 return guangu

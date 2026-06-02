@@ -532,7 +532,7 @@ Fk:loadTranslationTable
 }
 
 local zhongyan = General:new(extension, "yyfy_end__zhongyan", "jin", 3, 3, General.Female)
-zhongyan:addSkills { "yyfy_guangu",  "yyfy_xiaoyong"}--
+zhongyan:addSkills { "yyfy_guangu",  "yyfy_xiaoyong", "yyfy_bolan", "yyfy_yifa"}
 Fk:loadTranslationTable
 {
   ["yyfy_end__zhongyan"] = "终钟琰",
