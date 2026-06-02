@@ -76,13 +76,13 @@ Fk:loadTranslationTable {
   ["designer:yyfy_youlewangzi"] = "夜隐浮云",
 }
 
-local ex_simashi = General:new(extension, "yyfy_ex__simashi", "wei", 4)
-ex_simashi:addSkills { "yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli" }
-Fk:loadTranslationTable {
-  ["yyfy_ex__simashi"] = "界司马师",
-  ["designer:yyfy_ex__simashi"] = "非电竞恐龙",
-  ["~yyfy_ex__simashi"] = "子上，先之则太过，后之则不及……"
-}
+-- local ex_simashi = General:new(extension, "yyfy_ex__simashi", "wei", 4)
+-- ex_simashi:addSkills { "yyfy_ex_baiyi", "yyfy_ex_jinglue", "yyfy_ex_shanli" }
+-- Fk:loadTranslationTable {
+--   ["yyfy_ex__simashi"] = "界司马师",
+--   ["designer:yyfy_ex__simashi"] = "非电竞恐龙",
+--   ["~yyfy_ex__simashi"] = "子上，先之则太过，后之则不及……"
+-- }
 
 -- local gaodaerhao = General:new(extension, "yyfy_gaodaerhao", "god", 3)
 -- gaodaerhao:addSkills { "yyfy_shelie", "yyfy_gongxin" }
@@ -529,6 +529,16 @@ Fk:loadTranslationTable
   ["#lost__yyfy_yongyimoyi"] = "诸葛瑾（",
   ["designer:lost__yyfy_yongyimoyi"] = "名字加载中……",
   ["~lost__yyfy_yongyimoyi"] = "臣一心向吴，忠心青天可鉴。",
+}
+
+local zhongyan = General:new(extension, "yyfy_end__zhongyan", "jin", 3, 3, General.Female)
+zhongyan:addSkills { "yyfy_guangu",  "yyfy_xiaoyong"}--
+Fk:loadTranslationTable
+{
+  ["yyfy_end__zhongyan"] = "终钟琰",
+  ["#yyfy_end__zhongyan"] = "紫闼飞莺",
+  ["designer:yyfy_end__zhongyan"] = "一维无限",
+  ["~yyfy_end__zhongyan"] = "此间天下人，皆分一斗之才……",
 }
 
 Fk:loadTranslationTable {
