@@ -36,6 +36,11 @@ Fk:loadTranslationTable {
   "<b>注：</b>若其是<b>自刎归天！</b>，你直接死亡。",
   ["yyfy_xs_qinshi"] = "天意侵蚀",
   [":yyfy_xs_qinshi"] = "天意侵蚀(无效果)",
+  ["yyfy_unexpectation"] = "出其不意",
+  [":yyfy_unexpectation"] = "锦囊牌<br/>"..
+  "<b>时机</b>：出牌阶段<br/>"..
+  "<b>目标</b>：一名有手牌的其他角色<br/>"..
+  "<b>效果</b>：展示目标角色的一张手牌，并对其造成1点伤害。",
 }
 
 local jv_basic = fk.CreateCard{
@@ -134,9 +139,16 @@ local qinshi = fk.CreateCard{
   skill = "yyfy_xs_qinshi_skill",
 }
 
+local unexpectation = fk.CreateCard{
+  name = "yyfy_unexpectation", --出其不意
+  type = Card.TypeTrick,
+  skill = "yyfy_unexpectation_skill",
+  is_damage_card = true,
+}
+
 extension:loadCardSkels {
   jv_basic, jv_trick, jv_weapon, jv_armor, jv_defensive, jv_offensive, jv_treasure,
-  slash, fire__slash, thunder__slash, peach, analeptic, chain, qinshi
+  slash, fire__slash, thunder__slash, peach, analeptic, chain, qinshi, unexpectation
 }
 
 extension:addCardSpec("yyfy_jv_basic")
@@ -219,5 +231,7 @@ extension:addCardSpec("yyfy_xs_chain", Card.Club, 13)
 extension:addCardSpec("yyfy_xs_qinshi", Card.Spade, 11)
 extension:addCardSpec("yyfy_xs_qinshi", Card.Spade, 12)
 extension:addCardSpec("yyfy_xs_qinshi", Card.Spade, 13)
+
+extension:addCardSpec("yyfy_unexpectation")
 
 return extension

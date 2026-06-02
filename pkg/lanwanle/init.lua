@@ -160,4 +160,13 @@ Fk:loadTranslationTable {
   ["~lan2__lvbu"] = "你们的项上人头，我改日再取！"
 }
 
+local duyu = General:new(extension, "lan__duyu", "jin", 5)
+duyu:addSkills { "lan__wuku", "lan__miewu", "lan__sanchen", "lan__pozhu", "jianguo" }
+Fk:loadTranslationTable {
+  ["lan__duyu"] = "烂杜预",
+  ["#lan__duyu"] = "杜预布兰德",
+  ["designer:lan__duyu"] = "夜隐浮云",
+  ["~lan__duyu"] = "司马氏得国不正，吾却助纣为虐，此天伐之。"
+}
+
 return extension

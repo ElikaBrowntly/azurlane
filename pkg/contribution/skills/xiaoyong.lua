@@ -15,6 +15,7 @@ Fk:loadTranslationTable {
 }
 
 local U = require "packages.utility.utility"
+local F = require("packages.hidden-clouds.functions")
 
 xiaoyong:addEffect(fk.CardUsing, {
   mute = true,
@@ -97,6 +98,18 @@ xiaoyong:addEffect(fk.CardUsing, {
     else
       room:setPlayerMark(player, "@yyfy_xiaoyong-turn", data.card:getNameLength(true))
     end
+  end
+})
+
+xiaoyong:addEffect(fk.TurnStart, {
+  mute = true,
+  can_trigger = function (self, event, target, player, data)
+    return target == player and player:hasSkill(self, true) and
+    F.setEmotion(player, "yyfy_end__zhongyan__2", xiaoyong.name, 0, "caoxiancaohua2.qml", true)
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
+    player.room:setEmotion(player, "./packages/hidden-clouds/image/anim/dengchang_yyfy_end__zhongyan")
   end
 })
 

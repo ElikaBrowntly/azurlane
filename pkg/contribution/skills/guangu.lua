@@ -11,8 +11,6 @@ local guangu = fk.CreateSkill {
   }
 }
 
-local F = require("packages.hidden-clouds.functions")
-
 Fk:loadTranslationTable {
   ["yyfy_guangu"] = "观骨",
   [":yyfy_guangu"] = "转换技，每回合各限一次，阳：你可以观看牌堆顶任意张牌；阴：你可以观看一名角色任意张手牌。然后你可以使用其中一张牌。",
@@ -110,17 +108,6 @@ guangu:addEffect("active", {
       room:useCard(use)
     end
   end,
-})
-
--- 动皮登场
-guangu:addEffect(fk.TurnStart, {
-  priority = 11,
-  can_refresh = function (self, event, target, player, data)
-    return target == player and player:hasSkill(self, true)
-  end,
-  on_refresh = function (self, event, target, player, data)
-    F.setEmotion(player, "yyfy_end__zhongyan__2", guangu.name, 0, "yyfy_end__zhongyan__2.qml")
-  end
 })
 
 return guangu
