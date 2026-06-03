@@ -5,14 +5,17 @@ local xiaoyong = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_xiaoyong"] = "啸咏",
-  [":yyfy_xiaoyong"] = "锁定技，当你于回合内使用牌名字数为X的牌时（X为上次〖观骨〗观看牌数），你视为未发动〖观骨〗；当你使用与本回合上一次使用的牌字数相同的牌时，你发动一次〖观骨〗。（未完待续）",
+  [":yyfy_xiaoyong"] = "锁定技，当你于回合内使用牌名字数为X的牌时（X为上次〖观骨〗观看牌数），你视为未发动〖观骨〗；当你使用与本回合上一次使用的牌字数相同的牌时，你发动一次〖观骨〗。",
   ["@yyfy_xiaoyong-turn"] = "啸咏",
 
   ["$yyfy_xiaoyong1"] = "凉风萧条，露沾我衣。",
   ["$yyfy_xiaoyong2"] = "忧来多方，慨然永怀。",
+  ["$yyfy_xiaoyong3"] = "赋赞京都之莺鸟，其冠群类之殊形。",
+  ["$yyfy_xiaoyong4"] = "仲秋之凄，百草萎而变衰，燕翔逝而归海。",
 }
 
 local U = require "packages.utility.utility"
+local F = require("packages.hidden-clouds.functions")
 
 xiaoyong:addEffect(fk.CardUsing, {
   mute = true,
@@ -64,7 +67,8 @@ xiaoyong:addEffect(fk.CardUsing, {
           skill_name = "yyfy_guangu",
           min = 1,
           max = x,
-          prompt = "观骨：选择你要观看的牌堆顶牌数"
+          prompt = "观骨：选择你要观看的牌堆顶牌数",
+          cancelable = false
         })
         ids = room:getNCards(result or 1)
       end
@@ -94,6 +98,18 @@ xiaoyong:addEffect(fk.CardUsing, {
     else
       room:setPlayerMark(player, "@yyfy_xiaoyong-turn", data.card:getNameLength(true))
     end
+  end
+})
+
+xiaoyong:addEffect(fk.TurnStart, {
+  mute = true,
+  can_trigger = function (self, event, target, player, data)
+    return target == player and player:hasSkill(self, true) and
+    F.setEmotion(player, "yyfy_end__zhongyan__2", xiaoyong.name, 0, "caoxiancaohua2.qml", true)
+  end,
+  on_cost = Util.TrueFunc,
+  on_use = function (self, event, target, player, data)
+    player.room:setEmotion(player, "./packages/hidden-clouds/image/anim/dengchang_yyfy_end__zhongyan")
   end
 })
 

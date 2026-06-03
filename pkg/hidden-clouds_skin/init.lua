@@ -84,6 +84,10 @@ local content = {
   {
     skins = { "lan__xuncai__1.gif" },
     enabled_generals = {"lan__xuncai", "olz__xuncai"}
+  },
+  {
+    skins = { "yyfy_end__zhongyan__1.jpg", "yyfy_end__zhongyan__2.mp4" },
+    enabled_generals = {"yyfy_end__zhongyan", "zhongyan", "olz__zhongyan", "1v1_olz__zhongyan"}
   }
 }
 
@@ -137,7 +141,9 @@ Fk:loadTranslationTable {
   ["yyfy_end__wolongfengchu__1"] = "赤壁链火",
   ["yyfy_end__wolongfengchu__2"] = "青羽锦绣",
   ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）",
-  ["lan__xuncai__1"] = "雅柔映采"
+  ["lan__xuncai__1"] = "雅柔映采",
+  ["yyfy_end__zhongyan__1"] = "飞鸿惊雪（静）",
+  ["yyfy_end__zhongyan__2"] = "飞鸿惊雪（动）"
 }
 
 return extension

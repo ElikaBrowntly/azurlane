@@ -23,6 +23,8 @@ Fk:loadTranslationTable {
 
   ["$yyfy_guangu1"] = "此才拔萃，然观其形骨，恐早夭。",
   ["$yyfy_guangu2"] = "绯衣者，汝所拔乎？",
+  ["$yyfy_guangu3"] = "骨相不言，万千因果皆作红粉骷髅。",
+  ["$yyfy_guangu4"] = "寿数贫贱之相，其孕于气运而显于骨相。",
 }
 
 guangu:addEffect("active", {
@@ -68,7 +70,8 @@ guangu:addEffect("active", {
         skill_name = guangu.name,
         min = 1,
         max = x,
-        prompt = "#yyfy_guangu-choice"
+        prompt = "#yyfy_guangu-choice",
+        cancelable = false
       })
       ids = room:getNCards(result or 1)
     else

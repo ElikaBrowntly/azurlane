@@ -9,7 +9,7 @@ Fk:loadTranslationTable {
   ["$yyfy_mingzhe1"] = "明以洞察，哲以保身。",
   ["$yyfy_mingzhe2"] = "塞翁失马，焉知非福。",
   ["$yyfy_mingzhe3"] = "明哲维天，临君下土，贵者莫若天子。",
-  ["$yyfy_mingzhe4"] = "知事为明智，明智则能有所作为。"
+  ["$yyfy_mingzhe4"] = "既明且哲，以保其身，夙夜匪懈，以事一人。"
 }
 
 hezhong:addEffect(fk.AfterCardsMove, {
