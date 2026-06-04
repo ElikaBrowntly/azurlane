@@ -30,7 +30,7 @@ xiuluo:addEffect(fk.TargetConfirmed, {
     local room = player.room
     local cards = room:getCardsFromPileByRule("slash", 1)
     if #cards > 0 then
-      room:obtainCard(player, cards, true, fk.ReasonPrey, player, xiuluo.name)
+      room:obtainCard(player, cards, true, fk.ReasonJustMove, player, xiuluo.name)
     end
     JL.changeCardName(data, "duel", xiuluo.name, room)
   end,
@@ -52,7 +52,7 @@ xiuluo:addEffect(fk.TargetSpecified, {
     local room = player.room
     local cards = room:getCardsFromPileByRule("slash", 1)
     if #cards > 0 then
-      room:obtainCard(player, cards, true, fk.ReasonPrey, player, xiuluo.name)
+      room:obtainCard(player, cards, true, fk.ReasonJustMove, player, xiuluo.name)
     end
     JL.changeCardName(data, "duel", xiuluo.name, room)
   end,

@@ -7,7 +7,9 @@ Fk:loadTranslationTable{
   [":yyfy_bingfeng"] = "当你对其他角色造成伤害时，你摸一张牌，若受伤角色体力值不大于你，你可令其不能使用或打出红色牌直到其回合结束",
 
   ["@@yyfy_bingfeng"] = "冰封",
-  ["#yyfy_bingfeng"] = "冰封：你可以令%dest不能使用或打出红色牌直到其回合结束"
+  ["#yyfy_bingfeng"] = "冰封：你可以令%dest不能使用或打出红色牌直到其回合结束",
+  ["$yyfy_bingfeng1"] = "你确定它被冻在梦里了吗？",
+  ["$yyfy_bingfeng2"] = "看看是谁来救你了"
 }
 
 bingfeng:addEffect(fk.DamageCaused, {

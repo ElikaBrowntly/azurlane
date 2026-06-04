@@ -58,7 +58,7 @@ daojie:addEffect(fk.CardUseFinished, {
           cancelable = false,
         })
       end
-      room:obtainCard(targets[1], data.card, true, fk.ReasonPrey, player, daojie.name)
+      room:obtainCard(targets[1], data.card, true, fk.ReasonGive, player, daojie.name)
     end
     local skills = table.filter(player:getSkillNameList(), function (s)
       return Fk.skills[s]:hasTag(Skill.Compulsory, false)

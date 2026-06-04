@@ -38,7 +38,7 @@ zhuishi:addEffect(fk.TargetConfirming, {
     end
     if player.dead then return end
     if #cards == 1  then
-      room:obtainCard(player, cards, false, fk.ReasonPrey, player, zhuishi.name)
+      room:obtainCard(player, cards, false, fk.ReasonJustMove, player, zhuishi.name)
     end
     local players = {}
     for _, p in ipairs(room:getAlivePlayers()) do

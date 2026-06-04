@@ -42,7 +42,7 @@ xiongji:addEffect(fk.GameStart, {
       i = i + 1
     end
     if player.dead then return end
-    room:obtainCard(player, cards, false, fk.ReasonPrey, player, xiongji.name)
+    room:obtainCard(player, cards, false, fk.ReasonJustMove, player, xiongji.name)
   end
 })
 

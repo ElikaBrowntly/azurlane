@@ -34,7 +34,7 @@ woyeyaogeima:addEffect(fk.AfterCardsMove, {
       if #player.room.draw_pile == 0 then break end
       local card = player.room.draw_pile[1]
       sum = sum + Fk:getCardById(card).number
-      player.room:obtainCard(to, card, false, fk.ReasonPrey, player, woyeyaogeima.name)
+      player.room:obtainCard(to, card, false, fk.ReasonJustMove, player, woyeyaogeima.name)
     end
   end
 })
