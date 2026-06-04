@@ -541,6 +541,15 @@ Fk:loadTranslationTable
   ["~yyfy_end__zhongyan"] = "此间天下人，皆分一斗之才……",
 }
 
+local suode = General:new(extension, "yyfy_suode", "qun", 5)
+suode:addSkills { "yyfy_bingfeng", "yyfy_jisu", "yyfy_hanbao" }
+Fk:loadTranslationTable
+{
+  ["yyfy_suode"] = "索德",
+  ["#yyfy_suode"] = "寒冰巨兽",
+  ["designer:yyfy_suode"] = "名字加载中……"
+}
+
 Fk:loadTranslationTable {
   ["exgod_zhangliao_1"] = "闻风丧胆",
   ["desc:exgod_zhangliao_1"] = "通过〖夺锐〗在一局游戏中获得至少5个技能，并取得胜利。",
