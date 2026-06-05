@@ -5,10 +5,12 @@ local tairan = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["lan__tairan"] = "泰然",
-  [":lan__tairan"] = "锁定技，结束阶段，你回复体力至体力上限，将手牌摸至体力上限。（未完待续）",
+  [":lan__tairan"] = "锁定技，结束阶段，你回复体力至体力上限，将手牌摸至体力上限。",
 
   ["$lan__tairan1"] = "撼山易，撼我司马氏难。",
   ["$lan__tairan2"] = "云卷云舒，处之泰然。",
+  ["$lan__tairan3"] = "宦海沉浮，历尽风浪，方显英雄本色。",
+  ["$lan__tairan4"] = "壁立千仞，泰然本英雄！"
 }
 
 tairan:addEffect(fk.EventPhaseStart, {
