@@ -32,7 +32,7 @@ tianen:addEffect(fk.TargetSpecified, {
     local targetPlayer = data.to
     local cards = room:getCardsFromPileByRule("slash", 1)
     if #cards > 0 then
-      room:obtainCard(player, cards, true, fk.ReasonPrey, player, skillName, "@@lan__tianen-inhand")
+      room:obtainCard(player, cards, true, fk.ReasonJustMove, player, skillName, "@@lan__tianen-inhand")
     end
     -- 若目标不为自己
     if targetPlayer ~= player then

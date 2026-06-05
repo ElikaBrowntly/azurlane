@@ -4,7 +4,10 @@ local hanbao = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_hanbao"] = "寒暴",
-  [":yyfy_hanbao"] = "出牌阶段限一次，你可以弃置你与至多三名其他角色的各一张牌，然后视为对这些角色使用一张不可响应的冰【杀】。"
+  [":yyfy_hanbao"] = "出牌阶段限一次，你可以弃置你与至多三名其他角色的各一张牌，然后视为对这些角色使用一张不可响应的冰【杀】。",
+
+  ["$yyfy_hanbao1"] = "我不会让你们过去的 哈",
+  ["$yyfy_hanbao2"] = "能过去再说，我可不是什么虾兵蟹将！",
 }
 
 hanbao:addEffect("active", {
@@ -41,11 +44,8 @@ hanbao:addEffect("active", {
       })
       table.insert(cards, id)
     end
-    room:throwCard(effect.cards, hanbao.name, player, player)
-    if player.dead then return end
-    for i, id in ipairs(cards) do
-      room:throwCard(id, hanbao.name, tos[i], player)
-    end
+    table.insert(cards, effect.cards[1])
+    room:moveCardTo(cards, Card.DiscardPile, nil, fk.ReasonDiscard, hanbao.name, nil, true, player)
     if player.dead then return end
     tos = table.filter(tos, function(to)
       return to:isAlive() and player:canUseTo(Fk:cloneCard("ice__slash"), to, {

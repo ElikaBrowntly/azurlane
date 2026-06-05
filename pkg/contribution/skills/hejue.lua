@@ -226,7 +226,7 @@ hejue:addEffect("active", {
               ids = availableCards,
               to = player,
               toArea = Card.PlayerHand,
-              moveReason = fk.ReasonPrey,
+              moveReason = fk.ReasonJustMove,
               skillName = "yyfy_hejue",
               proposer = player,
             }

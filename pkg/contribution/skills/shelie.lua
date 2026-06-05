@@ -56,7 +56,7 @@ shelie:addEffect(fk.EventPhaseStart, {
       }
     )[2]
     if #get > 0 then
-      room:moveCardTo(get, Player.Hand, player, fk.ReasonPrey, skillName, nil, true, player)
+      room:moveCardTo(get, Player.Hand, player, fk.ReasonJustMove, skillName, nil, true, player)
     end
 
     room:cleanProcessingArea(cards)

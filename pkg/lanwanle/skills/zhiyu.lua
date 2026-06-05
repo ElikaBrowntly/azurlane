@@ -62,7 +62,7 @@ zhiyu:addEffect(fk.Damaged, {
       if discardedCard and #discardedCard == 1 then
         local cardId = discardedCard[1]
         if table.contains(room.discard_pile, cardId) then
-          room:obtainCard(player, cardId, false, fk.ReasonPrey, player, self.name)
+          room:obtainCard(player, cardId, false, fk.ReasonJustMove, player, self.name)
         end
       end
     else
