@@ -10,6 +10,8 @@ Fk:loadTranslationTable{
 
   ["$lan__yimie1"] = "汝大逆不道，当死无赦！",
   ["$lan__yimie2"] = "斩草除根，灭其退路！",
+  ["$lan__yimie3"] = "夷此僚三族，以儆效尤！",
+  ["$lan__yimie4"] = "逆我司马氏者，罪无可恕！",
 }
 
 yimie:addEffect(fk.DamageCaused, {

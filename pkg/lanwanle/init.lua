@@ -170,12 +170,13 @@ Fk:loadTranslationTable {
 }
 
 local simashi = General:new(extension, "lan__simashi", "jin", 4)
-simashi:addSkills { "lan__buchen", "lan__yimie", "lan__tairan" }
+simashi:addSkills { "lan__taoyin", "lan__yimie", "lan__tairan", "lan__sanshi", "lan__zhenrao",
+"lan__chenlue", "lan__baiyi", "lan__jinglue", "lan__shanli", "ruilue" }
 Fk:loadTranslationTable {
   ["lan__simashi"] = "烂司马师",
   ["#lan__simashi"] = "一拳超人",
   ["designer:lan__simashi"] = "大闲者八雲紫",
-  ["~lan__simashi"] = " "
+  ["~lan__simashi"] = "心高命薄，天何薄我……"
 }
 
 return extension
