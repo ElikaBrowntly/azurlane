@@ -19,7 +19,9 @@ for loop = 1, 737 do
     can_trigger = function(self, event, target, player, data)
       if player:hasSkill(yyfy_tianshu.name, true) then
         local room = player.room ---@type Room
-        local info = room:getBanner("yyfy_tianshu_skills")[yyfy_tianshu.name][1]
+        local infoTable = (room:getBanner("yyfy_tianshu_skills") or {})[yyfy_tianshu.name] or {}
+        if #infoTable == 0 then return end
+        local info = infoTable[1] or 0
         if info == 1 then
           return event == fk.CardUseFinished and target == player
         elseif info == 2 then

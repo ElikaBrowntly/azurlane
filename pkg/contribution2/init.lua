@@ -26,4 +26,14 @@ Fk:loadTranslationTable
   ["~yyfy_mou__liubei"] = "汉室之兴，皆仰望丞相了……",
 }
 
+local zhanghua = General:new(extension, "yyfy_ex__zhanghua", "jin", 3)
+zhanghua:addSkills { "yyfy_bihun", "yyfy_jianhe" }
+Fk:loadTranslationTable
+{
+  ["yyfy_ex__zhanghua"] = "界张华",
+  ["#yyfy_ex__zhanghua"] = "双剑化龙",
+  ["designer:yyfy_ex__zhanghua"] = "幻矩",
+  ["~yyfy_ex__zhanghua"] = "",
+}
+
 return extension
