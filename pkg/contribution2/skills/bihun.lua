@@ -25,7 +25,7 @@ bihun:addEffect(fk.TargetSpecifying, {
 })
 
 bihun:addEffect(fk.CardUseFinished, {
-  anim_type = "support",
+  mute = true,
   can_trigger = function (self, event, target, player, data)
     return target == player and player:hasSkill(bihun.name) and data.card:getMark(bihun.name) > 0
     and data.tos[1] ~= player and player.room:getCardArea(data.card) == Card.Processing

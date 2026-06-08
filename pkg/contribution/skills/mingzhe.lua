@@ -1,4 +1,4 @@
-local hezhong = fk.CreateSkill {
+local mingzhe = fk.CreateSkill {
   name = "yyfy_mingzhe",
 }
 
@@ -12,25 +12,28 @@ Fk:loadTranslationTable {
   ["$yyfy_mingzhe4"] = "既明且哲，以保其身，夙夜匪懈，以事一人。"
 }
 
-hezhong:addEffect(fk.AfterCardsMove, {
+mingzhe:addEffect(fk.AfterCardsMove, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    if not (player and player:hasSkill(hezhong.name) and type(data) == "table") then return false end
+    if not (player and player:hasSkill(mingzhe.name) and type(data) == "table") then return false end
+    local n = 0
     for _, move in ipairs(data) do
       if move.from == player then
         for _, info in ipairs(move.moveInfo) do
           if info.fromArea == Card.PlayerHand or info.fromArea == Card.PlayerEquip then
-            event:setCostData(self, {num = #move.moveInfo})
-            return true
+            n = n + 1
           end
         end
       end
     end
+    if n == 0 then return false end
+    event:setCostData(self, {num = n})
+    return true
   end,
   on_use = function(self, event, target, player, data)
     local num = (event:getCostData(self) or {}).num or 0
-    player:drawCards(num, hezhong.name)
+    player:drawCards(num, mingzhe.name)
   end,
 })
 
-return hezhong
+return mingzhe

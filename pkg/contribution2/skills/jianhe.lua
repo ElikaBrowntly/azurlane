@@ -12,6 +12,7 @@ Fk:loadTranslationTable {
 
   ["$yyfy_jianhe1"] = "身临朝阙，腰悬太阿。",
   ["$yyfy_jianhe2"] = "位登三事，当配龙泉。",
+  ["$yyfy_jianhe3"] = "此剑光芒艳发，非凡物也，当以华阴赤土拭之。"
 }
 
 local function spec(player, target, cards)
