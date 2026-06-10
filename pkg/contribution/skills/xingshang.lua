@@ -96,7 +96,7 @@ local function buy(player)
   local skillnames = Fk.generals[choice]:getSkillNameList(true)
   local skills = {}
   for _, s in ipairs(skillnames) do
-    if not player:hasSkill(s) then
+    if not player:hasSkill(s, true) then
       table.insert(skills, s)
     end
   end

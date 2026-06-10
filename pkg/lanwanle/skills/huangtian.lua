@@ -6,7 +6,7 @@ local huangtian = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["lan__huangtian"] = "黄天",
-  [":lan__huangtian"] = "主公技，当一名角色造成雷电伤害时，所有群势力可以各令其进行一次判定，若结果为：黑色，此伤害+1；红色，其获得此判定牌。",
+  [":lan__huangtian"] = "主公技，当一名角色造成雷电伤害时，所有群势力角色可以各令其进行一次判定，若结果为：黑色，此伤害+1；红色，其获得此判定牌。",
 
   ["$lan__huangtian1"] = "黄衣变黄土，黄巾应黄天。",
   ["$lan__huangtian2"] = "着黄衣者，皆是黄天子民。",

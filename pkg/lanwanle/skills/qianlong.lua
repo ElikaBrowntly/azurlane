@@ -23,7 +23,8 @@ Fk:loadTranslationTable {
       "<a href=':lan__dingxi'>〖定西〗</a>，<a href=':hx__kangkai'>〖慷忾〗</a>，<a href=':lan__chihui'>〖炽灰〗</a>，" ..
       "<a href=':lan__fuxi'>〖赴曦〗</a>，<a href=':lan__xingshang'>〖行殇〗</a>，<a href=':dl__luoying'>〖落英〗</a>，" ..
       "<a href=':lan__chengxiang'>〖称象〗</a>，<a href=':ol_ex__renxin'>〖仁心〗</a>，<a href=':lan__jiangchi'>〖将驰〗</a>，" ..
-      "<a href=':mingjian'>〖明鉴〗</a>，<a href=':lan__zhaotu'>〖招图〗</a>，<a href=':jingju'>〖惊惧〗</a>。",
+      "<a href=':mingjian'>〖明鉴〗</a>，<a href=':lan__zhaotu'>〖招图〗</a>，<a href=':jingju'>〖惊惧〗</a>，"..
+      "<a href=':lan__yuqi'>〖隅泣〗</a>。",--，<a href=':lan__shanshen'>〖善身〗</a>
 
   ["$lan__qianlong1"] = "暗蓄忠君之士，以待破局之机！",
   ["$lan__qianlong2"] = "若安司马于外，或则皇权可收！",
@@ -90,7 +91,7 @@ qianlong:addAcquireEffect(function(self, player, is_start)
   local wei_lord_skills = { "lan__qingliu", "lan__yizheng", "lan__yijin", "lan__jianxiong",
     "lan__xixiang", "lan__aige", "lan__zhenglue", "lan__dingxi", "hx__kangkai", "lan__chihui",
     "lan__fuxi", "lan__xingshang", "dl__luoying", "lan__chengxiang", "ol_ex__renxin",
-    "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju" }
+    "lan__jiangchi", "mingjian", "lan__zhaotu", "lan__jingju", "lan__yuqi",  }--"lan__shanshen"
   if #player:getTableMark("lan__qianlong_skills") == 0 then
     for _, skill in ipairs(wei_lord_skills) do
       player.room:addTableMark(player, "lan__qianlong_skills", skill)

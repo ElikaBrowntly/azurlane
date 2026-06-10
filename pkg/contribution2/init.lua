@@ -5,7 +5,7 @@ extension.extensionName = "hidden-clouds"
 extension:loadSkillSkelsByPath("./packages/hidden-clouds/pkg/contribution2/skills")
 
 local Robbins = General:new(extension, "yyfy__Robbins", "west", 3)
-Robbins:addSkills { "yyfy_plan", "yyfy_organize", "yyfy_lead", "yyfy_motivate", "control", "yyfy_coordinate" }
+Robbins:addSkills { "yyfy_plan", "yyfy_organize", "yyfy_lead", "yyfy_motivate", "yyfy_control", "yyfy_coordinate" }
 Fk:loadTranslationTable
 {
   ["yyfy"] = "",
@@ -34,6 +34,28 @@ Fk:loadTranslationTable
   ["#yyfy_ex__zhanghua"] = "双剑化龙",
   ["designer:yyfy_ex__zhanghua"] = "幻矩",
   ["~yyfy_ex__zhanghua"] = "式乾之议，臣谏事具存，非不谏也……",
+}
+
+local zhouyu = General:new(extension, "yyfy_zhouyu", "wu", 4)
+zhouyu:addSkills { "yyfy_huanli", "yyfy_difu" }
+Fk:loadTranslationTable
+{
+  ["yyfy_zhouyu"] = "周瑜",
+  ["#yyfy_zhouyu"] = "缚耳利群",
+  ["designer:yyfy_zhouyu"] = "名字加载中……",
+  ["~yyfy_zhouyu"] = " ",
+}
+
+local guanyucaojinyu = General:new(extension, "yyfy_guanyucaojinyu", "shu", 4, 4, General.Bigender)
+guanyucaojinyu.subkingdom = "wei"
+guanyucaojinyu:addSkills { "yyfy_weizhen", "yyfy_wuming" }
+guanyucaojinyu:addRelatedSkills{"lan__yuqi", "lan__shanshen"}
+Fk:loadTranslationTable
+{
+  ["yyfy_guanyucaojinyu"] = "关羽&曹金玉",
+  ["#yyfy_guanyucaojinyu"] = "无名小卒亦可威震天下",
+  ["designer:yyfy_guanyucaojinyu"] = "夜隐浮云",
+  ["~yyfy_guanyucaojinyu"] = "玉碎不改白，竹焚不毁节。/娘亲，雪人不怕冷吗？",
 }
 
 return extension
