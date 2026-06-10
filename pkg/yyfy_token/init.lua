@@ -39,8 +39,8 @@ Fk:loadTranslationTable {
   ["yyfy_unexpectation"] = "出其不意",
   [":yyfy_unexpectation"] = "锦囊牌<br/>"..
   "<b>时机</b>：出牌阶段<br/>"..
-  "<b>目标</b>：一名有手牌的其他角色<br/>"..
-  "<b>效果</b>：展示目标角色的一张手牌，并对其造成1点伤害。",
+  "<b>目标</b>：一名其他角色<br/>"..
+  "<b>效果</b>：展示目标角色的一张手牌（没有则不展示），并对其造成1点伤害。",
 }
 
 local jv_basic = fk.CreateCard{
