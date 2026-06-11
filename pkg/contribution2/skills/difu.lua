@@ -8,8 +8,8 @@ Fk:loadTranslationTable {
   [":yyfy_difu"] = "锁定技，若你有“幻利”牌：①当你造成伤害时，受伤角色用所有手牌与这些牌交换；" ..
       "②当你受到伤害时，你用这些牌和伤害来源所有手牌交换。",
 
-  ["$yyfy_difu1"] = "哈哈哈哈哈哈哈哈！",
-  ["$yyfy_difu2"] = "伯符，且看我这一手！",
+  ["$yyfy_difu1"] = "痛苦吧！在仇与恨的地狱中！",
+  ["$yyfy_difu2"] = "挣扎吧！在血和暗的深渊里！",
 }
 
 local spec = function(self, event, target, player, data)

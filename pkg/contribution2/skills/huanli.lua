@@ -9,8 +9,8 @@ Fk:loadTranslationTable {
       "你展示任意张手牌，本回合这些牌获得“幻利”标记，你使用这些牌无距离次数限制，失去这些牌时摸2张牌。",
 
   ["@@yyfy_huanli-inhand-turn"] = "幻利",
-  ["$yyfy_huanli1"] = "哈哈哈哈哈哈哈哈！",
-  ["$yyfy_huanli2"] = "伯符，且看我这一手！",
+  ["$yyfy_huanli1"] = "哈哈哈哈！",
+  ["$yyfy_huanli2"] = "汝等看好了！",
 }
 
 huanli:addEffect(fk.DrawNCards, {

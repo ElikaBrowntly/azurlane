@@ -43,7 +43,7 @@ Fk:loadTranslationTable
   ["yyfy_zhouyu"] = "周瑜",
   ["#yyfy_zhouyu"] = "缚耳利群",
   ["designer:yyfy_zhouyu"] = "名字加载中……",
-  ["~yyfy_zhouyu"] = " ",
+  ["~yyfy_zhouyu"] = "既生瑜，何生亮；既生瑜，何生亮！",
 }
 
 local guanyucaojinyu = General:new(extension, "yyfy_guanyucaojinyu", "shu", 4, 4, General.Bigender)
@@ -53,9 +53,29 @@ guanyucaojinyu:addRelatedSkills{"lan__yuqi", "lan__shanshen"}
 Fk:loadTranslationTable
 {
   ["yyfy_guanyucaojinyu"] = "关羽&曹金玉",
-  ["#yyfy_guanyucaojinyu"] = "无名小卒亦可威震天下",
+  ["#yyfy_guanyucaojinyu"] = "威,红,历,牌",
   ["designer:yyfy_guanyucaojinyu"] = "夜隐浮云",
   ["~yyfy_guanyucaojinyu"] = "玉碎不改白，竹焚不毁节。/娘亲，雪人不怕冷吗？",
+}
+
+local luyusheng = General:new(extension, "yyfy_mou__luyusheng", "wu", 3, 3, General.Female)
+luyusheng:addSkills { "yyfy_shixi", "jianbai", "zelie" }
+Fk:loadTranslationTable
+{
+  ["yyfy_mou__luyusheng"] = "族陆郁生",
+  ["#yyfy_mou__luyusheng"] = "精心坚白",
+  ["designer:yyfy_mou__luyusheng"] = "幻矩",
+  ["~yyfy_mou__luyusheng"] = "拉钩拉钩，明天见~",
+}
+
+local lvmeng = General:new(extension, "yyfy_mou__lvmeng", "wu", 4)
+lvmeng:addSkills { "yyfy_hengye", "yyfy_yingbo" }
+Fk:loadTranslationTable
+{
+  ["yyfy_mou__lvmeng"] = "谋吕蒙",
+  ["#yyfy_mou__lvmeng"] = "",
+  ["designer:yyfy_mou__lvmeng"] = "名字加载中……",
+  ["~yyfy_mou__lvmeng"] = "愎而不备，岂罪于我？",
 }
 
 return extension

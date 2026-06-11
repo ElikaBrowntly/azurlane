@@ -72,8 +72,8 @@ guangu:addEffect("active", {
         max = x,
         prompt = "#yyfy_guangu-choice",
         cancelable = false
-      })
-      ids = room:getNCards(result or 1)
+      }) or 1
+      ids = room:getNCards(result)
     else
       target = effect.tos[1]
       ids = room:askToChooseCards(player, {
