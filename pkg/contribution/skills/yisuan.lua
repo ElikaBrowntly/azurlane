@@ -28,7 +28,7 @@ yisuan:addEffect(fk.EnterDying, {
         skill_name = yisuan.name,
         prompt = "#yyfy_yisuan-reset",
       })
-    player:setSkillUseHistory(skill, 0, Player.HistoryGame)
+    player:clearSkillHistory(yisuan.name)
     room:sendLog{
       type = "#yyfy_YisuanReset",
       from = player.id,

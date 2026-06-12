@@ -5,7 +5,7 @@ local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 -- 所有的前缀
 local AllPrefixs = { "ex", "hs", "js", "klsp", "mini", "miniex", "mobile", "m_ex", "mou", "ofl", "ol", "ol_js", "ol_ex",
-  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil" }
+  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil", "lan", "dl", "dlmou" }
 
 local zhugeliang = { "zhugeliang" }
 for _, prefix in pairs(AllPrefixs) do
@@ -14,6 +14,10 @@ end
 local simayi = { "simayi" }
 for _, prefix in pairs(AllPrefixs) do
   table.insertIfNeed(simayi, prefix .. "__simayi")
+end
+local luyusheng = { "luyusheng" }
+for _, prefix in pairs(AllPrefixs) do
+  table.insertIfNeed(luyusheng, prefix .. "__luyusheng")
 end
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
@@ -88,6 +92,11 @@ local content = {
   {
     skins = { "yyfy_end__zhongyan__1.jpg", "yyfy_end__zhongyan__2.mp4" },
     enabled_generals = {"yyfy_end__zhongyan", "zhongyan", "olz__zhongyan", "1v1_olz__zhongyan"}
+  },
+  {
+    skins = { "lan__luyusheng__1.jpg", "lan__luyusheng__2.jpg", "lan__luyusheng__3.jpg",
+    "lan__luyusheng__4.jpg", "lan__luyusheng__5.jpg" },
+    enabled_generals = luyusheng
   }
 }
 
@@ -143,7 +152,12 @@ Fk:loadTranslationTable {
   ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）",
   ["lan__xuncai__1"] = "雅柔映采",
   ["yyfy_end__zhongyan__1"] = "飞鸿惊雪（静）",
-  ["yyfy_end__zhongyan__2"] = "飞鸿惊雪（动）"
+  ["yyfy_end__zhongyan__2"] = "飞鸿惊雪（动）",
+  ["lan__luyusheng__1"] = "经典形象",
+  ["lan__luyusheng__2"] = "粽香芳菲",
+  ["lan__luyusheng__3"] = "毓秀钟灵",
+  ["lan__luyusheng__4"] = "族陆郁生",
+  ["lan__luyusheng__5"] = "黎歌跃竹"
 }
 
 return extension

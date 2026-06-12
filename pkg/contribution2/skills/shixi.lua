@@ -20,7 +20,7 @@ shixi:addEffect("viewas", {
   prompt = "#yyfy_shixi",
   interaction = function(self, player)
     local choices = {}
-    local all = {"log_spade", "log_club", "log_heart", "log_diamond"}
+    local all = {"log_spade", "log_heart", "log_club", "log_diamond"}
     for i, suit in pairs({Card.Spade, Card.Heart, Card.Club, Card.Diamond}) do
       if table.find(player:getCardIds("he"), function (id)
         return Fk:getCardById(id).suit == suit

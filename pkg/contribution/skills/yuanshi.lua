@@ -27,10 +27,7 @@ yuanshi:addEffect("active", {
     room:loseHp(player, 1, yuanshi.name, player)
     local skill = player:getSkillNameList()
     for _, name in ipairs(skill) do
-      player:setSkillUseHistory(name, 0, Player.HistoryPhase)
-      player:setSkillUseHistory(name, 0, Player.HistoryTurn)
-      player:setSkillUseHistory(name, 0, Player.HistoryRound)
-      player:setSkillUseHistory(name, 0, Player.HistoryGame)
+      player:clearSkillHistory(name)
       -- 暂时无法对Fk.skills[name].times进行复原，因为不知道原本的times最大是多少
     end
   end,

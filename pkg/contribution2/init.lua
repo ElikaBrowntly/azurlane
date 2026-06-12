@@ -66,6 +66,8 @@ Fk:loadTranslationTable
   ["#yyfy_mou__luyusheng"] = "精心坚白",
   ["designer:yyfy_mou__luyusheng"] = "幻矩",
   ["~yyfy_mou__luyusheng"] = "拉钩拉钩，明天见~",
+  ["$zelie_yyfy_mou__luyusheng1"] = "不许哭，要做个大人。",
+  ["$zelie_yyfy_mou__luyusheng2"] = "孔融让梨，是因为不爱吃梨子吗？"
 }
 
 local lvmeng = General:new(extension, "yyfy_mou__lvmeng", "wu", 4)

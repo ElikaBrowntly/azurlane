@@ -21,7 +21,7 @@ yingbo:addEffect(fk.CardUsing, {
   on_use = function(self, event, target, player, data)
     local room = player.room
     local events = room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
-      return (((e.data or {}).card or {}).name or "") == data.card.name and
+      return (((e.data or {}).card or {}).trueName or "") == data.card.trueName and
           e.id < room.logic:getCurrentEvent():findParent(GameEvent.UseCard).id
     end, Player.HistoryRound)
     if events and #events > 0 then return end
@@ -47,7 +47,7 @@ yingbo:addEffect(fk.DamageCaused, {
   can_trigger = function(self, event, target, player, data)
     if not (target == player and player:hasSkill(self) and data.card) then return false end
     local events = player.room.logic:getEventsOfScope(GameEvent.UseCard, 1, function(e)
-      return (((e.data or {}).card or {}).name or "") == data.card.name and
+      return (((e.data or {}).card or {}).trueName or "") == data.card.trueName and
           e.id < player.room.logic:getCurrentEvent():findParent(GameEvent.UseCard).id
     end, Player.HistoryRound)
     return events and #events > 0

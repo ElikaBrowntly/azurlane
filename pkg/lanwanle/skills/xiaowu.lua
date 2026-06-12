@@ -59,7 +59,7 @@ xiaowu:addEffect(fk.TargetSpecified, {
     return target == player and player:hasSkill(xiaowu.name, true)
   end,
   on_refresh = function(self, event, target, player, data)
-    player:setSkillUseHistory(xiaowu.name, 0, Player.HistoryPhase)
+    player:clearSkillHistory(xiaowu.name)
   end,
 })
 
