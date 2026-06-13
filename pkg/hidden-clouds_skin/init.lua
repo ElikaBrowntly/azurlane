@@ -19,6 +19,7 @@ local luyusheng = { "luyusheng" }
 for _, prefix in pairs(AllPrefixs) do
   table.insertIfNeed(luyusheng, prefix .. "__luyusheng")
 end
+table.insert(luyusheng, "wycf__luyusheng")
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
 --- enabled_generals GeneralID[] 启用此皮肤的武将ID列表

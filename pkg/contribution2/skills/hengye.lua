@@ -5,9 +5,9 @@ local hengye = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_hengye"] = "横野",
-  [":yyfy_hengye"] = "锁定技，你造成1点伤害后，本局游戏以下数值+1：<br>" ..
+  [":yyfy_hengye"] = "锁定技，你造成1点伤害后，本局游戏以下数值+1（至多增加体力上限值）：<br>" ..
       "①摸牌时摸牌数；<br>②出牌阶段使用【杀】的次数；<br>③攻击范围；<br>④手牌上限。<br>" ..
-      "每回合开始时，你加一点体力上限或回复一点体力。",
+      "每回合开始时，你回复一点体力。",
 
   ["@yyfy_hengye"] = "横野",
 
@@ -21,14 +21,14 @@ end)
 
 hengye:addEffect(fk.Damage, {
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(self)
+    return target == player and player:hasSkill(self) and player:getMark("@" .. hengye.name) < player.maxHp
   end,
   trigger_times = function(self, event, target, player, data)
     return data.damage
   end,
   on_use = function(self, event, target, player, data)
-    local room = player.room
-    room:addPlayerMark(player, "@" .. hengye.name)
+    local n = math.min(player:getMark("@" .. hengye.name) + 1, player.maxHp)
+    player.room:setPlayerMark(player, "@" .. hengye.name, n)
   end,
 })
 
@@ -68,22 +68,13 @@ hengye:addEffect(fk.TurnStart, {
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local choice = room:askToChoice(player, {
-      choices = { "回复1点体力", "加1点体力上限" },
-      skill_name = hengye.name,
-      prompt = "横野：请回复1点体力或增加1点体力上限",
-      cancelable = false
+    if not player:isWounded() then return end
+    room:recover({
+      who = player,
+      num = 1,
+      skillName = hengye.name,
+      recoverBy = player
     })
-    if choice == "回复1点体力" then
-      if not player:isWounded() then return end
-      room:recover({
-        who = player,
-        num = 1,
-        skillName = hengye.name,
-        recoverBy = player
-      })
-    end
-    room:changeMaxHp(player, 1)
   end,
 })
 
