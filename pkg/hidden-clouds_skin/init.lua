@@ -98,6 +98,10 @@ local content = {
     skins = { "lan__luyusheng__1.jpg", "lan__luyusheng__2.jpg", "lan__luyusheng__3.jpg",
     "lan__luyusheng__4.jpg", "lan__luyusheng__5.jpg" },
     enabled_generals = luyusheng
+  },
+  {
+    skins = { "yyfy_qinluofu__1.jpg" },
+    enabled_generals = { "yyfy_qinluofu" }
   }
 }
 
@@ -158,7 +162,8 @@ Fk:loadTranslationTable {
   ["lan__luyusheng__2"] = "粽香芳菲",
   ["lan__luyusheng__3"] = "毓秀钟灵",
   ["lan__luyusheng__4"] = "族陆郁生",
-  ["lan__luyusheng__5"] = "黎歌跃竹"
+  ["lan__luyusheng__5"] = "黎歌跃竹",
+  ["yyfy_qinluofu__1"] = "清纯写真"
 }
 
 return extension

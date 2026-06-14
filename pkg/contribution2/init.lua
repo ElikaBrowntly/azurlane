@@ -80,4 +80,35 @@ Fk:loadTranslationTable
   ["~yyfy_mou__lvmeng"] = "愎而不备，岂罪于我？",
 }
 
+local longzhousanfei = General:new(extension, "yyfy_longzhousanfei", "wei", 4)
+longzhousanfei.subkingdom = "wu"
+longzhousanfei:addSkills { "xingzhao", "dianhu", "jianji", "lianpian" }
+longzhousanfei:addRelatedSkill("xunxun")
+Fk:loadTranslationTable
+{
+  ["yyfy_longzhousanfei"] = "龙舟三废",
+  ["#yyfy_longzhousanfei"] = "龙舟三废",
+  ["designer:yyfy_longzhousanfei"] = "夜隐浮云",
+  ["~yyfy_longzhousanfei"] = "偷工减料要不得啊……/魏王厚待于我，降魏又有何错？/恐不能再与兴霸兄……并肩奋战了……",
+}
+
+local qinluofu = General:new(extension, "yyfy_qinluofu", "han", 3)
+qinluofu:addSkills { "yyfy_moshangsang", "yyfy_guose", "jilve__tianxiang", "yyfy_biyue", "yyfy_xiuhua", "jilve__chenyu", "jilve__luoyan" }
+Fk:loadTranslationTable
+{
+  ["yyfy_qinluofu"] = "秦罗敷",
+  ["#yyfy_qinluofu"] = "秦氏有好女",
+  ["designer:yyfy_qinluofu"] = "夜隐浮云",
+  ["~yyfy_qinluofu"] = "同心而离居，忧伤以终老。"
+}
+
+local jiaozhongqin = General:new(extension, "yyfy_jiaozhongqin", "han", 3)
+jiaozhongqin:addSkills { "yyfy_tangshangqiamu", "yyfy_ziguadongnanzhi" }
+Fk:loadTranslationTable
+{
+  ["yyfy_jiaozhongqin"] = "焦仲卿",
+  ["#yyfy_jiaozhongqin"] = "孔雀东南飞",
+  ["designer:yyfy_jiaozhongqin"] = "夜隐浮云"
+}
+
 return extension
