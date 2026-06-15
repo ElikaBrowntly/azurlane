@@ -5,7 +5,7 @@ local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 -- 所有的前缀
 local AllPrefixs = { "ex", "hs", "js", "klsp", "mini", "miniex", "mobile", "m_ex", "mou", "ofl", "ol", "ol_js", "ol_ex",
-  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil", "lan", "dl", "dlmou" }
+  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil", "lan", "delight", "dl", "dlmou" }
 
 local zhugeliang = { "zhugeliang" }
 for _, prefix in pairs(AllPrefixs) do
@@ -19,7 +19,7 @@ local luyusheng = { "luyusheng" }
 for _, prefix in pairs(AllPrefixs) do
   table.insertIfNeed(luyusheng, prefix .. "__luyusheng")
 end
-table.insert(luyusheng, "wycf__luyusheng")
+table.insertTable(luyusheng, {"wycf__luyusheng", "chunyu1__luyusheng" })
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
 --- enabled_generals GeneralID[] 启用此皮肤的武将ID列表
