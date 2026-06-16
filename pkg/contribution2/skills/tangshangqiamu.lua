@@ -5,9 +5,9 @@ local tangshangqiamu = fk.CreateSkill{
 
 Fk:loadTranslationTable{
   ["yyfy_tangshangqiamu"] = "堂上启阿母",
-  [":yyfy_tangshangqiamu"] = "锁定技，准备阶段，你拜一名其他女性角色为“阿母”，摸三张牌。",
+  [":yyfy_tangshangqiamu"] = "锁定技，准备阶段，你摸三张牌，拜一名其他女性角色为“阿母”。",
 
-  ["#yyfy_tangshangqiamu-mother"] = "堂上启阿母：拜一名女性角色为“阿母”，摸三张牌",
+  ["#yyfy_tangshangqiamu-mother"] = "堂上启阿母：拜一名女性角色为“阿母”",
   ["@@yyfy_tangshangqiamu_mother"] = "阿母",
 
   ["$yyfy_tangshangqiamu"] = "吕布飘零半生，只恨未逢明主，公若不弃，布愿拜为义父！",
@@ -29,16 +29,15 @@ end)
 tangshangqiamu:addEffect(fk.EventPhaseStart, {
   anim_type = "drawcard",
   can_trigger = function(self, event, target, player, data)
-    return target == player and player:hasSkill(self) and player.phase == Player.Start and
-      table.find(player.room:getOtherPlayers(player, false), function (p)
-        return p:isFemale() and not table.contains(player:getTableMark(tangshangqiamu.name), p.id)
-      end)
+    return target == player and player:hasSkill(self) and player.phase == Player.Start
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
+    player:drawCards(3, tangshangqiamu.name)
     local mothers = table.filter(room:getOtherPlayers(player, false), function (p)
       return p:isFemale() and not table.contains(player:getTableMark(tangshangqiamu.name), p.id)
     end)
+    if #mothers == 0 then return end
     local mother = room:askToChoosePlayers(player, {
       min_num = 1,
       max_num = 1,
@@ -49,7 +48,6 @@ tangshangqiamu:addEffect(fk.EventPhaseStart, {
     })[1]
     room:setPlayerMark(mother, "@@yyfy_tangshangqiamu_mother", 1)
     room:addTableMark(player, tangshangqiamu.name, mother.id)
-    player:drawCards(3, tangshangqiamu.name)
   end,
 })
 

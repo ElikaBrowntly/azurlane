@@ -102,13 +102,36 @@ Fk:loadTranslationTable
   ["~yyfy_qinluofu"] = "同心而离居，忧伤以终老。"
 }
 
-local jiaozhongqin = General:new(extension, "yyfy_jiaozhongqin", "han", 3)
-jiaozhongqin:addSkills { "yyfy_tangshangqiamu", "yyfy_ziguadongnanzhi" }
+local jiaozhongqing = General:new(extension, "yyfy_jiaozhongqing", "han", 3)
+jiaozhongqing:addSkills { "yyfy_tangshangqiamu", "yyfy_ziguadongnanzhi" }
 Fk:loadTranslationTable
 {
-  ["yyfy_jiaozhongqin"] = "焦仲卿",
-  ["#yyfy_jiaozhongqin"] = "孔雀东南飞",
-  ["designer:yyfy_jiaozhongqin"] = "夜隐浮云"
+  ["yyfy_jiaozhongqing"] = "焦仲卿",
+  ["#yyfy_jiaozhongqing"] = "孔雀东南飞",
+  ["designer:yyfy_jiaozhongqing"] = "夜隐浮云"
+}
+
+local zhongqingmu = General:new(extension, "yyfy_zhongqingmu", "han", 3)
+zhongqingmu:addSkills { "yyfy_chuichuangbiandanu", "yyfy_amuweiruqiu" }
+zhongqingmu:addRelatedSkills{ "meiyan", "shuoyu", "zuobao" }
+Fk:loadTranslationTable
+{
+  ["yyfy_zhongqingmu"] = "仲卿母",
+  ["#yyfy_zhongqingmu"] = "封建家长典范",
+  ["designer:yyfy_zhongqingmu"] = "夜隐浮云"
+}
+
+local weiyan = General:new(extension, "yyfy_shiqiang__weiyan", "shu", 4)
+weiyan:addSkills { "zhuangshi", "yinzhan", "zhongao", "m_shiqiang" }
+Fk:loadTranslationTable
+{
+  ["yyfy_shiqiang"] = "",
+  ["yyfy_shiqiang__weiyan"] = "恃强魏延",
+  ["#yyfy_shiqiang__weiyan"] = "矜忠跨万山",
+  ["designer:yyfy_shiqiang__weiyan"] = "名字加载中……",
+
+  ["~yyfy_shiqiang__weiyan"] = "志为大汉献身，纵死又有何恨？",
+  ["!yyfy_shiqiang__weiyan"] = "延一腔赤血，终不负主公之恩。",
 }
 
 return extension
