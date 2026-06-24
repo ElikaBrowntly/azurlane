@@ -134,4 +134,32 @@ Fk:loadTranslationTable
   ["!yyfy_shiqiang__weiyan"] = "延一腔赤血，终不负主公之恩。",
 }
 
+local Mako = General:new(extension, "yyfy_HitachiMako", "moe", 4)
+Mako:addSkills { "yyfy_ciallo", "yyfy_renfa", "jiange__weizhu" }
+Fk:loadTranslationTable
+{
+  ["yyfy_HitachiMako"] = "常陆茉子",
+  ["#yyfy_HitachiMako"] = "调皮的忍者",
+  ["designer:yyfy_HitachiMako"] = "夜隐浮云"
+}
+
+local Aya = General:new(extension, "yyfy_Aya", "moe", 3)
+Aya:addSkills { "yyfy_bingruo", "yyfy_jipin" }
+Fk:loadTranslationTable
+{
+  ["yyfy_Aya"] = "绫",
+  ["#yyfy_Aya"] = "500年前的女孩",
+  ["designer:yyfy_Aya"] = "夜隐浮云"
+}
+
+local Murasame = General:new(extension, "yyfy_Murasame", "moe", 3)
+Murasame:addSkills { "yyfy_ciallo", "yyfy_shendao" }
+Murasame.hidden = true
+Fk:loadTranslationTable
+{
+  ["yyfy_Murasame"] = "丛雨",
+  ["#yyfy_Murasame"] = "神刀的管理者",
+  ["designer:yyfy_Murasame"] = "夜隐浮云"
+}
+
 return extension

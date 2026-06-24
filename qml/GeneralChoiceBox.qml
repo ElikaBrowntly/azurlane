@@ -3,11 +3,11 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Fk
-import Fk.Widgets
-import Fk.Pages.LunarLTK
-import Fk.Components.Common
 import LunarLtk
 import LunarLtk.Components
+import LunarLtk.Pages
+import LunarLtk.Pages.Popups
+import Fk.Components.Common
 import "models"
 
 GraphicsBox {

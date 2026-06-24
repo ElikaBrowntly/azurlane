@@ -39,8 +39,12 @@ local content = {
     enabled_generals = { "lan__caomao", "caomao", "mobile__caomao"}
   },
   {
-    skins = { "quyi__bahua.jpg", "quyi__congyu1.jpg", "quyi__congyu2.jpg" },
+    skins = { "quyi__bahua.jpg" },
     enabled_generals = { "quyi" }
+  },
+  {
+    skins = { "yyfy_Murasame__2.jpg", "yyfy_Murasame__3.jpg" },
+    enabled_generals = { "quyi", "yyfy_Murasame"}
   },
   {
     skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.mp4",
@@ -102,6 +106,10 @@ local content = {
   {
     skins = { "yyfy_qinluofu__1.jpg" },
     enabled_generals = { "yyfy_qinluofu" }
+  },
+  {
+    skins = { "yyfy_Murasame__1.png", "yyfy_Murasame__4.png", "yyfy_Murasame__5.jpg" },
+    enabled_generals = { "yyfy_Murasame" }
   }
 }
 
@@ -130,8 +138,8 @@ Fk:loadTranslationTable {
   ["lan__caomao__1"] = "决进形态",
   ["yyfy_ex__nanhualaoxian__1"] = "着墨山河",
   ["quyi__bahua"] = "御津井芭华",
-  ["quyi__congyu1"] = "丛雨（其一）",
-  ["quyi__congyu2"] = "丛雨（其二）",
+  ["yyfy_Murasame__2"] = "白马（其一）",
+  ["yyfy_Murasame__3"] = "白马（其二）",
   ["lan__caoxiancaohua__1"] = "曹宪 & 曹华",
   ["lan__caoxiancaohua__2"] = "锦瑟良缘·一",
   ["lan__caoxiancaohua__3"] = "锦瑟良缘·二",
@@ -163,7 +171,10 @@ Fk:loadTranslationTable {
   ["lan__luyusheng__3"] = "毓秀钟灵",
   ["lan__luyusheng__4"] = "族陆郁生",
   ["lan__luyusheng__5"] = "黎歌跃竹",
-  ["yyfy_qinluofu__1"] = "清纯写真"
+  ["yyfy_qinluofu__1"] = "清纯写真",
+  ["yyfy_Murasame__1"] = "神刀形态",
+  ["yyfy_Murasame__4"] = "山间戏水",
+  ["yyfy_Murasame__5"] = "初次相见",
 }
 
 return extension
