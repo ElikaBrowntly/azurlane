@@ -4,8 +4,8 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import Qt5Compat.GraphicalEffects
 import Fk
-import Fk.Pages.LunarLTK
-import Fk.Components.LunarLTK
+import Fk.Pages.LunarLtk
+import Fk.Components.LunarLtk
 import Fk.Components.Common
 import Fk.Widgets as W
 import LunarLtk
@@ -26,7 +26,7 @@ W.PageBase {
     property int signTotal: 0
     property string signDate: ""
 
-    // 抽卡配置（不变）
+    // 抽卡配置
     property var categories: [
         { prob: 0.8, getPath: function() { return basePath + "up/servant5.jpg"; } },
         { prob: 0.2, getPath: function() { return basePath + "servant5/" + randomInt(1, 35) + ".jpg"; } },
