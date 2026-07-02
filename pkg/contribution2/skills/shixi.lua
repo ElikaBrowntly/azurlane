@@ -41,7 +41,7 @@ shixi:addEffect("viewas", {
     if not suit then return end
     local card = Fk:cloneCard("ex_nihilo")
     local subcards = table.filter(player:getCardIds("he"), function (id)
-      return Fk:getCardById(id):getColorString() == suit
+      return Fk:getCardById(id):getSuitString(true) == suit
     end)
     card:addFakeSubcards(subcards)
     card.skillName = shixi.name

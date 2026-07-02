@@ -39,12 +39,19 @@ hualong:addEffect(fk.GameStart, {
       choice = generals[math.random(#generals)]
     else
       local result = room:askToCustomDialog(player, {
-        skill_name = hualong.name,
-        qml_path = "packages/hidden-clouds/qml/Hualong.qml",
-        extra_data = { generals }
+        skill_name = hualong.name, -- 技能名称，用于烧条显示
+        component = {
+          url = "packages/hidden-clouds/qml/HualongBox.qml",
+          model = {
+            url = "packages/hidden-clouds/qml/models/HualongModel.qml",
+            prop = {
+              generals = generals       -- generals 为武将名列表（数组）
+            }
+          }
+        }
       })
-      if result ~= "" and result.general then
-        choice = result.general
+      if (result or "") ~= "" then
+        choice = result
       else
         -- 若取消或出错，默认选第一个
         choice = generals[1]
@@ -91,7 +98,7 @@ hualong:addEffect(fk.BeforeGameOverJudge, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    if #player.tag[hualong.name] == 0 then
+    if #(player.tag[hualong.name] or {}) == 0 then
       room:setTag("SkipGameRule", nil)
       return
     end
@@ -111,12 +118,19 @@ hualong:addEffect(fk.BeforeGameOverJudge, {
       choice = generals[math.random(#generals)]
     else
       local result = room:askToCustomDialog(player, {
-        skill_name = hualong.name,
-        qml_path = "packages/hidden-clouds/qml/Hualong.qml",
-        extra_data = { generals }
+        skill_name = hualong.name, -- 技能名称，用于烧条显示
+        component = {
+          url = "packages/hidden-clouds/qml/HualongBox.qml",
+          model = {
+            url = "packages/hidden-clouds/qml/models/HualongModel.qml",
+            prop = {
+              generals = generals       -- generals 为武将名列表（数组）
+            }
+          }
+        }
       })
-      if result ~= "" and result.general then
-        choice = result.general
+      if (result or "") ~= "" then
+        choice = result
       else
         choice = generals[1]
       end

@@ -4,38 +4,25 @@ local shengong = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_shengong"] = "神弓",
-  [":yyfy_shengong"] = "游戏开始时或出牌阶段限一次，你可以射杀一名其他角色。"
+  [":yyfy_shengong"] = "获得此技能时或出牌阶段限一次，你可以射杀一名其他角色。"
 }
 
-shengong:addEffect(fk.GameStart, {
-  anim_type = "offensive",
-  can_trigger = function(self, event, target, player, data)
-    return player and player:hasSkill(self)
-  end,
-  on_cost = function(self, event, target, player, data)
-    local room = player.room
-    local choice = room:askToChoosePlayers(player, {
-      targets = room:getOtherPlayers(player),
-      min_num = 1,
-      max_num = 1,
-      skill_name = shengong.name,
-      prompt = "神弓：请选择要射杀的角色",
-      cancelable = true
-    })
-    if #choice == 1 then
-      event:setCostData(self, {tos = choice})
-      return true
-    end
-  end,
-  on_use = function(self, event, target, player, data)
-    local tos = (event:getCostData(self) or {}).tos
-    if #tos ~= 1 then return end
-    player.room:killPlayer({
-      who = tos[1],
-      killer = player
-    })
-  end
-})
+shengong:addAcquireEffect(function(self, player, is_start, src)
+  local room = player.room
+  local choice = room:askToChoosePlayers(player, {
+    targets = room:getOtherPlayers(player),
+    min_num = 1,
+    max_num = 1,
+    skill_name = shengong.name,
+    prompt = "神弓：请选择要射杀的角色",
+    cancelable = true
+  })
+  if #choice ~= 1 then return end
+  room:killPlayer({
+    who = choice[1],
+    killer = player
+  })
+end)
 
 shengong:addEffect("active", {
   prompt = "神弓：你可以射杀一名角色",
@@ -43,12 +30,12 @@ shengong:addEffect("active", {
   card_num = 0,
   target_num = 1,
   max_phase_use_time = 1,
-  target_filter = function (self, player, to_select, selected, selected_cards, card, extra_data)
+  target_filter = function(self, player, to_select, selected, selected_cards, card, extra_data)
     return to_select and to_select:isAlive() and to_select ~= player and #selected == 0
   end,
   can_use = function(self, player)
     return player and player.phase == Player.Play and player:hasSkill(self)
-    and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
+        and player:usedSkillTimes(self.name, Player.HistoryPhase) == 0
   end,
   on_use = function(self, room, effect)
     local tos = effect.tos

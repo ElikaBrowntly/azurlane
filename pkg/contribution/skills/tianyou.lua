@@ -4,7 +4,7 @@ local tianyou = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_tianyou"] = "天幽",
-  [":yyfy_tianyou"] = "游戏开始时，持恒技，游戏开始时和每轮开始时，你可以重新分配所有角色的座次。",
+  [":yyfy_tianyou"] = "持恒技，游戏开始时和每轮开始时，你可以重新分配所有角色的座次。",
 
   ["#yyfy_tianyou-invoke"] = "天幽：你可以重新分配场上角色的座次",
   ["$yyfy_tianyou"] = "天幽",

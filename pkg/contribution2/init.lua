@@ -111,7 +111,7 @@ Fk:loadTranslationTable
   ["designer:yyfy_jiaozhongqing"] = "夜隐浮云"
 }
 
-local zhongqingmu = General:new(extension, "yyfy_zhongqingmu", "han", 3)
+local zhongqingmu = General:new(extension, "yyfy_zhongqingmu", "han", 3, 3, General.Female)
 zhongqingmu:addSkills { "yyfy_chuichuangbiandanu", "yyfy_amuweiruqiu" }
 zhongqingmu:addRelatedSkills{ "meiyan", "shuoyu", "zuobao" }
 Fk:loadTranslationTable

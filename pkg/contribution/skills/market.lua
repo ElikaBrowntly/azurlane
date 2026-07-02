@@ -88,8 +88,18 @@ skill:addEffect("active", {
       -- 选择技能
       local sname = room:askToCustomDialog(player, {
         skill_name = skill.name,
-        qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-        extra_data = { skills, 1, 1, "#yyfy_market-buy" }
+        component = {
+          url = "packages/utility/qml/ChooseSkillBox.qml",
+          model = {
+            url = "packages/utility/qml/models/ChooseSkillModel.qml",
+            prop = {
+              skills = skills,
+              min = 1,
+              max = 1,
+              prompt = "#yyfy_market-buy"
+            }
+          }
+        }
       })
       if not sname or sname == "" then return end
       if type(sname) == "table" then
@@ -124,8 +134,18 @@ skill:addEffect("active", {
 
       local sname = room:askToCustomDialog(player, {
         skill_name = skill.name,
-        qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-        extra_data = { data.skills, 1, 1, "选择要丢弃的技能" }
+        component = {
+          url = "packages/utility/qml/ChooseSkillBox.qml",
+          model = {
+            url = "packages/utility/qml/models/ChooseSkillModel.qml",
+            prop = {
+              skills = data.skills,
+              min = 1,
+              max = 1,
+              prompt = "选择要丢弃的技能"
+            }
+          }
+        }
       })
       if not sname or sname == "" then return end
       if type(sname) == "table" then
