@@ -1,10 +1,11 @@
 local mingzhe = fk.CreateSkill {
   name = "yyfy_mingzhe",
+  tags = { Skill.Compulsory }
 }
 
 Fk:loadTranslationTable {
   ["yyfy_mingzhe"] = "明哲",
-  [":yyfy_mingzhe"] = "你失去牌后，可以摸等量张牌。",
+  [":yyfy_mingzhe"] = "锁定技，你失去牌后，摸等量张牌。",
 
   ["$yyfy_mingzhe1"] = "明以洞察，哲以保身。",
   ["$yyfy_mingzhe2"] = "塞翁失马，焉知非福。",

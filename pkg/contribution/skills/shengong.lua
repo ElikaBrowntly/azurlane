@@ -4,7 +4,7 @@ local shengong = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_shengong"] = "神弓",
-  [":yyfy_shengong"] = "获得此技能时或出牌阶段限一次，你可以射杀一名其他角色。"
+  [":yyfy_shengong"] = "获得此技能时或出牌阶段限一次，你可以令一名其他角色隐匿并射杀该角色。"
 }
 
 shengong:addAcquireEffect(function(self, player, is_start, src)
@@ -18,8 +18,18 @@ shengong:addAcquireEffect(function(self, player, is_start, src)
     cancelable = true
   })
   if #choice ~= 1 then return end
+  choice = choice[1]
+  room:setPlayerMark(choice, "__hidden_general", choice.general)
+  local deputy = choice.deputyGeneral or ""
+  if Fk.generals[deputy] then
+    room:setPlayerMark(choice, "__hidden_deputy", deputy)
+    room:setPlayerProperty(choice, "deputyGeneral", "")
+  end
+  room:setPlayerProperty(choice, "general", "hiddenone")
+  room:setPlayerProperty(choice, "gender", (Fk.generals["hiddenone"] or {}).gender or 4)
+  room:setPlayerProperty(choice, "kingdom", "jin")
   room:killPlayer({
-    who = choice[1],
+    who = choice,
     killer = player
   })
 end)
@@ -40,8 +50,18 @@ shengong:addEffect("active", {
   on_use = function(self, room, effect)
     local tos = effect.tos
     if #tos ~= 1 then return end
+    local choice = tos[1]
+    room:setPlayerMark(choice, "__hidden_general", choice.general)
+    local deputy = choice.deputyGeneral or ""
+    if Fk.generals[deputy] then
+      room:setPlayerMark(choice, "__hidden_deputy", deputy)
+      room:setPlayerProperty(choice, "deputyGeneral", "")
+    end
+    room:setPlayerProperty(choice, "general", "hiddenone")
+    room:setPlayerProperty(choice, "gender", (Fk.generals["hiddenone"] or {}).gender or 4)
+    room:setPlayerProperty(choice, "kingdom", "jin")
     room:killPlayer({
-      who = tos[1],
+      who = choice,
       killer = effect.from
     })
   end

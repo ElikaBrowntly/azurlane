@@ -134,7 +134,7 @@ Fk:loadTranslationTable
   ["!yyfy_shiqiang__weiyan"] = "延一腔赤血，终不负主公之恩。",
 }
 
-local Mako = General:new(extension, "yyfy_HitachiMako", "moe", 4)
+local Mako = General:new(extension, "yyfy_HitachiMako", "moe", 4, 4, General.Female)
 Mako:addSkills { "yyfy_ciallo", "yyfy_renfa", "jiange__weizhu" }
 Fk:loadTranslationTable
 {
@@ -143,7 +143,7 @@ Fk:loadTranslationTable
   ["designer:yyfy_HitachiMako"] = "夜隐浮云"
 }
 
-local Aya = General:new(extension, "yyfy_Aya", "moe", 3)
+local Aya = General:new(extension, "yyfy_Aya", "moe", 3, 3, General.Female)
 Aya:addSkills { "yyfy_bingruo", "yyfy_jipin" }
 Fk:loadTranslationTable
 {
@@ -152,7 +152,7 @@ Fk:loadTranslationTable
   ["designer:yyfy_Aya"] = "夜隐浮云"
 }
 
-local Murasame = General:new(extension, "yyfy_Murasame", "moe", 3)
+local Murasame = General:new(extension, "yyfy_Murasame", "moe", 3, 3, General.Female)
 Murasame:addSkills { "yyfy_ciallo", "yyfy_shendao" }
 Murasame.hidden = true
 Fk:loadTranslationTable
@@ -160,6 +160,16 @@ Fk:loadTranslationTable
   ["yyfy_Murasame"] = "丛雨",
   ["#yyfy_Murasame"] = "神刀的管理者",
   ["designer:yyfy_Murasame"] = "夜隐浮云"
+}
+
+local caiwenji = General:new(extension, "yyfy_mu__caiwenji", "qun", 3, 3, General.Female)
+caiwenji:addSkills { "yyfy_shuangjia" }
+Fk:loadTranslationTable
+{
+  ["yyfy_mu"] = "",
+  ["yyfy_mu__caiwenji"] = "界乐蔡文姬",
+  ["#yyfy_mu__caiwenji"] = "胡笳十八拍",
+  ["designer:yyfy_mu__caiwenji"] = "名字加载中……"
 }
 
 return extension
