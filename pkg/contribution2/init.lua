@@ -163,13 +163,14 @@ Fk:loadTranslationTable
 }
 
 local caiwenji = General:new(extension, "yyfy_mu__caiwenji", "qun", 3, 3, General.Female)
-caiwenji:addSkills { "yyfy_shuangjia" }
+caiwenji:addSkills { "yyfy_shuangjia", "yyfy_beifen" }
 Fk:loadTranslationTable
 {
   ["yyfy_mu"] = "",
   ["yyfy_mu__caiwenji"] = "界乐蔡文姬",
   ["#yyfy_mu__caiwenji"] = "胡笳十八拍",
-  ["designer:yyfy_mu__caiwenji"] = "名字加载中……"
+  ["designer:yyfy_mu__caiwenji"] = "名字加载中……",
+  ["~yyfy_mu__caiwenji"] = "天何薄我，天何薄我……"
 }
 
 return extension
