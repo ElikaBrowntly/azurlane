@@ -171,7 +171,7 @@ Fk:loadTranslationTable {
   ["lan__luyusheng__3"] = "毓秀钟灵",
   ["lan__luyusheng__4"] = "族陆郁生",
   ["lan__luyusheng__5"] = "黎歌跃竹",
-  ["yyfy_qinluofu__1"] = "清纯写真",
+  ["yyfy_qinluofu__1"] = "陌上桑",
   ["yyfy_Murasame__1"] = "神刀形态",
   ["yyfy_Murasame__4"] = "山间戏水",
   ["yyfy_Murasame__5"] = "初次相见",

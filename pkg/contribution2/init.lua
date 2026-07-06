@@ -173,4 +173,13 @@ Fk:loadTranslationTable
   ["~yyfy_mu__caiwenji"] = "天何薄我，天何薄我……"
 }
 
+local zhangjiao = General:new(extension, "lan__zhangjiao", "qun", 3)
+zhangjiao:addSkills { "lan__leiji", "lan__guidao", "lan__tiangong", "lan__tianjie", "lan__huangtian" }
+Fk:loadTranslationTable {
+  ["lan__zhangjiao"] = "烂张角",
+  ["#lan__zhangjiao"] = "张角布兰德",
+  ["designer:lan__zhangjiao"] = "焉民",
+  ["~lan__zhangjiao"] = "逆天而行，必遭天谴啊"
+}
+
 return extension

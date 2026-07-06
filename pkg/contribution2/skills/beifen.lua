@@ -5,7 +5,7 @@ local beifen = fk.CreateSkill {
 
 Fk:loadTranslationTable{
   ["yyfy_beifen"] = "悲愤",
-  [":yyfy_beifen"] = "锁定技，当你失去一张“胡笳”后，你获得与手中“胡笳”花色均不同的牌各一张。你手中“胡笳”少于其他牌时，你使用牌无距离和次数限制。",
+  [":yyfy_beifen"] = "锁定技，当你失去一张“胡笳”后，你从牌堆和弃牌堆中获得与手中“胡笳”花色均不同的牌各一张。你手中“胡笳”少于其他牌时，你使用牌无距离和次数限制。",
 
   ["$yyfy_beifen1"] = "此心如置冰壶，无物可暖。",
   ["$yyfy_beifen2"] = "年少爱登楼，欲说语还休。",
@@ -42,7 +42,7 @@ beifen:addEffect(fk.AfterCardsMove, {
     if #suits == 0 then return end
     local cards = {}
     for _, suit in ipairs(suits) do
-      table.insertTable(cards, room:getCardsFromPileByRule(".|.|"..suit))
+      table.insertTable(cards, room:getCardsFromPileByRule(".|.|"..suit, 1, "allPiles"))
     end
     if #cards > 0 then
       room:moveCards({
