@@ -48,8 +48,7 @@ local content = {
   },
   {
     skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.mp4",
-      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png", "lan__caoxiancaohua__6.png",
-      "lan__caoxiancaohua__7.mp4"},
+      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png" },
     enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua" }
   },
   {

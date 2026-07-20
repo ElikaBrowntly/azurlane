@@ -1,5 +1,6 @@
 local konggou = fk.CreateSkill {
   name = "yyfy_konggou",
+  aiinvoke = {false, "enemy", false, false, false, 0}
 }
 
 Fk:loadTranslationTable {
@@ -15,9 +16,6 @@ local hp_change = { "slash", "peach", "savage_assault", "archery_attack",     --
 
 konggou:addAcquireEffect(function(self, player, is_start)
   local room = player.room
-  if player.id < 0 then
-    room:handleAddLoseSkills(player, "-"..konggou.name)
-   end
   for _, name in ipairs(hp_change) do
     room:addTableMarkIfNeed(player, "yyfy_konggou-hp", name)
   end
