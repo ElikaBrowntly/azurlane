@@ -92,7 +92,7 @@ Fk:loadTranslationTable
   ["~yyfy_longzhousanfei"] = "偷工减料要不得啊……/魏王厚待于我，降魏又有何错？/恐不能再与兴霸兄……并肩奋战了……",
 }
 
-local qinluofu = General:new(extension, "yyfy_qinluofu", "han", 3)
+local qinluofu = General:new(extension, "yyfy_qinluofu", "han", 3, 3, General.Female)
 qinluofu:addSkills { "yyfy_moshangsang", "yyfy_guose", "jilve__tianxiang", "yyfy_biyue", "yyfy_xiuhua", "jilve__chenyu", "jilve__luoyan" }
 Fk:loadTranslationTable
 {
@@ -180,6 +180,17 @@ Fk:loadTranslationTable {
   ["#lan__zhangjiao"] = "张角布兰德",
   ["designer:lan__zhangjiao"] = "焉民",
   ["~lan__zhangjiao"] = "逆天而行，必遭天谴啊"
+}
+
+local shi__zhouyu = General:new(extension, "yyfy_shi__zhouyu", "wu", 4)
+shi__zhouyu:addSkills { "yyfy_chiyun" }
+Fk:loadTranslationTable {
+  ["yyfy_shi"] = "势？",
+  ["yyfy_shi__zhouyu"] = "水火势周瑜",
+  ["#yyfy_shi__zhouyu"] = "燎琰涤浪",
+  ["designer:yyfy_shi__zhouyu"] = "名字加载中……",
+  ["!yyfy_shi__zhouyu"] = "无需耽于此胜，以后只道平常。",
+  ["~yyfy_shi__zhouyu"] = "大业终有成时，只恨未与伯符共见呐。"
 }
 
 return extension
