@@ -179,13 +179,18 @@ Fk:loadTranslationTable {
   ["~lan__simashi"] = "心高命薄，天何薄我……"
 }
 
-local zhangjiao = General:new(extension, "lan__zhangjiao", "qun", 3)
-zhangjiao:addSkills { "lan__leiji", "lan__guidao", "lan__tiangong", "lan__tianjie", "lan__huangtian" }
+local luyusheng = General:new(extension, "lan__luyusheng", "wu", 3)
+luyusheng:addSkills { "lan__cangxin", "lan__runwei", "lan__shuanghuai", "dl__zhente",
+  "lan__shixi", "lan__jianbai", "lan__zelie" }
 Fk:loadTranslationTable {
-  ["lan__zhangjiao"] = "烂张角",
-  ["#lan__zhangjiao"] = "张角布兰德",
-  ["designer:lan__zhangjiao"] = "焉民",
-  ["~lan__zhangjiao"] = "逆天而行，必遭天谴啊"
+  ["lan__luyusheng"] = "烂陆郁生",
+  ["#lan__luyusheng"] = "橘子妹布兰德",
+  ["designer:lan__luyusheng"] = "夜隐浮云",
+  ["~lan__luyusheng"] = "拉钩拉钩，明天见~",
+  ["$lan__zelie_lan__luyusheng1"] = "不许哭，要做个大人。",
+  ["$lan__zelie_lan__luyusheng2"] = "转瞬之景，何故常忧我心。",
+  ["$lan__zelie_lan__luyusheng3"] = "嘿咻~等下要一起爬树看星星吗？",
+  ["$lan__zelie_lan__luyusheng4"] = "孔融让梨，是因为不爱吃梨子吗？",
 }
 
 return extension

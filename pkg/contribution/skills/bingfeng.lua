@@ -36,7 +36,7 @@ bingfeng:addEffect(fk.DamageCaused, {
       choices = choices,
       all_choices = all,
       cancelable = true,
-      prompt = "#yyfy_bingfeng::"..to.id,
+      prompt = "#yyfy_bingfeng::" .. to.id,
       skill_name = bingfeng.name
     })
     if not choice or choice == "Cancel" then return end
@@ -44,19 +44,23 @@ bingfeng:addEffect(fk.DamageCaused, {
   end
 })
 
+local spec = function(self, player, card)
+  local mark = player:getTableMark("@yyfy_bingfeng")
+  if #mark == 0 then return false end
+  local colors = {}
+  if table.contains(mark, "红") then
+    table.insert(colors, "red")
+  end
+  if table.contains(mark, "黑") then
+    table.insert(colors, "black")
+  end
+  local color = "(" .. table.concat(colors, ",") .. ")"
+  return not card:matchVSPattern(".|.|^" .. color)
+end
+
 bingfeng:addEffect("prohibit", {
-  prohibit_use = function(self, player, card)
-    local mark = player:getTableMark("@yyfy_bingfeng")
-    return
-        card.color == Card.Red and table.contains(mark, "红") or
-        card.color == Card.Black and table.contains(mark, "黑")
-  end,
-  prohibit_response = function(self, player, card)
-    local mark = player:getTableMark("@yyfy_bingfeng")
-    return
-        card.color == Card.Red and table.contains(mark, "红") or
-        card.color == Card.Black and table.contains(mark, "黑")
-  end,
+  prohibit_use = spec,
+  prohibit_response = spec
 })
 
 bingfeng:addEffect(fk.TurnEnd, {

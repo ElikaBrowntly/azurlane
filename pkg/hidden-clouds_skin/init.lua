@@ -5,7 +5,7 @@ local ok, CS = pcall(require, "packages.abcd-system.csfs")
 
 -- 所有的前缀
 local AllPrefixs = { "ex", "hs", "js", "klsp", "mini", "miniex", "mobile", "m_ex", "mou", "ofl", "ol", "ol_js", "ol_ex",
-  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil" }
+  "olmou", "os", "os_heg", "os_ex", "ty", "ty_ex", "ty_heg", "ty_sp", "sk", "sxfy", "ol_evil", "lan", "delight", "dl", "dlmou" }
 
 local zhugeliang = { "zhugeliang" }
 for _, prefix in pairs(AllPrefixs) do
@@ -15,6 +15,11 @@ local simayi = { "simayi" }
 for _, prefix in pairs(AllPrefixs) do
   table.insertIfNeed(simayi, prefix .. "__simayi")
 end
+local luyusheng = { "luyusheng" }
+for _, prefix in pairs(AllPrefixs) do
+  table.insertIfNeed(luyusheng, prefix .. "__luyusheng")
+end
+table.insertTable(luyusheng, {"wycf__luyusheng", "chunyu1__luyusheng" })
 --- 武将皮肤集合
 --- skins SkinFile[] 皮肤文件列表
 --- enabled_generals GeneralID[] 启用此皮肤的武将ID列表
@@ -34,13 +39,16 @@ local content = {
     enabled_generals = { "lan__caomao", "caomao", "mobile__caomao"}
   },
   {
-    skins = { "quyi__bahua.jpg", "quyi__congyu1.jpg", "quyi__congyu2.jpg" },
+    skins = { "quyi__bahua.jpg" },
     enabled_generals = { "quyi" }
   },
   {
+    skins = { "yyfy_Murasame__2.jpg", "yyfy_Murasame__3.jpg" },
+    enabled_generals = { "quyi", "yyfy_Murasame"}
+  },
+  {
     skins = { "lan__caoxiancaohua__1.jpg", "lan__caoxiancaohua__2.gif", "lan__caoxiancaohua__3.mp4",
-      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png", "lan__caoxiancaohua__6.png",
-      "lan__caoxiancaohua__7.mp4"},
+      "lan__caoxiancaohua__4.png", "lan__caoxiancaohua__5.png" },
     enabled_generals = { "caoxiancaohua", "lan__caoxiancaohua", "caoxian", "caohua" }
   },
   {
@@ -88,6 +96,19 @@ local content = {
   {
     skins = { "yyfy_end__zhongyan__1.jpg", "yyfy_end__zhongyan__2.mp4" },
     enabled_generals = {"yyfy_end__zhongyan", "zhongyan", "olz__zhongyan", "1v1_olz__zhongyan"}
+  },
+  {
+    skins = { "lan__luyusheng__1.jpg", "lan__luyusheng__2.jpg", "lan__luyusheng__3.jpg",
+    "lan__luyusheng__4.jpg", "lan__luyusheng__5.jpg" },
+    enabled_generals = luyusheng
+  },
+  {
+    skins = { "yyfy_qinluofu__1.jpg" },
+    enabled_generals = { "yyfy_qinluofu" }
+  },
+  {
+    skins = { "yyfy_Murasame__1.png", "yyfy_Murasame__4.png", "yyfy_Murasame__5.jpg" },
+    enabled_generals = { "yyfy_Murasame" }
   }
 }
 
@@ -116,8 +137,8 @@ Fk:loadTranslationTable {
   ["lan__caomao__1"] = "决进形态",
   ["yyfy_ex__nanhualaoxian__1"] = "着墨山河",
   ["quyi__bahua"] = "御津井芭华",
-  ["quyi__congyu1"] = "丛雨（其一）",
-  ["quyi__congyu2"] = "丛雨（其二）",
+  ["yyfy_Murasame__2"] = "白马（其一）",
+  ["yyfy_Murasame__3"] = "白马（其二）",
   ["lan__caoxiancaohua__1"] = "曹宪 & 曹华",
   ["lan__caoxiancaohua__2"] = "锦瑟良缘·一",
   ["lan__caoxiancaohua__3"] = "锦瑟良缘·二",
@@ -143,7 +164,16 @@ Fk:loadTranslationTable {
   ["ex__yyfy_yongyimoyi__1"] = "经典形象（动）",
   ["lan__xuncai__1"] = "雅柔映采",
   ["yyfy_end__zhongyan__1"] = "飞鸿惊雪（静）",
-  ["yyfy_end__zhongyan__2"] = "飞鸿惊雪（动）"
+  ["yyfy_end__zhongyan__2"] = "飞鸿惊雪（动）",
+  ["lan__luyusheng__1"] = "经典形象",
+  ["lan__luyusheng__2"] = "粽香芳菲",
+  ["lan__luyusheng__3"] = "毓秀钟灵",
+  ["lan__luyusheng__4"] = "族陆郁生",
+  ["lan__luyusheng__5"] = "黎歌跃竹",
+  ["yyfy_qinluofu__1"] = "陌上桑",
+  ["yyfy_Murasame__1"] = "神刀形态",
+  ["yyfy_Murasame__4"] = "山间戏水",
+  ["yyfy_Murasame__5"] = "初次相见",
 }
 
 return extension

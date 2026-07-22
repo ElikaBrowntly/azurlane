@@ -52,6 +52,9 @@ xiaowu:addEffect("targetmod", {
   bypass_times = function(self, player, skill, scope, card, to)
     return card and card:getMark("@@lan__xiaowu-inhand") > 0
   end,
+  bypass_distances = function (self, player, skill, card, to)
+    return card and card:getMark("@@lan__xiaowu-inhand") > 0
+  end
 })
 
 xiaowu:addEffect(fk.TargetSpecified, {
@@ -59,7 +62,7 @@ xiaowu:addEffect(fk.TargetSpecified, {
     return target == player and player:hasSkill(xiaowu.name, true)
   end,
   on_refresh = function(self, event, target, player, data)
-    player:setSkillUseHistory(xiaowu.name, 0, Player.HistoryPhase)
+    player:clearSkillHistory(xiaowu.name)
   end,
 })
 
