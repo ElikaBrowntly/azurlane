@@ -6,7 +6,7 @@ local tiangong = fk.CreateSkill{
 Fk:loadTranslationTable{
   ["lan__tiangong"] = "天公",
   [":lan__tiangong"] = "锁定技，一名角色的回合开始时，你视为使用一张【<a href=':thunder_god_help'>雷公助我</a>】；"..
-  "一名角色的回合结束时，你视为使用一张【<a href=':sharing_risk'>有难同当</a>】。<br>"..
+  "一名角色的回合结束时，你视为使用一张【<a href=':sharing_risk'>有难同当</a>】。"..
   "一名角色判定后，若为♠，你对另一名角色造成1点雷电伤害。",
 
   ["#lan__tiangong-choose"] = "天公：对另一名角色造成1点雷电伤害",
