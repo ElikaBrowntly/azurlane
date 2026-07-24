@@ -183,7 +183,7 @@ Fk:loadTranslationTable {
 }
 
 local shi__zhouyu = General:new(extension, "yyfy_shi__zhouyu", "wu", 4)
-shi__zhouyu:addSkills { "yyfy_chiyun" }
+shi__zhouyu:addSkills { "yyfy_chiyun", "yyfy_yanhui", "yyfy_fentao", "yyfy_xiongzi" }
 Fk:loadTranslationTable {
   ["yyfy_shi"] = "势？",
   ["yyfy_shi__zhouyu"] = "水火势周瑜",
