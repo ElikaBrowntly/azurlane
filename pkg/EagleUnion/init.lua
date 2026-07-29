@@ -11,7 +11,7 @@ Fk:loadTranslationTable
   ["EagleUnion"] = "白鹰",
   ["yyfy_LaffeyII"] = "拉菲II",
   ["#yyfy_LaffeyII"] = "星海逐光",
-  ["cv:yyfy_LaffeyII"] = "长绳麻理亚 ",
+  ["cv:yyfy_LaffeyII"] = "长绳麻理亚",
   ["designer:yyfy_LaffeyII"] = "今天也依旧不幸",
   ["~yyfy_LaffeyII"] = "拉菲的战斗……不会就此结束。",
   ["!yyfy_LaffeyII"] = "战斗胜利……拉菲……要继续睡觉去了……",
@@ -26,10 +26,24 @@ Fk:loadTranslationTable
 {
   ["yyfy_bilan"] = "毕岚",
   ["#yyfy_bilan"] = "锉刀",
+  ["designer:yyfy_bilan"] = "夜隐浮云",
   ["cv:yyfy_bilan"] = "上坂堇",
   ["illustrator:yyfy_bilan"] = "Saru",
   ["~yyfy_bilan"] = "呜哇，大危机！",
   ["!yyfy_bilan"] = "欸嘿嘿~姐姐太忙了，偶尔让我客串下不挺好的嘛~",
+}
+
+local Eldridge = General:new(extension, "yyfy_Eldridge", "moe", 3, 3, General.Female)
+Eldridge:addSkills {"yyfy_caihongjihua", "yyfy_dianqigonglvMax"}
+Fk:loadTranslationTable
+{
+  ["yyfy_Eldridge"] = "埃尔德里奇",
+  ["#yyfy_Eldridge"] = "举高高",
+  ["cv:yyfy_Eldridge"] = "佐佐木望",
+  ["illustrator:yyfy_Eldridge"] = "黒猫桃園",
+  ["designer:yyfy_Eldridge"] = "今天也依旧不幸",
+  ["~yyfy_Eldridge"] = "……加油!",
+  ["!yyfy_Eldridge"] = "驱雷策电…V~☆",
 }
 
 return extension
