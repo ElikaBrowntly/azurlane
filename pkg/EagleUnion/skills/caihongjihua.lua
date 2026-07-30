@@ -9,8 +9,8 @@ Fk:loadTranslationTable {
   "或受到伤害时，你进行判定并获得判定牌，若结果为<font color='red'>♥</font>，你防止本回合受到的伤害和体力流失。",
 
   ["@@yyfy_caihongjihua-turn"] = "彩虹计划",
-  ["$yyfy_caihongjihua1"] = "啊呜！！",
-  ["$yyfy_caihongjihua2"] = "萨拉妹妹爱你哦~"
+  ["$yyfy_caihongjihua1"] = "……指挥官，举高高！",
+  ["$yyfy_caihongjihua2"] = "雷霆……！"
 }
 
 skill:addEffect(fk.Damaged, {
