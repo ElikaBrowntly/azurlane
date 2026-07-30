@@ -24,13 +24,21 @@ skill:addEffect(fk.Damaged, {
   on_use = function (self, event, target, player, data)
     local room = player.room
     player:drawCards(1, skill.name)
-    room:askToChoosePlayers(player, {
+    local to = room:askToChoosePlayers(player, {
       targets = room:getAlivePlayers(false),
       min_num = 1,
       max_num = 1,
       cancelable = false,
       skill_name = skill.name,
       prompt = "彩虹计划：请对一名角色造成1点伤害"
+    })
+    if not to or #to ~= 1 then return end
+    to = to[1]
+    room:damage({
+      from = player,
+      to = to,
+      skillName = skill.name,
+      damage = 1
     })
   end
 })
