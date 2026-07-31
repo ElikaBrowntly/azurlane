@@ -9,8 +9,8 @@ Fk:loadTranslationTable {
   "或受到伤害时，你进行判定并获得判定牌，若结果为<font color='red'>♥</font>，你防止本回合受到的伤害和体力流失。",
 
   ["@@yyfy_caihongjihua-turn"] = "彩虹计划",
-  ["$yyfy_caihongjihua1"] = "啊呜！！",
-  ["$yyfy_caihongjihua2"] = "萨拉妹妹爱你哦~"
+  ["$yyfy_caihongjihua1"] = "……指挥官，举高高！",
+  ["$yyfy_caihongjihua2"] = "雷霆……！"
 }
 
 skill:addEffect(fk.Damaged, {
@@ -24,13 +24,21 @@ skill:addEffect(fk.Damaged, {
   on_use = function (self, event, target, player, data)
     local room = player.room
     player:drawCards(1, skill.name)
-    room:askToChoosePlayers(player, {
+    local to = room:askToChoosePlayers(player, {
       targets = room:getAlivePlayers(false),
       min_num = 1,
       max_num = 1,
       cancelable = false,
       skill_name = skill.name,
       prompt = "彩虹计划：请对一名角色造成1点伤害"
+    })
+    if not to or #to ~= 1 then return end
+    to = to[1]
+    room:damage({
+      from = player,
+      to = to,
+      skillName = skill.name,
+      damage = 1
     })
   end
 })

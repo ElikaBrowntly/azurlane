@@ -23,6 +23,8 @@ Fk:loadTranslationTable {
 
 local ok, JL = pcall(require, "packages.jilve_caidog.util")
 
+if not ok then return yongheng end
+
 JL.addBeforeNegativeEffect(yongheng, {
   can_trigger = function(self, event, target, player, data)
     return ok and player:hasSkill(self) and (player == target or event == fk.BeforeCardsMove)
