@@ -234,4 +234,8 @@ extension:addCardSpec("yyfy_xs_qinshi", Card.Spade, 13)
 
 extension:addCardSpec("yyfy_unexpectation")
 
+if table.contains(Fk.extension_names, "action_water_game") then
+  extension:addCardSpec("acg_jingxilihe", Card.Heart, 3)
+end
+
 return extension

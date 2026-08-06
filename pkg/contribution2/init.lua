@@ -193,4 +193,12 @@ Fk:loadTranslationTable {
   ["~yyfy_shi__zhouyu"] = "大业终有成时，只恨未与伯符共见呐。"
 }
 
+local naiyazi = General:new(extension, "yyfy_naiyazi", "god", 9, 9, General.Female)
+naiyazi:addSkills { "yyfy_yuxi", "yyfy_qianmian", "yyfy_red" }
+Fk:loadTranslationTable {
+  ["yyfy_naiyazi"] = "奈亚子",
+  ["#yyfy_naiyazi"] = "21世纪精神病人",
+  ["designer:yyfy_naiyazi"] = "今天也依旧不幸"
+}
+
 return extension
