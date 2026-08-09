@@ -113,6 +113,10 @@ local content = {
   {
     skins = { "yyfy_Eldridge__1.jpg" },
     enabled_generals = { "yyfy_Eldridge" }
+  },
+  {
+    skins = { "yyfy_Lena__1.jpg", "yyfy_Lena__2.jpg" },
+    enabled_generals = { "yyfy_Lena" }
   }
 }
 
@@ -178,7 +182,9 @@ Fk:loadTranslationTable {
   ["yyfy_Murasame__1.png"] = "神刀形态",
   ["yyfy_Murasame__4.png"] = "山间戏水",
   ["yyfy_Murasame__5.jpg"] = "初次相见",
-  ["yyfy_Eldridge__1.jpg"] = "誓约形象"
+  ["yyfy_Eldridge__1.jpg"] = "誓约形象",
+  ["yyfy_Lena__1.jpg"] = "便服蕾娜",
+  ["yyfy_Lena__2.jpg"] = "忙碌时分"
 }
 
 return extension

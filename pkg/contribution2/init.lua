@@ -162,6 +162,15 @@ Fk:loadTranslationTable
   ["designer:yyfy_Murasame"] = "夜隐浮云"
 }
 
+local Lena = General:new(extension, "yyfy_Lena", "moe", 3, 3, General.Female)
+Lena:addSkills { "yyfy_ciallo", "yyfy_hufu", "yyfy_pingdai" }
+Fk:loadTranslationTable
+{
+  ["yyfy_Lena"] = "蕾娜",
+  ["#yyfy_Lena"] = "北欧的留学生",
+  ["designer:yyfy_Lena"] = "夜隐浮云"
+}
+
 local caiwenji = General:new(extension, "yyfy_mu__caiwenji", "qun", 3, 3, General.Female)
 caiwenji:addSkills { "yyfy_shuangjia", "yyfy_beifen" }
 Fk:loadTranslationTable
