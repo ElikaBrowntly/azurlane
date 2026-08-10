@@ -1,20 +1,15 @@
-import QtQuick 2.12
-import QtQuick.Layouts
-import QtQuick.Window
-import QtQuick.Controls
+import QtQuick 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import Qt5Compat.GraphicalEffects
 import Fk
-import Fk.Pages.LunarLtk
-import Fk.Components.LunarLtk
 import Fk.Components.Common
 import Fk.Widgets as W
-import LunarLtk
-import LunarLtk.Components
-import LunarLtk.Pages.Popups
 
 W.PageBase {
     id: root
     visible: true
+    z: 99999
 
     property string basePath: "../image/icon/"
     property int currentPage: 0
@@ -85,61 +80,11 @@ W.PageBase {
             App.showToast("已满5星，无法再交换");
             return;
         }
-
-        var currentValue = 1;
-
-        var dialog = Qt.createQmlObject(`
-        import QtQuick 2.15
-        import QtQuick.Controls 2.15
-        import QtQuick.Layouts 1.15
-
-        Dialog {
-            modal: true
-            title: "交换礼装"
-            width: 320
-            height: 240
-            standardButtons: Dialog.Ok | Dialog.Cancel
-
-            contentItem: ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 12
-
-                Text { text: "交换数量："; font.pixelSize: 16 }
-
-                SpinBox {
-                    Layout.fillWidth: true
-                    from: 1
-                    to: ${maxBuy}
-                    value: 1
-                    onValueChanged: console.log(value)
-                }
-
-                Text {
-                    id: costLabel
-                    font.pixelSize: 16
-                    color: "#ff9800"
-                    text: "消耗圣晶石：" + (1 * ${pricePerOne})
-                }
-            }
-        }`, root);
-
-        var spinBox = dialog.contentItem.children[1];
-        spinBox.onValueChanged.connect(function() {
-            currentValue = spinBox.value;
-            var cost = spinBox.value * pricePerOne;
-            dialog.contentItem.children[2].text = "消耗圣晶石：" + cost;
-        });
-
-        dialog.accepted.connect(function() {
-            var totalCost = currentValue * pricePerOne;
-            App.setBusy(true);
-            Cpp.notifyServer("LobbyTask", ["exchange_concept_clothes", [clothName, currentValue, totalCost]]);
-            dialog.destroy();
-        });
-
-        dialog.rejected.connect(function() { dialog.destroy(); });
-        dialog.open();
+        exchangeDialog.clothName = clothName;
+        exchangeDialog.pricePerOne = pricePerOne;
+        exchangeDialog.maxBuy = maxBuy;
+        exchangeDialog.exchangeCount = 1;
+        exchangeDialog.open();
     }
 
     function setPage(page) {
@@ -478,8 +423,8 @@ W.PageBase {
             id: clothDetailPopup
             modal: true
             focus: true
-            width: 600
-            height: 400
+            width: Math.min(600, (parent ? parent.width : 600) * 0.9)
+            height: Math.min(400, (parent ? parent.height : 400) * 0.85)
             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
             anchors.centerIn: parent
 
@@ -528,6 +473,86 @@ W.PageBase {
                         color: "#666666"
                     }
                 }
+            }
+        }
+
+        // 礼装交换弹窗（预定义，避免动态创建兼容性问题）
+        Dialog {
+            id: exchangeDialog
+            modal: true
+            title: "交换礼装"
+            width: Math.min(320, parent ? parent.width * 0.85 : 320)
+            height: 260
+            standardButtons: Dialog.Ok | Dialog.Cancel
+
+            property string clothName: ""
+            property int pricePerOne: 0
+            property int maxBuy: 1
+            property int exchangeCount: 1
+
+            onExchangeCountChanged: {
+                costLabel.text = "消耗圣晶石：" + (exchangeCount * pricePerOne);
+            }
+
+            contentItem: ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 16
+                spacing: 12
+
+                Text {
+                    text: "交换数量："
+                    font.pixelSize: 16
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Button {
+                        text: "-"
+                        width: 40
+                        height: 40
+                        enabled: exchangeDialog.exchangeCount > 1
+                        onClicked: exchangeDialog.exchangeCount--;
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 40
+                        color: "#F5F5F5"
+                        border.color: "#CCCCCC"
+                        border.width: 1
+                        radius: 4
+                        Text {
+                            anchors.centerIn: parent
+                            text: exchangeDialog.exchangeCount.toString()
+                            font.pixelSize: 18
+                            font.bold: true
+                        }
+                    }
+
+                    Button {
+                        text: "+"
+                        width: 40
+                        height: 40
+                        enabled: exchangeDialog.exchangeCount < exchangeDialog.maxBuy
+                        onClicked: exchangeDialog.exchangeCount++;
+                    }
+                }
+
+                Text {
+                    id: costLabel
+                    Layout.fillWidth: true
+                    font.pixelSize: 16
+                    color: "#ff9800"
+                    text: "消耗圣晶石：" + (exchangeDialog.exchangeCount * exchangeDialog.pricePerOne)
+                }
+            }
+
+            onAccepted: {
+                var totalCost = exchangeCount * pricePerOne;
+                App.setBusy(true);
+                Cpp.notifyServer("LobbyTask", ["exchange_concept_clothes", [clothName, exchangeCount, totalCost]]);
             }
         }
 
