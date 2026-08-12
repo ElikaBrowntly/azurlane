@@ -171,6 +171,15 @@ Fk:loadTranslationTable
   ["designer:yyfy_Lena"] = "夜隐浮云"
 }
 
+local Masaomi = General:new(extension, "yyfy_ArichiMasaomi", "moe", 4)
+Masaomi:addSkills { "yyfy_ciallo", "yyfy_gonglue", "yyfy_tongguan" }
+Fk:loadTranslationTable
+{
+  ["yyfy_ArichiMasaomi"] = "有地将臣",
+  ["#yyfy_ArichiMasaomi"] = "故事的主人公",
+  ["designer:yyfy_ArichiMasaomi"] = "夜隐浮云"
+}
+
 local caiwenji = General:new(extension, "yyfy_mu__caiwenji", "qun", 3, 3, General.Female)
 caiwenji:addSkills { "yyfy_shuangjia", "yyfy_beifen" }
 Fk:loadTranslationTable
