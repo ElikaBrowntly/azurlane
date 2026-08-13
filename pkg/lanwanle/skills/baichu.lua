@@ -47,8 +47,7 @@ baichu:addEffect(fk.CardUseFinished, {
 baichu:addEffect(fk.GameFinished, {
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    local winners = data:split("+")
-    return player:getMark("lan__baichu-achievements") >= 12 and table.contains(winners, player.role)
+    return player:getMark("lan__baichu-achievements") >= 12 and table.contains(data.players, player)
   end,
   on_refresh = function(self, event, target, player, data)
     F.addAchievement(player.room, nil, nil, nil, "十二奇策", nil, nil, {player}, false, "夜隐浮云")

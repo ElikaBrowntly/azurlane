@@ -5,8 +5,8 @@ local yinguo = fk.CreateSkill {
 
 Fk:loadTranslationTable {
   ["yyfy_yinguo"] = "因果",
-  [":yyfy_yinguo"] = "持恒技，出牌阶段，你可以变更一名角色的的势力或身份牌。"..
-  "当游戏即将结束时，将你的身份牌变更为胜利方身份。",
+  [":yyfy_yinguo"] = "持恒技，出牌阶段，你可以变更一名角色的的势力或身份牌。" ..
+      "当游戏即将结束时，你加入胜利方。",
 
   ["#yyfy_yinguo-choose-kingdom"] = "因果：请选择一个势力",
   ["#yyfy_yinguo-choose-target"] = "因果：请选择一名角色改变其势力或身份",
@@ -28,16 +28,16 @@ end
 local function gameOverJudge(room)
   local ps = room:getAlivePlayers()
   local winner = ""
-  if not table.find(ps, function(p)  -- 没有主公的话
+  if not table.find(ps, function(p) -- 没有主公的话
         return p.role == "lord"
-      end) then                      -- 虽然不太可能改完势力只有一个活人，但还是写上以防万一
+      end) then                     -- 虽然不太可能改完势力只有一个活人，但还是写上以防万一
     winner = #ps == 1 and ps[1].role == "renegade" and "renegade" or "rebel"
   elseif not table.find(ps, function(p)
         return p.role == "rebel" or p.role == "renegade" -- 所有的反贼内奸都死亡
       end) then
     winner = "lord+loyalist+civilian"
   end
-  if winner == "" then return end  -- 没决出胜负
+  if winner == "" then return end -- 没决出胜负
   room:gameOver(winner)
 end
 
@@ -85,7 +85,7 @@ yinguo:addEffect("active", {
     local mode = room:getSettings('gameMode')
     if mode == "yyfy_hegemony" or mode == "new_heg_mode" then
       local ps = room:getAlivePlayers()
-      local winner = table.find(ps, function (p)
+      local winner = table.find(ps, function(p)
         return p.role ~= ps[1].role
       end) and ps[1].role or ""
       if winner ~= "" then
@@ -95,24 +95,29 @@ yinguo:addEffect("active", {
   end,
 })
 
-yinguo:addEffect(fk.GameFinished,{
-  can_trigger = function (self, event, target, player, data)
-    return player and player:hasSkill(self) and player.room:victoryResult(data, player.role) ~= 1
+yinguo:addEffect(fk.GameOverJudge, {
+  can_trigger = function(self, event, target, player, data)
+    return player and player:hasSkill(self, true, true)
   end,
   on_cost = Util.TrueFunc,
-  on_use = function (self, event, target, player, data)
-    if data == "" then
-      data = player.role -- 没说要管队友，自私一点
-      return
+  on_use = function(self, event, target, player, data)
+    local room = player.room
+    local winners = player.room:getGameMode():getWinner(target)
+    if type(winners) == "table" then
+      table.insertIfNeed(winners, player)
+      room:gameOver(winners)
+    elseif type(winners) == "string" then
+      if winners == "" then
+        room:gameOver({player}) -- 平局变成自己一个人赢
+        return
+      end
+      if (string.find(winners, "lord", 1, true) or string.find(winners, "loyalist", 1, true))
+      and player.role ~= "lord" and player.role ~= "loyalist" then
+        room:setPlayerProperty(player, "role", "loyalist") -- 主忠赢，且自己不是主忠，变忠
+        return
+      end
+      room:setPlayerProperty(player, "role", winners) -- 其他情况变胜利方阵营字符串
     end
-    if table.contains(data:split("+"), "lord") or table.contains(data:split("+"), "loyalist") then
-      player.role = "loyalist"
-    elseif table.contains(data:split("+"), "rebel") then
-      player.role = "rebel"
-    elseif table.contains(data:split("+"), "renegade") then
-      player.role = "renegade"
-    end
-    player.room:broadcastProperty(player, "role")
   end
 })
 

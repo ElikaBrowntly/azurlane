@@ -101,7 +101,7 @@ tunshi:addEffect(fk.EventAcquireSkill, {
 tunshi:addEffect(fk.GameFinished, {
   can_trigger = function (self, event, target, player, data)
     return player and player:hasSkill(self) and player.id > 0
-    and table.contains(data:split("+"), player.role)
+    and table.contains(data.players, player)
   end,
   on_cost = Util.TrueFunc,
   on_use = function (self, event, target, player, data)
