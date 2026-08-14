@@ -231,8 +231,7 @@ qianlong:addEffect(fk.Damage, {
 qianlong:addEffect(fk.GameFinished, {
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    local winners = data:split("+")
-    return player:getMark("lan__qianlong-achievements") >= 3 and table.contains(winners, player.role)
+    return player:getMark("lan__qianlong-achievements") >= 3 and table.contains(data.players, player)
   end,
   on_refresh = function(self, event, target, player, data)
     F.addAchievement(player.room, nil, nil, nil, "大魏君王", nil, nil, { player }, false, "夜隐浮云")

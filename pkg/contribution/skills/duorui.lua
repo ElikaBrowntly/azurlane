@@ -7,7 +7,7 @@ local F = require("packages.hidden-clouds.functions")
 
 Fk:loadTranslationTable {
   ["yyfy_duorui"] = "夺锐",
-  [":yyfy_duorui"] = "持恒技，当你对一名其他角色造成伤害后，你可以获得其一个技能，然后可以令其失去该技能",
+  [":yyfy_duorui"] = "持恒技，当你对一名其他角色造成伤害后，你可以获得其一个技能，然后可以令其失去该技能。",
 
   ["#yyfy_duorui-choose"] = "夺锐：是否获得 %dest 的一个技能？",
   ["#yyfy_duorui-skill"] = "夺锐：选择%dest的一个技能",
@@ -96,8 +96,7 @@ duorui:addEffect(fk.Damage, {
 duorui:addEffect(fk.GameFinished, {
   priority = 0.0001,
   can_refresh = function(self, event, target, player, data)
-    local winners = data:split("+")
-    return player:getMark("exgod_zhangliao-achievements") >= 5 and table.contains(winners, player.role)
+    return player:getMark("exgod_zhangliao-achievements") >= 5 and table.contains(data.players, player)
   end,
   on_refresh = function(self, event, target, player, data)
     F.addAchievement(player.room, nil, nil, nil, "闻风丧胆", nil, nil, { player }, false, "夜隐浮云")

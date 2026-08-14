@@ -392,7 +392,7 @@ Fk:loadTranslationTable
 XibalbaORT.hidden = true
 
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
-SaintQuartz:addSkills { "yyfy_ChaldeaGate" }
+SaintQuartz:addSkills { "yyfy_ChaldeaGate", "yyfy_yinguo" }
 Fk:loadTranslationTable
 {
   ["yyfy_SaintQuartz"] = "圣晶石系统",

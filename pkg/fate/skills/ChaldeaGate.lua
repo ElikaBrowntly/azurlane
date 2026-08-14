@@ -16,11 +16,10 @@ gate:addEffect(fk.GameFinished, {
   priority = 0.00001,
   global = true,
   can_refresh = function(self, event, target, player, data)
-    return player and not player.room:getSettings("enableFreeAssign") and player.id > 0 and data
+    return player and not player.room:getSettings("enableFreeAssign") and player.id > 0
   end,
   on_refresh = function(self, event, target, player, data)
-    local winners = data:split("+")
-    local num = table.contains(winners, player.role) and 2 or 1
+    local num = table.contains(data.players or {}, player) and 2 or 1
     CS.ChangePlayerSaintQuartz(player, num)
   end
 })
