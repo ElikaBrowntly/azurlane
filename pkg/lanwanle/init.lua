@@ -193,4 +193,13 @@ Fk:loadTranslationTable {
   ["$lan__zelie_lan__luyusheng4"] = "孔融让梨，是因为不爱吃梨子吗？",
 }
 
+local jiangwei = General:new(extension, "lan__jiangwei", "shu", 4)
+jiangwei:addSkills { "lan__tianren", "lan__jiufa", "lan__pingxiang" }
+Fk:loadTranslationTable {
+  ["lan__jiangwei"] = "烂姜维",
+  ["#lan__jiangwei"] = "姜维布兰德",
+  ["designer:lan__jiangwei"] = "青菜白玉汤",
+  ["~lan__jiangwei"] = " "
+}
+
 return extension
