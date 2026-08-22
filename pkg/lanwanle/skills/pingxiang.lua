@@ -6,7 +6,7 @@ local pingxiang = fk.CreateSkill {
 Fk:loadTranslationTable {
   ["lan__pingxiang"] = "平襄",
   [":lan__pingxiang"] = "限定技，出牌阶段，你可以减少任意点体力上限，然后视为使用等量张火【杀】。" ..
-      "若有角色因此进入濒死状态，则重置此技能。（未完待续）",
+      "若有角色因此进入濒死状态，则重置此技能。",
 
   ["#lan__pingxiang"] = "平襄：请减少任意点体力上限，视为使用等量张火【杀】",
   ["#lan__pingxiang-slash"] = "平襄：你可以视为使用火【杀】（第%arg张，共%arg2张）！",
