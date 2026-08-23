@@ -12,11 +12,16 @@ zuiying:addEffect(fk.CardUseFinished, {
   anim_type = "negative",
   can_trigger = function(self, event, target, player, data)
     if not (target == player and player:hasSkill(self) and data.card) then return false end
+    local use = player.room.logic:getEventsByRule(GameEvent.UseCard, 1, function (e)
+      return e.data.from == player and e.data.card.id == data.card.id
+    end, nil, Player.HistoryPhase)
+    if #(use or {}) ~= 1 then return false end
     local events = player.room.logic:getActualDamageEvents(99, function(e)
       local to = e.data.to
       return to and to:isAlive() and table.contains(data.tos, to) and e.data.damage > 0
-    end, nil, event.id)
+    end, nil, use[1].id)
     if #(events or {}) == 0 then return false end
+    print(#(events or {}))
     local cost = event:getCostData(self) or {}
     cost.events = events
     event:setCostData(self, cost)
