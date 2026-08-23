@@ -100,7 +100,7 @@ Fk:loadTranslationTable {
 
 local sunquan = General:new(extension, "lan__sunquan", "wu", 4)
 sunquan:addSkills { "lan__zhiheng", "lan__woheng", "lan__yuhui", "lan__quanyu",
- "lan__tianen", "lan__renxian", "lan__jiuyuan" }
+  "lan__tianen", "lan__renxian", "lan__jiuyuan" }
 Fk:loadTranslationTable {
   ["lan__sunquan"] = "烂孙权",
   ["#lan__sunquan"] = "孙权布兰德",
@@ -119,9 +119,9 @@ Fk:loadTranslationTable {
 
 local machao = General:new(extension, "lan__machao", "qun", 2, 4)
 machao.shield = 3
-machao:addSkills { "lan__shouli", "lan__hengwu", "lan__zhongtao", "lan__jizhan" ,"dlmou__tieji",
-"lan__zhuiji", "ol__shichou", "lan__tingwei", "lan__jimie" }
-Fk:loadTranslationTable{
+machao:addSkills { "lan__shouli", "lan__hengwu", "lan__zhongtao", "lan__jizhan", "dlmou__tieji",
+  "lan__zhuiji", "ol__shichou", "lan__tingwei", "lan__jimie" }
+Fk:loadTranslationTable {
   ["lan__machao"] = "烂马超",
   ["#lan__machao"] = "雄烈盖世",
   ["illustrator:lan__machao"] = "维柯托骑士",
@@ -131,8 +131,8 @@ Fk:loadTranslationTable{
 
 local ganfuren = General:new(extension, "lan__ganfurenmifuren", "shu", 3, 3, General.Female)
 ganfuren:addSkills { "lan__chanjuan", "lan__xunbie" }
-ganfuren:addRelatedSkills{ "dl__shushen", "dl__huangsi", "dl__guixiu", "dl__cunsi", "dl__yongjue" }
-Fk:loadTranslationTable{
+ganfuren:addRelatedSkills { "dl__shushen", "dl__huangsi", "dl__guixiu", "dl__cunsi", "dl__yongjue" }
+Fk:loadTranslationTable {
   ["lan__ganfurenmifuren"] = "烂甘夫人糜夫人",
   ["#lan__ganfurenmifuren"] = "千里婵娟",
   ["illustrator:lan__ganfurenmifuren"] = "七兜豆",
@@ -171,7 +171,7 @@ Fk:loadTranslationTable {
 
 local simashi = General:new(extension, "lan__simashi", "jin", 4)
 simashi:addSkills { "lan__taoyin", "lan__yimie", "lan__tairan", "lan__sanshi", "lan__zhenrao",
-"lan__chenlue", "lan__baiyi", "lan__jinglue", "lan__shanli", "ruilue" }
+  "lan__chenlue", "lan__baiyi", "lan__jinglue", "lan__shanli", "ruilue" }
 Fk:loadTranslationTable {
   ["lan__simashi"] = "烂司马师",
   ["#lan__simashi"] = "一拳超人",
@@ -194,7 +194,8 @@ Fk:loadTranslationTable {
 }
 
 local jiangwei = General:new(extension, "lan__jiangwei", "shu", 4)
-jiangwei:addSkills { "lan__tianren", "lan__jiufa", "lan__pingxiang" }
+jiangwei:addSkills { "lan__tianren", "lan__jiufa", "lan__pingxiang",
+  "lan__tiantao", "lan__xinghun", "lan__shenpei" }
 Fk:loadTranslationTable {
   ["lan__jiangwei"] = "烂姜维",
   ["#lan__jiangwei"] = "姜维布兰德",
