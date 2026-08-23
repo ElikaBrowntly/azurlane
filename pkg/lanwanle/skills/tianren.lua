@@ -11,7 +11,9 @@ Fk:loadTranslationTable {
   ["@lan__tianren"] = "天任",
 
   ["$lan__tianren1"] = "举石补苍天，舍我更复其谁？",
-  ["$lan__tianren2"] = "天地同协力，何愁汉道不昌？"
+  ["$lan__tianren2"] = "天地同协力，何愁汉道不昌？",
+  ["$lan__tianren3"] = "青天犹在汉，其辰在北，其兴在我！",
+  ["$lan__tianren4"] = "天之所任者，负重如山，行役在远！"
 }
 
 tianren:addEffect(fk.AfterCardsMove, {

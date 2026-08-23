@@ -1,10 +1,11 @@
 local yishi = fk.CreateSkill{
   name = "yyfy_yishi&",
+  tags = { Skill.Compulsory }
 }
 
 Fk:loadTranslationTable{
   ["yyfy_yishi&"] = "义释",
-  [":yyfy_yishi&"] = "出牌阶段内限1次，你可选择1名其他角色，交给其1张牌，若你选择的角色与此技能原拥有者"..
+  [":yyfy_yishi&"] = "锁定技，出牌阶段限1次，你可以交给1名其他角色1张牌，若你选择的角色与此技能原拥有者"..
   "势力相同，则至多交出4张。你每交给与原拥有者同势力的角色2张牌，其对你下次造成的伤害便-1。",
 }
 

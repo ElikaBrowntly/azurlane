@@ -200,7 +200,7 @@ Fk:loadTranslationTable {
   ["lan__jiangwei"] = "烂姜维",
   ["#lan__jiangwei"] = "姜维布兰德",
   ["designer:lan__jiangwei"] = "青菜白玉汤",
-  ["~lan__jiangwei"] = " "
+  ["~lan__jiangwei"] = "恩师，昭烈，上至光武、高祖，维，尽力了！"
 }
 
 return extension
