@@ -68,6 +68,14 @@ Fk:loadTranslationTable {
   ["designer:yyfy_piangrandpa"] = "幻矩",
 }
 
+local guohujun = General:new(extension, "yyfy_guohujun", "god", 6, 7)
+guohujun:addSkills { "yyfy_zuiying" }
+Fk:loadTranslationTable {
+  ["yyfy_guohujun"] = "国护军",
+  ["#yyfy_guohujun"] = "国护军就是爷",
+  ["designer:yyfy_guohujun"] = "幻矩",
+}
+
 local youlewangzi = General:new(extension, "yyfy_youlewangzi", "god", 4)
 youlewangzi:addSkills { "yyfy_mianjv", "yyfy_miyu" }
 Fk:loadTranslationTable {
@@ -251,52 +259,6 @@ Fk:loadTranslationTable {
   ["designer:yyfy_shenglingpuni7"] = "一维无限"
 }
 puni7.total_hidden = true
-
-local yoshino = General:new(extension, "yyfy_TomotakeYoshino", "moe", 3, 3, General.Female)
-yoshino:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino"] = "朝武芳乃",
-  ["#yyfy_TomotakeYoshino"] = "穗织的巫女",
-  ["designer:yyfy_TomotakeYoshino"] = "夜隐浮云",
-  ["~yyfy_TomotakeYoshino"] = "",
-  ["cv:yyfy_TomotakeYoshino"] = "遥空"
-}
-
-local yoshino1 = General:new(extension, "yyfy_TomotakeYoshino1", "moe", 3, 3, General.Female)
-yoshino1:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino1"] = "朝武芳乃",
-  ["~yyfy_TomotakeYoshino2"] = "",
-}
-local yoshino2 = General:new(extension, "yyfy_TomotakeYoshino2", "moe", 3, 3, General.Female)
-yoshino2:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino2"] = "朝武芳乃",
-  ["~yyfy_TomotakeYoshino2"] = "",
-}
-local yoshino3 = General:new(extension, "yyfy_TomotakeYoshino3", "moe", 3, 3, General.Female)
-yoshino3:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino3"] = "朝武芳乃",
-  ["~yyfy_TomotakeYoshino3"] = "",
-}
-local yoshino4 = General:new(extension, "yyfy_TomotakeYoshino4", "moe", 3, 3, General.Female)
-yoshino4:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino4"] = "朝武芳乃",
-  ["~yyfy_TomotakeYoshino4"] = "",
-}
-local yoshino5 = General:new(extension, "yyfy_TomotakeYoshino5", "moe", 3, 3, General.Female)
-yoshino5:addSkills { "yyfy_ciallo", "yyfy_fuhui", "yyfy_shenyue", "yyfy_0721" }
-Fk:loadTranslationTable {
-  ["yyfy_TomotakeYoshino5"] = "朝武芳乃",
-  ["~yyfy_TomotakeYoshino5"] = "",
-}
-yoshino1.total_hidden = true
-yoshino2.total_hidden = true
-yoshino3.total_hidden = true
-yoshino4.total_hidden = true
-yoshino5.total_hidden = true
 
 local AdamSmith = General:new(extension, "yyfy_AdamSmith", "west", 3)
 AdamSmith:addSkills { "yyfy_kanbujiandeshou" }

@@ -11,8 +11,8 @@ Fk:loadTranslationTable {
   ["#lan__pingxiang"] = "平襄：请减少任意点体力上限，视为使用等量张火【杀】",
   ["#lan__pingxiang-slash"] = "平襄：你可以视为使用火【杀】（第%arg张，共%arg2张）！",
 
-  ["$lan__pingxiang1"] = "策马纵慷慨，捐躯抗虎豺。",
-  ["$lan__pingxiang2"] = "解甲事仇雠，竭力挽狂澜。",
+  ["$lan__pingxiang1"] = "此身独继隆中志，功成再拜五丈原！",
+  ["$lan__pingxiang2"] = "平北襄乱之心，纵身加斧钺亦不改半分！"
 }
 
 pingxiang:addEffect("active", {

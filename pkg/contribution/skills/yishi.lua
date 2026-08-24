@@ -1,6 +1,7 @@
 local yishi = fk.CreateSkill{
   name = "yyfy_yishi",
-  attached_skill_name = "yyfy_yishi&"
+  attached_skill_name = "yyfy_yishi&",
+  tags = { Skill.Compulsory }
 }
 
 Fk:loadTranslationTable{

@@ -10,6 +10,8 @@ Fk:loadTranslationTable{
 
   ["$lan__jiufa1"] = "九伐中原，以圆先帝遗志。",
   ["$lan__jiufa2"] = "日日砺剑，相报丞相厚恩。",
+  ["$lan__jiufa3"] = "担北伐重托，当兴复汉室，还于旧都。",
+  ["$lan__jiufa4"] = "任将军之职，应厉兵秣马，军出陇右。"
 }
 
 local spec = {
