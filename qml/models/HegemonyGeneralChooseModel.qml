@@ -1,7 +1,6 @@
 // packages/hidden-clouds/qml/models/HegemonyGeneralChooseModel.qml
-import QtQuick 2.12
+import QtQuick 2.15
 import Fk
-import LunarLtk
 
 QtObject {
     id: root

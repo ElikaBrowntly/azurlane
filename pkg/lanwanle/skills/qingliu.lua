@@ -1,4 +1,4 @@
-local lan__qingliu = fk.CreateSkill{
+local qingliu = fk.CreateSkill{
   name = "lan__qingliu",
   frequency = { Skill.Compulsory },
 }
@@ -27,9 +27,9 @@ local function getAllKingdoms()
 end
 
 -- 游戏开始时选择势力
-lan__qingliu:addEffect(fk.GameStart, {
+qingliu:addEffect(fk.GameStart, {
   can_trigger = function(self, event, target, player, data)
-    return player:hasSkill(lan__qingliu.name)
+    return player:hasSkill(qingliu.name)
   end,
   on_use = function(self, event, target, player, data)
     local room = player.room
@@ -37,7 +37,7 @@ lan__qingliu:addEffect(fk.GameStart, {
     
     local kingdom = room:askToChoice(player, {
       choices = kingdoms,
-      skill_name = lan__qingliu.name,
+      skill_name = qingliu.name,
       prompt = "#lan__qingliu-choose-kingdom",
     })
     
@@ -48,7 +48,7 @@ lan__qingliu:addEffect(fk.GameStart, {
 })
 
 -- 出牌阶段限一次改变势力
-lan__qingliu:addEffect("active", {
+qingliu:addEffect("active", {
   prompt = "#lan__qingliu-choose-target",
   card_num = 0,
   target_num = 1,
@@ -67,7 +67,7 @@ lan__qingliu:addEffect("active", {
     
     local newKingdom = room:askToChoice(player, {
       choices = kingdoms,
-      skill_name = lan__qingliu.name,
+      skill_name = qingliu.name,
       prompt = "#lan__qingliu-choose-kingdom",
     })
     
@@ -85,7 +85,7 @@ lan__qingliu:addEffect("active", {
 })
 
 -- 当有角色进入濒死状态时改变势力
-lan__qingliu:addEffect(fk.Dying, {
+qingliu:addEffect(fk.AfterDying, {
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self.name)
   end,
@@ -95,7 +95,7 @@ lan__qingliu:addEffect(fk.Dying, {
       min_num = 1,
       max_num = 1,
       targets = player.room:getAlivePlayers(),
-      skill_name = lan__qingliu.name,
+      skill_name = qingliu.name,
       prompt = "#lan__qingliu-choose-target",
       cancelable = true,
     })
@@ -108,18 +108,17 @@ lan__qingliu:addEffect(fk.Dying, {
     -- 选择新势力
     local kingdoms = getAllKingdoms()
     table.removeOne(kingdoms, to.kingdom) -- 移除当前势力
-    
+
     if #kingdoms == 0 then return end
-    
+
     local newKingdom = room:askToChoice(player, {
       choices = kingdoms,
-      skill_name = lan__qingliu.name,
+      skill_name = qingliu.name,
       prompt = "#lan__qingliu-choose-kingdom",
     })
-    
+
     if newKingdom ~= to.kingdom then
       room:changeKingdom(to, newKingdom, true)
-      
       room:sendLog{
         type = "#lan__qingliu-change",
         from = to.id,
@@ -130,4 +129,4 @@ lan__qingliu:addEffect(fk.Dying, {
   end,
 })
 
-return lan__qingliu
+return qingliu
