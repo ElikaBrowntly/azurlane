@@ -1,8 +1,7 @@
 // packages/hidden-clouds/qml/HegemonyGeneralChooseBox.qml
-import QtQuick
+import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Window 2.15
 import Qt5Compat.GraphicalEffects
 import Fk
 import Fk.Widgets
@@ -15,10 +14,12 @@ import "models"
 GraphicsBox {
     id: root
 
+    z: 99999
+
     required property HegemonyGeneralChooseModel dataModel
 
-    width: 800
-    height: 600
+    width: parent ? Math.min(parent.width, 820) : 800
+    height: parent ? Math.min(parent.height, 620) : 600
 
     Rectangle {
         anchors.fill: parent
