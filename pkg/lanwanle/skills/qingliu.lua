@@ -85,7 +85,7 @@ qingliu:addEffect("active", {
 })
 
 -- 当有角色进入濒死状态时改变势力
-qingliu:addEffect(fk.AfterDying, {
+qingliu:addEffect(fk.EnterDying, {
   can_trigger = function(self, event, target, player, data)
     return player and player:hasSkill(self.name)
   end,
