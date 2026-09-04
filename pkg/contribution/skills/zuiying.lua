@@ -21,7 +21,6 @@ zuiying:addEffect(fk.CardUseFinished, {
       return to and to:isAlive() and table.contains(data.tos, to) and e.data.damage > 0
     end, nil, use[1].id)
     if #(events or {}) == 0 then return false end
-    print(#(events or {}))
     local cost = event:getCostData(self) or {}
     cost.events = events
     event:setCostData(self, cost)

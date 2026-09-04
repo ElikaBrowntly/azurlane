@@ -83,7 +83,6 @@ Fk:loadTranslationTable
 local longzhousanfei = General:new(extension, "yyfy_longzhousanfei", "wei", 4)
 longzhousanfei.subkingdom = "wu"
 longzhousanfei:addSkills { "xingzhao", "dianhu", "jianji", "lianpian" }
-longzhousanfei:addRelatedSkill("xunxun")
 Fk:loadTranslationTable
 {
   ["yyfy_longzhousanfei"] = "龙舟三废",
@@ -281,6 +280,16 @@ Fk:loadTranslationTable {
   ["yyfy_tumo__caocao"] = "屠魔曹操",
   ["#yyfy_tumo__caocao"] = "屠魔终成魔",
   ["designer:yyfy_tumo__caocao"] = "夜隐浮云"
+}
+
+local mo__lvbu = General:new(extension, "yyfy_mo__lvbu", "qun", 4)
+mo__lvbu:addSkills { "yyfy_duoqi", "yyfy_kuangmo", "yyfy_gangquan" }
+Fk:loadTranslationTable {
+  ["yyfy_mo"] = "魔？",
+  ["yyfy_mo__lvbu"] = "界魔吕布",
+  ["#yyfy_mo__lvbu"] = "荡宇的捷拳",
+  ["designer:yyfy_mo__lvbu"] = "夜隐浮云",
+  ["~yyfy_mo__lvbu"] = "人间无敌，该去地狱挑战了。"
 }
 
 return extension
