@@ -77,7 +77,7 @@ Fk:loadTranslationTable {
   ["~lan__dengai"] = "钟会！你为何害我！"
 }
 
-local caoxiancaohua = General:new(extension, "lan__caoxiancaohua", "qun", 3)
+local caoxiancaohua = General:new(extension, "lan__caoxiancaohua", "qun", 3, 3, General.Female)
 caoxiancaohua:addSkills { "lan__huamu", "lan__liangyuan", "lan__jisi", "lan__lingxi",
   "lan__zhifou", "lan__caiyi", "lan__guili" }
 Fk:loadTranslationTable {
@@ -179,7 +179,7 @@ Fk:loadTranslationTable {
   ["~lan__simashi"] = "心高命薄，天何薄我……"
 }
 
-local luyusheng = General:new(extension, "lan__luyusheng", "wu", 3)
+local luyusheng = General:new(extension, "lan__luyusheng", "wu", 3, 3, General.Female)
 luyusheng:addSkills { "lan__cangxin", "lan__runwei", "lan__shuanghuai", "dl__zhente",
   "lan__shixi", "lan__jianbai", "lan__zelie" }
 Fk:loadTranslationTable {

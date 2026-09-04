@@ -265,4 +265,22 @@ Fk:loadTranslationTable {
   ["designer:yyfy_naiyazi"] = "今天也依旧不幸"
 }
 
+local yi__liushan = General:new(extension, "yyfy_yi__liushan", "evil", 3)
+yi__liushan:addSkills { "yyfy_kongquan" }
+Fk:loadTranslationTable {
+  ["yyfy_yi"] = "疑？",
+  ["yyfy_yi__liushan"] = "疑刘禅",
+  ["#yyfy_yi__liushan"] = "蚀心入魔",
+  ["designer:yyfy_yi__liushan"] = "夜隐浮云"
+}
+
+local tumo__caocao = General:new(extension, "yyfy_tumo__caocao", "qun", 4)
+tumo__caocao:addSkills { "lan__xixiang", "yyfy__tumo", "yyfy_chengmo" }
+Fk:loadTranslationTable {
+  ["yyfy_tumo"] = "",
+  ["yyfy_tumo__caocao"] = "屠魔曹操",
+  ["#yyfy_tumo__caocao"] = "屠魔终成魔",
+  ["designer:yyfy_tumo__caocao"] = "夜隐浮云"
+}
+
 return extension
