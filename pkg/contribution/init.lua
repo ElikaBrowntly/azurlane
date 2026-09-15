@@ -69,7 +69,7 @@ Fk:loadTranslationTable {
 }
 
 local guohujun = General:new(extension, "yyfy_guohujun", "god", 6, 7)
-guohujun:addSkills { "yyfy_zuiying" }
+guohujun:addSkills { "yyfy_zuiying", "yyfy_xiawan" }
 Fk:loadTranslationTable {
   ["yyfy_guohujun"] = "国护军",
   ["#yyfy_guohujun"] = "国护军就是爷",
