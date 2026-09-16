@@ -23,7 +23,6 @@ tunshi:addEffect(fk.Damage, {
   on_cost = function(self, event, target, player, data)
     local to = data.to
     local room = player.room
-    --排除夺锐自身
     local skills = {}
     for _, s in ipairs(to.player_skills) do
       if s:isPlayerSkill(to) and s.name ~= tunshi.name then
@@ -123,8 +122,18 @@ local function delete(player)
   local save = state["yyfy_tunshi"] or {}
   local sname = room:askToCustomDialog(player, {
     skill_name = tunshi.name,
-    qml_path = "packages/utility/qml/ChooseSkillBox.qml",
-    extra_data = { player:getSkillNameList(), 0, 1, "吞噬：请选择要删去的技能" }
+    component = {
+      url = "packages/utility/qml/ChooseSkillBox.qml",
+      model = {
+        url = "packages/utility/qml/models/ChooseSkillModel.qml",
+        prop = {
+          skills = player:getSkillNameList(),
+          min = 0,
+          max = 1,
+          prompt = "吞噬：请选择要删去的技能"
+        }
+      }
+    }
   })
   if not sname or sname == "" then return end
   if type(sname) == "table" then
