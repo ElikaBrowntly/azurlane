@@ -36,7 +36,7 @@ diyitaiyang:addEffect("active", {
   on_use = function(self, room, effect)
     local player = effect.from
     local targets = effect.tos
-    
+
     -- 消耗10点蓄力点
     U.skillCharged(player, -10)
     room:setPlayerMark(player, "@!fate_wudiguantong-turn", 1)
@@ -48,7 +48,7 @@ diyitaiyang:addEffect("active", {
     end
     player:broadcastSkillInvoke(self.name, order)
     room:doSuperLightBox("packages/hidden-clouds/qml/diyitaiyang"..tostring(order)..".qml")
-    
+
     -- 造成伤害
     for _, target in ipairs(targets) do
       room:damage{
@@ -56,16 +56,16 @@ diyitaiyang:addEffect("active", {
         to = target,
         damage = 2,
         damageType = fk.NormalDamage,
-        skillName = self.name,
+        skillName = diyitaiyang.name,
       }
     end
-    
+
     -- 获得1点蓄力点
     local availableTargets = table.filter(room:getOtherPlayers(player), function(p)
       if table.find(p:getSkillNameList(), function(s) return Fk.skills[s]:hasTag(Skill.Charge) end)
       then return true end
     end)
-    
+
     if #availableTargets > 0 then
       local chargeTargets = room:askToChoosePlayers(player, {
         targets = availableTargets,
@@ -76,7 +76,7 @@ diyitaiyang:addEffect("active", {
         cancelable = true,
         target_tip_name = "fate_kongxiangjvxianhua",
       })
-      
+
       if #chargeTargets > 0 then
         for _, p in ipairs(chargeTargets) do
           U.skillCharged(p, 1)

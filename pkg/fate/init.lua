@@ -391,6 +391,17 @@ Fk:loadTranslationTable
 }
 XibalbaORT.hidden = true
 
+local OkitaSouji = General:new(extension, "yyfy_OkitaSouji", "Saber", 4, 4, General.Female)
+OkitaSouji:addSkills { "yyfy_suodi", "yyfy_juedao", "yyfy_xinyan", "yyfy_wumingsanduantu" }
+Fk:loadTranslationTable
+{
+  ["yyfy_OkitaSouji"] = "冲田总司",
+  ["#yyfy_OkitaSouji"] = "幕末最强之剑",
+  ["illustrator:yyfy_OkitaSouji"] = "武内崇",
+  ["cv:yyfy_OkitaSouji"] = "悠木碧",
+  ["designer:yyfy_OkitaSouji"] = "夜隐浮云",
+}
+
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
 SaintQuartz:addSkills { "yyfy_ChaldeaGate", "yyfy_yinguo" }
 Fk:loadTranslationTable
