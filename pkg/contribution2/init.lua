@@ -283,7 +283,7 @@ Fk:loadTranslationTable {
 }
 
 local mo__lvbu = General:new(extension, "yyfy_mo__lvbu", "qun", 4)
-mo__lvbu:addSkills { "yyfy_duoqi", "yyfy_kuangmo", "yyfy_gangquan" }
+mo__lvbu:addSkills { "yyfy_duoqi", "yyfy_kuangmo", "yyfy_gangquan", "wushuang" }
 Fk:loadTranslationTable {
   ["yyfy_mo"] = "魔？",
   ["yyfy_mo__lvbu"] = "界魔吕布",

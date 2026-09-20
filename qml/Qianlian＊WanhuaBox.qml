@@ -231,6 +231,10 @@ GraphicsBox {
                 // 旁观者同步最终状态
                 gameModel.deserializeState(content)
 
+                // 关键：旁观者立即答复，解除自身仍未结算的 MiniGame 请求，
+                // 使服务端 askToMiniGame 无需等待 60s timeout，从而消除烧条
+                ClientInstance.replyToServer("", "false")
+
                 // 关闭
                 closeTimer.start()
             }
