@@ -35,11 +35,18 @@ skill:addEffect("active", {
       player:chat("请看看我的0721吧！")
       player:broadcastSkillInvoke(skill.name, 2)
     end
-    -- 调用自定义对话框
+    -- 调用自定义对话框（模型-视图分离）
     local result = room:askToCustomDialog(player, {
-      skill_name = skill.name,
-      qml_path = "packages/hidden-clouds/qml/0721.qml",
-      extra_data = { imagePath = path } -- 图片路径
+      skill_name = skill.name, -- 技能名称，用于烧条显示
+      component = {
+        url = "packages/hidden-clouds/qml/0721Box.qml",
+        model = {
+          url = "packages/hidden-clouds/qml/models/Yyfy0721Model.qml",
+          prop = {
+            imagePath = path -- 图片路径
+          }
+        }
+      }
     })
     local count = 0
     if type(result) == "table" and result.count then
