@@ -7,10 +7,9 @@ Fk:loadTranslationTable {
   [":yyfy_suodi"] = "出牌阶段限一次，你可以令自身本回合<a href=':yyfy_wumingsanduantu'>无明三段突</a>"
       .. "造成的伤害+50%，且【杀】造成的伤害+1。",
   ["@@yyfy_suodi-turn"] = "缩地",
-  ["$yyfy_suodi1"] = "心脏！ 献上闪耀的心脏！",
-  ["$yyfy_suodi2"] = "呜啊啊啊——！",
-  ["$yyfy_suodi3"] = "积攒点力量吧。",
-  ["$yyfy_suodi4"] = "准备顶级的活祭吧。"
+  ["$yyfy_suodi1"] = "速攻全部解决！",
+  ["$yyfy_suodi2"] = "执行公务！胆敢反抗之人一律斩杀！",
+  ["$yyfy_suodi3"] = "迅疾，锐利！！"
 }
 
 suodi:addEffect("active", {
