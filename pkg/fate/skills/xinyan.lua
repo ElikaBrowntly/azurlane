@@ -8,9 +8,8 @@ Fk:loadTranslationTable{
   ["@yyfy_xinyan"] = "心眼",
   ["@@yyfy_xinyan-turn"] = "心眼",
 
-  ["$yyfy_xinyan1"] = "只是余兴，来狩猎吧。",
-  ["$yyfy_xinyan2"] = "人形的容器还真是不方便呢。",
-  ["$yyfy_xinyan3"] = "那么，欢迎光临。"
+  ["$yyfy_xinyan1"] = "新选组一番队队长，冲田总司——出击！",
+  ["$yyfy_xinyan2"] = "觉悟吧！"
 }
 
 xinyan:addEffect(fk.TurnEnd, {

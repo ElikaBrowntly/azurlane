@@ -400,6 +400,8 @@ Fk:loadTranslationTable
   ["illustrator:yyfy_OkitaSouji"] = "武内崇",
   ["cv:yyfy_OkitaSouji"] = "悠木碧",
   ["designer:yyfy_OkitaSouji"] = "夜隐浮云",
+  ["~yyfy_OkitaSouji"] = "还不能……还不能倒下……",
+  ["!yyfy_OkitaSouji"] = "冲田小姐大胜利！嗯嗯，身体完全没问题，我还能行哦！咳。"
 }
 
 local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)

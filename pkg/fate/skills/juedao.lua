@@ -8,9 +8,9 @@ Fk:loadTranslationTable{
   .."则该伤害翻倍。然后，你获得3点蓄力点。",
   ["@@yyfy_juedao-turn"] = "绝刀",
 
-  ["$yyfy_juedao1"] = "只是余兴，来狩猎吧。",
-  ["$yyfy_juedao2"] = "人形的容器还真是不方便呢。",
-  ["$yyfy_juedao3"] = "那么，欢迎光临。"
+  ["$yyfy_juedao1"] = "战场之事无善恶，只顾一味斩杀！",
+  ["$yyfy_juedao2"] = "以吾之剑刺穿敌人！",
+  ["$yyfy_juedao3"] = "呜噗……！没关系，能行！"
 }
 
 local U = require "packages/utility/utility"

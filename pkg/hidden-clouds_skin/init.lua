@@ -117,6 +117,10 @@ local content = {
   {
     skins = { "yyfy_Lena__1.jpg", "yyfy_Lena__2.jpg" },
     enabled_generals = { "yyfy_Lena" }
+  },
+  {
+    skins = { "yyfy_OkitaSouji__1.jpg", "yyfy_OkitaSouji__2.jpg", "yyfy_OkitaSouji__3.jpg", "yyfy_OkitaSouji__4.jpg" },
+    enabled_generals = { "yyfy_OkitaSouji" }
   }
 }
 
@@ -143,7 +147,7 @@ Fk:loadTranslationTable {
   ["yyfy_ArchetypeEarth__2.jpg"] = "第三再临",
   ["yyfy_ArchetypeEarth__3.jpg"] = "最终再临",
   ["lan__caomao__1.gif"] = "决进形态",
-  ["yyfy_ex__nanhualaoxian__1"] = "着墨山河",
+  ["yyfy_ex__nanhualaoxian__1.gif"] = "着墨山河",
   ["quyi__bahua.jpg"] = "御津井芭华",
   ["yyfy_Murasame__2.jpg"] = "白马（其一）",
   ["yyfy_Murasame__3.jpg"] = "白马（其二）",
@@ -184,7 +188,11 @@ Fk:loadTranslationTable {
   ["yyfy_Murasame__5.jpg"] = "初次相见",
   ["yyfy_Eldridge__1.jpg"] = "誓约形象",
   ["yyfy_Lena__1.jpg"] = "便服蕾娜",
-  ["yyfy_Lena__2.jpg"] = "忙碌时分"
+  ["yyfy_Lena__2.jpg"] = "忙碌时分",
+  ["yyfy_OkitaSouji__1.jpg"] = "第二再临",
+  ["yyfy_OkitaSouji__2.jpg"] = "第三再临",
+  ["yyfy_OkitaSouji__3.jpg"] = "最终再临",
+  ["yyfy_OkitaSouji__4.jpg"] = "浅葱羽织袴",
 }
 
 return extension
