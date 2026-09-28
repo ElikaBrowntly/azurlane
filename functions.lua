@@ -61,6 +61,7 @@ end
 ---@param to Player|ServerPlayer
 ---@return boolean
 function functions.isEnemy(from, to)
+  if not from or not to then return false end -- 不虚空索敌
   if from.id == to.id then return false end -- 自己不是敌人
   local mode = from.room and from.room:getSettings('gameMode')
   local isHeg = mode == "yyfy_hegemony" or mode == "new_heg_mode"

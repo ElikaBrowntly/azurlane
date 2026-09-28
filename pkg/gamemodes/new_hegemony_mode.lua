@@ -787,7 +787,7 @@ heg = fk.CreateGameMode {
 }
 
 Fk:loadTranslationTable {
-  ["yyfy_hegemony"] = "双阴国战(测试版)",
+  ["yyfy_hegemony"] = "双阴国战",
   [":yyfy_hegemony"] = heg_description,
   ["#KingdomFiltered"] = "本局移除 %arg，使用 %arg2 4个势力",
   ["#ChooseHegInitialKingdom"] = "国战规则：选择你的初始势力",

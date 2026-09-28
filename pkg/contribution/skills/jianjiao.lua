@@ -10,7 +10,7 @@ Fk:loadTranslationTable{
   ["#yyfy_jianjiao-invalid"] = "%from 的「尖叫」效果触发，%arg 的响应无效",
 }
 
-local help_functions = require "packages/hidden-clouds/functions"
+local F = require "packages/hidden-clouds/functions"
 
 jianjiao:addEffect(fk.CardEffectCancelledOut, {
   can_trigger = function ()
@@ -18,7 +18,7 @@ jianjiao:addEffect(fk.CardEffectCancelledOut, {
   end,
   on_cost = function(self, event, target, player, data)
     if not (player == data.from and player:hasSkill(self.name)) then return false end
-    return help_functions.isEnemy(player, data.to) and data.card ~= nil
+    return data.to and F.isEnemy(player, data.to) and data.card ~= nil
     and data.card.id > 0 and data.card:getMark("@@jianjiao_cards") == 0
   end,
   on_use = function(self, event, target, player, data)
