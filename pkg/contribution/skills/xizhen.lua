@@ -65,7 +65,7 @@ xizhen:addEffect(fk.AfterCardsMove, {
   on_cost = Util.TrueFunc,
   on_use = function(self, event, target, player, data)
     local room = player.room
-    local cost = event:getCostData(self)
+    local cost = event:getCostData(self) or {}
     if not cost.tos then return end
     local to = cost.tos[1]
     if cost and to and cost.cards then
