@@ -172,6 +172,37 @@ local function findMeldByType(melds, t, meldType)
   return nil
 end
 
+-- 麻将手牌排序键：1234056789m1234056789p1234056789s东南西北白发中（红五视作 4 与 5 之间）
+local function mahjongSortKey(id)
+  local t = cardTypeOf(id)
+  if t < 0 then return 1e9 end
+  if t <= 26 then
+    local suit = math.floor(t / 9)
+    local digit = (t % 9) + 1
+    local card = Fk:getCardById(id)
+    if card and card.name:find("yyfy_0", 1, true) then digit = 4.5 end
+    return suit * 10 + digit
+  end
+  return 30 + (t - 26)
+end
+
+-- 出牌前把手牌取走，按麻将序重排后塞回玩家手里
+local function sortHandByMahjong(room, p)
+  local ids = p:getCardIds("h")
+  if #ids < 2 then return end
+  for _, id in ipairs(ids) do
+    room:moveCardTo(id, Card.Processing, nil, fk.ReasonJustMove, "yyfy_mj_sort", nil, false, p)
+  end
+  table.sort(ids, function(a, b)
+    local ka, kb = mahjongSortKey(a), mahjongSortKey(b)
+    if ka ~= kb then return ka < kb end
+    return a < b
+  end)
+  for _, id in ipairs(ids) do
+    room:moveCardTo(id, Card.PlayerHand, p, fk.ReasonJustMove, "yyfy_mj_sort", nil, false, p)
+  end
+end
+
 --------------------------------------------------------------------------
 -- 胡牌判定（非穷举）
 --------------------------------------------------------------------------
@@ -1004,7 +1035,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
   if claim.kind == "pon" then
     takeDiscard()
     local picked = {}
-    -- 手牌含红五且张数 >= 3 时（如"两白一红"三张5），让玩家选哪两张碰；否则自动取前两张
+    -- 手牌含红五且张数 >= 3 时（如"两白一红"三张5），弹出选项框让玩家选哪两张碰（每组两张卡图）；否则自动取前两张
     local counts = countTable(handTypes(p))
     local hasAka = false
     for _, id in ipairs(handIds) do
@@ -1012,22 +1043,43 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
       if c and cardTypeOf(id) == dType and c.name:find("yyfy_0", 1, true) then hasAka = true break end
     end
     if counts[dType] >= 3 and hasAka and p.id > 0 then
-      while true do
-        local chosen = room:askToChooseCards(p, {
-          target = p, min = 2, max = 2, flag = "h",
-          skill_name = "yyfy_mj_pon",
-          prompt = "#yyfy_mj_pon_choose_prompt",
-          cancelable = true,
-        })
-        if chosen and chosen[1] and chosen[2] and
-          cardTypeOf(chosen[1]) == dType and cardTypeOf(chosen[2]) == dType then
-          picked = chosen
-          break
+      -- 收集手牌中该类型的所有牌，生成两两一组的选择项（每组 = 碰出去的两张手牌）
+      local ids = {}
+      for _, id in ipairs(handIds) do
+        if cardTypeOf(id) == dType then table.insert(ids, id) end
+      end
+      local groups = {}
+      for i = 1, #ids - 1 do
+        for j = i + 1, #ids do
+          table.insert(groups, { ids[i], ids[j] })
         end
-        -- 玩家点"跳过"反悔：取消副露，把已拿走的弃牌收回处理区
-        room:moveCardTo(discardId, Card.Processing, nil, fk.ReasonJustMove, skill_name, nil, true, p)
-        room:sendLog{ type = "#yyfy_mj_claim_cancel", arg = p._splayer:getScreenName(), toast = true }
-        return nil
+      end
+      if #groups > 1 then
+        local result = room:askToCustomDialog(p, {
+          skill_name = "yyfy_mj_pon",
+          component = {
+            url = "packages/hidden-clouds/qml/YyfyMahjongMeldBox.qml",
+            model = {
+              url = "packages/hidden-clouds/qml/models/YyfyMahjongMeldModel.qml",
+              prop = {
+                groups = groups,
+                prompt = "#yyfy_mj_pon_choose_prompt",
+                kind = "pon",
+                cancelable = true,
+              },
+            },
+          },
+        })
+        if result and result.ids and result.ids[1] and result.ids[2] then
+          picked = result.ids
+        else
+          -- 玩家点"跳过"反悔：取消副露，把已拿走的弃牌收回处理区
+          room:moveCardTo(discardId, Card.Processing, nil, fk.ReasonJustMove, skill_name, nil, true, p)
+          room:sendLog{ type = "#yyfy_mj_claim_cancel", arg = p._splayer:getScreenName(), toast = true }
+          return nil
+        end
+      else
+        picked = groups[1]
       end
     else
       for _, id in ipairs(handIds) do
@@ -1054,55 +1106,70 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     table.insert(state.melds[p.id], { type = "kan_open", tiles = { dType, dType, dType, dType }, cards = cards, concealed = false })
     M.OnKan(room, state, p)
   elseif claim.kind == "chi" then
-    -- 用卡图选择用来吃牌的两张手牌（93*130 卡图由客户端渲染），按组合校验
+    -- 分组选项框：每个合法组合映射为一组（两张手牌 id），用卡图询问玩家用哪组吃牌
+    local groups = {}
+    for _, c in ipairs(claim.combos) do
+      local need = {}
+      for _, tt in ipairs(c) do
+        if tt ~= dType then table.insert(need, tt) end
+      end
+      local ids = {}
+      for _, nt in ipairs(need) do
+        local fid = findHandIds(p, nt, 1)
+        if fid[1] then table.insert(ids, fid[1]) end
+      end
+      if #ids == 2 then table.insert(groups, ids) end
+    end
     local combo, picked
-    if p.id > 0 then
-      while true do
-        local chosen = room:askToChooseCards(p, {
-          target = p, min = 2, max = 2, flag = "h",
-          skill_name = "yyfy_mj_chi",
-          prompt = "#yyfy_mj_chi_choose_prompt",
-          cancelable = true,
-        })
-        if not (chosen and chosen[1] and chosen[2]) then
-          -- 玩家点"跳过"反悔：弃牌仍在处理区，无需回收
-          room:sendLog{ type = "#yyfy_mj_claim_cancel", arg = p._splayer:getScreenName(), toast = true }
-          return nil
-        end
-        local t1, t2 = cardTypeOf(chosen[1]), cardTypeOf(chosen[2])
-        local matched
+    if p.id > 0 and #groups > 1 then
+      local result = room:askToCustomDialog(p, {
+        skill_name = "yyfy_mj_chi",
+        component = {
+          url = "packages/hidden-clouds/qml/YyfyMahjongMeldBox.qml",
+          model = {
+            url = "packages/hidden-clouds/qml/models/YyfyMahjongMeldModel.qml",
+            prop = {
+              groups = groups,
+              prompt = "#yyfy_mj_chi_choose_prompt",
+              kind = "chi",
+              cancelable = true,
+            },
+          },
+        },
+      })
+      if result and result.ids and result.ids[1] and result.ids[2] then
+        picked = result.ids
+        -- 由两张手牌类型反推组合（need 乱序兼容）
+        local t1, t2 = cardTypeOf(picked[1]), cardTypeOf(picked[2])
         for _, c in ipairs(claim.combos) do
           local need = {}
           for _, tt in ipairs(c) do
             if tt ~= dType then table.insert(need, tt) end
           end
           if (need[1] == t1 and need[2] == t2) or (need[1] == t2 and need[2] == t1) then
-            matched = c
+            combo = c
             break
           end
         end
-        if matched then
-          combo = matched
-          picked = chosen
-          break
-        end
+      else
+        -- 玩家点"跳过"反悔：弃牌仍在处理区，无需回收
+        room:sendLog{ type = "#yyfy_mj_claim_cancel", arg = p._splayer:getScreenName(), toast = true }
+        return nil
       end
     end
     if not combo then combo = claim.combos[1] end
     if not picked then
-      -- 兜底：取与组合匹配的两张手牌
-      picked = {}
-      local needTypes = {}
-      for _, tt in ipairs(combo) do
-        if tt ~= dType then table.insert(needTypes, tt) end
-      end
-      for _, id in ipairs(handIds) do
-        local ct = cardTypeOf(id)
-        for i, nt in ipairs(needTypes) do
-          if not picked[i] and ct == nt then
-            picked[i] = id
-            break
-          end
+      -- 兜底（人机 / 单组 / 超时）：取与组合匹配的两张手牌
+      picked = groups[1] or {}
+      if #picked < 2 then
+        picked = {}
+        local needTypes = {}
+        for _, tt in ipairs(combo) do
+          if tt ~= dType then table.insert(needTypes, tt) end
+        end
+        for _, nt in ipairs(needTypes) do
+          local fid = findHandIds(p, nt, 1)
+          if fid[1] then table.insert(picked, fid[1]) end
         end
       end
     end
@@ -1293,21 +1360,25 @@ function M.PlayRound(room, state)
       end
     end
 
-    -- 打牌
+    -- 出牌前把手牌按麻将序重排（1234056789m…p…s 东南西北白发中）
+    sortHandByMahjong(room, turn)
+
+    -- 打牌：真人直接在手牌区点选一张牌，点确定打出（不弹中央选牌框，框架 AskForUseActiveSkill 手牌区选牌）
     local discardId
     if turn.id > 0 then
-      local chosen = room:askToChooseCards(turn, {
-        target = turn,
-        min = 1,
-        max = 1,
-        flag = "h",
+      local result = room:askToCards(turn, {
+        max_num = 1,
+        min_num = 1,
+        cancelable = false,
         skill_name = "yyfy_mj_play",
         prompt = "#yyfy_mj_discard_prompt",
-        cancelable = false,
       })
-      discardId = chosen[1]
-    else
-      -- 人机：默认模切
+      if type(result) == "table" and result[1] then
+        discardId = result[1]
+      end
+    end
+    if not discardId then
+      -- 人机 / 超时兜底：默认模切
       local lastT = state.last_drawn[turn.id]
       local handIds = turn:getCardIds("h")
       discardId = nil
