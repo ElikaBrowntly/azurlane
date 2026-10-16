@@ -33,9 +33,6 @@ NAME_TO_TYPE["yyfy_0m"] = 4
 NAME_TO_TYPE["yyfy_0p"] = 13
 NAME_TO_TYPE["yyfy_0s"] = 22
 
--- 赤宝牌类型
-local AKA_TYPES = { 4, 13, 22 }
-
 -- 幺九牌（含字牌）
 local function isYaochu(t)
   if t >= 27 then return true end
@@ -187,20 +184,74 @@ local function mahjongSortKey(id)
 end
 
 -- 出牌前把手牌取走，按麻将序重排后塞回玩家手里
+-- 注意：必须原地（hand→hand）重排，不能借道 Card.Processing（公共处理区），
+-- 否则会把自家手牌短暂暴露给其他玩家，且客户端手牌区会出现"牌被扔出去"的异常表现
 local function sortHandByMahjong(room, p)
   local ids = p:getCardIds("h")
   if #ids < 2 then return end
-  for _, id in ipairs(ids) do
-    room:moveCardTo(id, Card.Processing, nil, fk.ReasonJustMove, "yyfy_mj_sort", nil, false, p)
-  end
   table.sort(ids, function(a, b)
     local ka, kb = mahjongSortKey(a), mahjongSortKey(b)
     if ka ~= kb then return ka < kb end
     return a < b
   end)
-  for _, id in ipairs(ids) do
-    room:moveCardTo(id, Card.PlayerHand, p, fk.ReasonJustMove, "yyfy_mj_sort", nil, false, p)
+  -- 一次性原地重排（hand→hand）：服务端按"依次取出后追加"的规则处理，
+  -- 客户端按 move.ids 的新顺序重建手牌，最终顺序即为排序结果
+  room:moveCards({
+    ids = ids,
+    from = p,
+    to = p,
+    toArea = Card.PlayerHand,
+    moveReason = fk.ReasonJustMove,
+    skillName = "yyfy_mj_sort",
+    proposer = p,
+  })
+end
+
+-- 本轮新摸的牌在手牌上的"新摸"标记（仅摸牌者本人可见）
+local NEW_DRAW_MARK = "@@yyfy_newDraw-inhand"
+
+local function markNewDraw(room, state, p)
+  local id = state.new_draw_id[p.id]
+  if not id then return end
+  local card = Fk:getCardById(id)
+  if card then room:setCardMark(card, NEW_DRAW_MARK, 1) end
+end
+
+local function clearNewDrawMark(room, state, p)
+  local id = state.new_draw_id[p.id]
+  state.new_draw_id[p.id] = nil
+  if not id then return end
+  local card = Fk:getCardById(id)
+  if card then room:setCardMark(card, NEW_DRAW_MARK, 0) end
+end
+
+-- 手牌上的"宝牌"标记：仅标注表宝牌类型（里宝牌与红宝牌不标）
+local DORA_MARK = "@@yyfy_dora-inhand"
+
+-- 当前表宝牌类型集合
+local function omoteDoraTypes(state)
+  local set = {}
+  for i = 1, state.dora_count do
+    local ind = state.indicator[i]
+    if ind then set[nextDora(cardTypeOf(ind))] = true end
   end
+  return set
+end
+
+-- 刷新某玩家手牌上的"宝牌"标记
+local function refreshDoraMarks(room, state, p)
+  local set = omoteDoraTypes(state)
+  for _, id in ipairs(p:getCardIds("h")) do
+    local card = Fk:getCardById(id)
+    if card then
+      room:setCardMark(card, DORA_MARK, set[cardTypeOf(id)] and 1 or 0)
+    end
+  end
+end
+
+-- 刷新所有玩家手牌上的"宝牌"标记（翻新表宝牌后调用）
+local function refreshAllDoraMarks(room, state)
+  for _, p in ipairs(state.players) do refreshDoraMarks(room, state, p) end
 end
 
 --------------------------------------------------------------------------
@@ -310,6 +361,26 @@ function M.GetWaits(tiles, melds)
     if M.CanWin(test, melds) then waits[t] = true end
   end
   return waits
+end
+
+--- 立直可弃牌：门前清下，弃掉某张牌后仍能听牌的那些牌类型
+---@param tiles integer[] 摸牌后的手牌（14 张）
+---@param melds table[]
+---@return table  type -> true
+function M.RiichiDiscardables(tiles, melds)
+  local ret = {}
+  local counts = countTable(tiles)
+  for t = 0, 33 do
+    if counts[t] > 0 then
+      local rest = {}
+      local removed = false
+      for _, tt in ipairs(tiles) do
+        if tt == t and not removed then removed = true else table.insert(rest, tt) end
+      end
+      if next(M.GetWaits(rest, melds)) ~= nil then ret[t] = true end
+    end
+  end
+  return ret
 end
 
 -- 振听判定：自家牌河含有所听之牌
@@ -447,6 +518,56 @@ local function allTypesOf(p, state)
   return ret
 end
 
+-- 平和判定：门前清、四面子全为顺子、雀头非役牌（三元牌/场风/自风），
+-- 且胡牌张必须是顺子的两面听（不能是边张/坎张/双碰/单骑）。
+-- 多面听（高目/低目）按实际胡到的那张牌判定。
+local function isPinfu(tiles, winTile, roundWind, selfWind)
+  if winTile == nil or #tiles ~= 14 then return false end
+  local forbidden = { [31] = true, [32] = true, [33] = true, [roundWind] = true, [selfWind] = true }
+  local counts = countTable(tiles)
+
+  local function solve(need, winOk)
+    if need == 0 then return winOk end
+    local t
+    for i = 0, 33 do
+      if counts[i] > 0 then t = i break end
+    end
+    if t == nil then return false end
+    for s = t - 2, t do
+      if s >= 0 and (s % 9) <= 6 and counts[s] > 0 and counts[s + 1] > 0 and counts[s + 2] > 0 then
+        local ok = winOk
+        if not ok then
+          -- 胡牌张为该顺子的下端（余 s+1,s+2 两面听 拼 s 或 s+3）或上端（余 s,s+1 拼 s-1 或 s+2）才算两面听
+          if winTile == s and (s % 9) <= 5 then
+            ok = true
+          elseif winTile == s + 2 and (s % 9) >= 1 then
+            ok = true
+          end
+        end
+        counts[s] = counts[s] - 1
+        counts[s + 1] = counts[s + 1] - 1
+        counts[s + 2] = counts[s + 2] - 1
+        local r = solve(need - 1, ok)
+        counts[s] = counts[s] + 1
+        counts[s + 1] = counts[s + 1] + 1
+        counts[s + 2] = counts[s + 2] + 1
+        if r then return true end
+      end
+    end
+    return false
+  end
+
+  for pt = 0, 33 do
+    if counts[pt] >= 2 and not forbidden[pt] then
+      counts[pt] = counts[pt] - 2
+      local r = solve(4, false)
+      counts[pt] = counts[pt] + 2
+      if r then return true end
+    end
+  end
+  return false
+end
+
 --- 评估和牌番种
 ---@param info table { tsumo, victim, winTile, haitei, houtei, rinshan, chankan, chiihou, tenhou }
 ---@param tilesOverride? integer[] 外部指定的手牌类型数组（荣时含被打出的弃牌），缺省用手牌
@@ -454,11 +575,18 @@ function M.EvalYaku(state, p, info, tilesOverride)
   local tiles = tilesOverride or handTypes(p)
   local melds = state.melds[p.id] or {}
   local form = M.GetForm(tiles, melds)
-  local yaku = {}
+  local yaku, dora = {}, {}
   local han = 0
+  -- 逐条记录役种与番数（结算界面按顺序展示）；dora 类只加番、不算起胡役
+  local function addYaku(key, val)
+    han = han + val
+    table.insert(yaku, { key = key, han = val })
+  end
+  -- 副露减番：三色同顺/三色同刻/一气通贯/混一色/清一色，玩家有任何副露均 -1 番
+  local openPenalty = (#melds > 0) and -1 or 0
 
   if form and form.kokushi then
-    return { yaku = { "yyfy_yk_kokushi" }, han = 13 }
+    return { yaku = {}, dora = {}, yakuman = { "yyfy_yk_kokushi" }, han = 13 }
   end
 
   local hasTri = function(t)
@@ -468,82 +596,82 @@ function M.EvalYaku(state, p, info, tilesOverride)
     return false
   end
 
-  -- 役满
-  local yakuman = nil
+  -- 场风 / 自风（平和雀头判定与役牌判定都需用到）
+  local roundWind = (state.round <= 4) and 27 or 28 -- 东场（第 1-4 局）/ 南场（第 5-8 局）
+  local dealerIdx = 1
+  for i, q in ipairs(state.players) do
+    if q == state.dealer then dealerIdx = i break end
+  end
+  local selfIdx = 1
+  for i, q in ipairs(state.players) do
+    if q == p then selfIdx = i break end
+  end
+  -- 自风：庄=東，逆时针依次南西北；与场风重合时只计一次
+  local selfWind = 27 + (selfIdx - dealerIdx + 4) % 4
+
+  -- 全牌类型（手牌 + 副露；荣时弃牌已并入 tiles），供字一色等全局判定使用
+  local all = table.simpleClone(tiles)
+  for _, m in ipairs(melds) do
+    for _, t in ipairs(m.tiles) do table.insert(all, t) end
+  end
+
+  -- 役满：可复合，逐条收集役满名（不再只保留最后一个）
+  local yaks = {}
   local winds = { 27, 28, 29, 30 }
   local windTri = 0
   for _, w in ipairs(winds) do if hasTri(w) then windTri = windTri + 1 end end
-  if hasTri(31) and hasTri(32) and hasTri(33) then yakuman = "yyfy_yk_daisangen" end
-  if windTri == 4 then yakuman = "yyfy_yk_daisuushi" end
-  if windTri == 3 and table.contains(winds, form and form.pair or -1) then yakuman = "yyfy_yk_shousuushi" end
+  if hasTri(31) and hasTri(32) and hasTri(33) then table.insert(yaks, "yyfy_yk_daisangen") end
+  if windTri == 4 then
+    table.insert(yaks, "yyfy_yk_daisuushi")
+  elseif windTri == 3 and table.contains(winds, form and form.pair or -1) then
+    table.insert(yaks, "yyfy_yk_shousuushi")
+  end
   if form and form.mentsu and #form.mentsu == 4 then
     local allClosed = true
     for _, m in ipairs(form.mentsu) do
       if m.k ~= "tri" or m.open then allClosed = false break end
     end
-    if allClosed then yakuman = "yyfy_yk_suuankou" end
+    if allClosed then table.insert(yaks, "yyfy_yk_suuankou") end
   end
-  if info.tenhou then yakuman = "yyfy_yk_tenhou" end
-  if info.chiihou then yakuman = "yyfy_yk_chiihou" end
-  if yakuman then
-    return { yaku = { yakuman }, han = 13 }
+  -- 字一色：全部由字牌组成
+  local allHonor = true
+  for _, t in ipairs(all) do if t < 27 then allHonor = false break end end
+  if allHonor then table.insert(yaks, "yyfy_yk_tsuuiisou") end
+  if info.tenhou then table.insert(yaks, "yyfy_yk_tenhou") end
+  if info.chiihou then table.insert(yaks, "yyfy_yk_chiihou") end
+  if #yaks > 0 then
+    return { yaku = {}, dora = {}, yakuman = yaks, han = 13 * #yaks }
   end
 
   -- 立直 / 一发
   if state.riichi[p.id] then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_riichi")
+    addYaku("yyfy_yaku_riichi", 1)
     if state.ippatsu[p.id] then
-      han = han + 1
-      table.insert(yaku, "yyfy_yaku_ippatsu")
+      addYaku("yyfy_yaku_ippatsu", 1)
     end
   end
 
   if form and form.seven then
     -- 七对子
-    han = han + 2
-    table.insert(yaku, "yyfy_yaku_chiitoi")
+    addYaku("yyfy_yaku_chiitoi", 2)
   elseif form then
     -- 门前清自摸
     if info.tsumo and #melds == 0 then
-      han = han + 1
-      table.insert(yaku, "yyfy_yaku_tsumo")
+      addYaku("yyfy_yaku_tsumo", 1)
     end
-    -- 平和
-    if #melds == 0 then
-      local pinhu = true
-      for _, m in ipairs(form.mentsu) do
-        if m.k ~= "seq" then pinhu = false break end
-      end
-      if pinhu then
-        local pr = form.pair
-        if pr < 27 and (pr % 9) ~= 0 and (pr % 9) ~= 8 then
-          han = han + 1
-          table.insert(yaku, "yyfy_yaku_pinhu")
-        end
-      end
+    -- 平和：门前清、四面子全顺子、雀头非役牌（三元牌/场风/自风）、胡牌张为两面听
+    if #melds == 0 and isPinfu(tiles, info.winTile, roundWind, selfWind) then
+      addYaku("yyfy_yaku_pinhu", 1)
     end
     -- 役牌（白发中 + 场风 + 自风）
     local yakuHaiCount = 0
     for _, t in ipairs{ 31, 32, 33 } do
       if hasTri(t) then yakuHaiCount = yakuHaiCount + 1 end
     end
-    local roundWind = (state.round <= 4) and 27 or 28 -- 东场（第 1-4 局）/ 南场（第 5-8 局）
     if hasTri(roundWind) then yakuHaiCount = yakuHaiCount + 1 end -- 场风刻
-    local dealerIdx = 1
-    for i, q in ipairs(state.players) do
-      if q == state.dealer then dealerIdx = i break end
-    end
-    local selfIdx = 1
-    for i, q in ipairs(state.players) do
-      if q == p then selfIdx = i break end
-    end
-    -- 自风：庄=東，逆时针依次南西北；与场风重合时只计一次
-    local selfWind = 27 + (selfIdx - dealerIdx + 4) % 4
     if selfWind ~= roundWind and hasTri(selfWind) then yakuHaiCount = yakuHaiCount + 1 end
     if yakuHaiCount > 0 then
-      han = han + yakuHaiCount
-      table.insert(yaku, "yyfy_yaku_yakuhai")
+      addYaku("yyfy_yaku_yakuhai", yakuHaiCount)
     end
     -- 面子统计
     local seqCounts = {}
@@ -569,8 +697,7 @@ function M.EvalYaku(state, p, info, tilesOverride)
       if c0 >= 1 and c1 >= 1 and c2 >= 1 then sanshoku = sanshoku + 1 end
     end
     if sanshoku > 0 then
-      han = han + sanshoku * 2
-      table.insert(yaku, "yyfy_yaku_sanshoku")
+      addYaku("yyfy_yaku_sanshoku", sanshoku * 2 + openPenalty)
     end
     -- 三色同刻（万筒索相同数字的三组刻子，2 番）
     local sanshokuTri = 0
@@ -585,8 +712,7 @@ function M.EvalYaku(state, p, info, tilesOverride)
       if c0 >= 1 and c1 >= 1 and c2 >= 1 then sanshokuTri = sanshokuTri + 1 end
     end
     if sanshokuTri > 0 then
-      han = han + sanshokuTri * 2
-      table.insert(yaku, "yyfy_yaku_sanshoku_tri")
+      addYaku("yyfy_yaku_sanshoku_tri", sanshokuTri * 2 + openPenalty)
     end
     -- 一气通贯
     local ittsu = 0
@@ -601,20 +727,17 @@ function M.EvalYaku(state, p, info, tilesOverride)
       if h123 and h456 and h789 then ittsu = ittsu + 1 end
     end
     if ittsu > 0 then
-      han = han + ittsu * 2
-      table.insert(yaku, "yyfy_yaku_ittsu")
+      addYaku("yyfy_yaku_ittsu", ittsu * 2 + openPenalty)
     end
     -- 对对和
     if triCount == 4 then
-      han = han + 2
-      table.insert(yaku, "yyfy_yaku_toitoi")
+      addYaku("yyfy_yaku_toitoi", 2)
     end
     -- 三暗刻
     if closedTri >= 3 then
-      han = han + 2
-      table.insert(yaku, "yyfy_yaku_sanankou")
+      addYaku("yyfy_yaku_sanankou", 2)
     end
-    -- 一盃口 / 二盃口（门前清）
+    -- 一杯口 / 二杯口（门前清）
     if #melds == 0 then
       local dup = 0
       for _, c in pairs(seqCounts) do
@@ -622,28 +745,21 @@ function M.EvalYaku(state, p, info, tilesOverride)
         if c == 4 then dup = dup + 2 end
       end
       if dup >= 2 then
-        han = han + 3
-        table.insert(yaku, "yyfy_yaku_ryanpeikou")
+        addYaku("yyfy_yaku_ryanpeikou", 3)
       elseif dup == 1 then
-        han = han + 1
-        table.insert(yaku, "yyfy_yaku_iipeikou")
+        addYaku("yyfy_yaku_iipeikou", 1)
       end
     end
   end
 
-  -- 全局牌役（荣时弃牌已并入 tiles，直接以 tiles + 副露 统计）
-  local all = table.simpleClone(tiles)
-  for _, m in ipairs(melds) do
-    for _, t in ipairs(m.tiles) do table.insert(all, t) end
-  end
+  -- 全局牌役（荣时弃牌已并入 tiles，直接以 tiles + 副露 统计；all 已在上方算出）
   -- 断幺
   local tanyao = true
   for _, t in ipairs(all) do
     if isYaochu(t) then tanyao = false break end
   end
   if tanyao then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_tanyao")
+    addYaku("yyfy_yaku_tanyao", 1)
   end
   -- 混一色 / 清一色
   local suitsUsed = {}
@@ -655,11 +771,9 @@ function M.EvalYaku(state, p, info, tilesOverride)
   for _ in pairs(suitsUsed) do suitCount = suitCount + 1 end
   if suitCount == 1 then
     if hasHonor then
-      han = han + 3
-      table.insert(yaku, "yyfy_yaku_honitsu")
+      addYaku("yyfy_yaku_honitsu", 3 + openPenalty)
     else
-      han = han + 5
-      table.insert(yaku, "yyfy_yaku_chinitsu")
+      addYaku("yyfy_yaku_chinitsu", 5 + openPenalty)
     end
   end
   -- 混全带幺 / 纯全带幺
@@ -689,30 +803,24 @@ function M.EvalYaku(state, p, info, tilesOverride)
       end
     end
     if chanta then
-      han = han + 1
-      table.insert(yaku, "yyfy_yaku_chanta")
+      addYaku("yyfy_yaku_chanta", 1)
     end
     if junchan then
-      han = han + 2
-      table.insert(yaku, "yyfy_yaku_junchan")
+      addYaku("yyfy_yaku_junchan", 2)
     end
   end
   -- 特殊和牌方式
   if info.rinshan then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_rinshan")
+    addYaku("yyfy_yaku_rinshan", 1)
   end
   if info.haitei then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_haitei")
+    addYaku("yyfy_yaku_haitei", 1)
   end
   if info.houtei then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_houtei")
+    addYaku("yyfy_yaku_houtei", 1)
   end
   if info.chankan then
-    han = han + 1
-    table.insert(yaku, "yyfy_yaku_chankan")
+    addYaku("yyfy_yaku_chankan", 1)
   end
   -- 三杠子
   local kanCount = 0
@@ -720,11 +828,11 @@ function M.EvalYaku(state, p, info, tilesOverride)
     if m.type == "kan_open" or m.type == "kan_closed" or m.type == "kan_added" then kanCount = kanCount + 1 end
   end
   if kanCount >= 3 then
-    han = han + 2
-    table.insert(yaku, "yyfy_yaku_sankantsu")
+    addYaku("yyfy_yaku_sankantsu", 2)
   end
 
   -- 宝牌 / 里宝牌 / 赤宝牌：只加番，不算起胡役（无真役时仍为无役）
+  -- 结算界面需要逐条展示，故分别记入 dora 列表
   local doraHan = 0
   for i = 1, state.dora_count do
     local ind = state.indicator[i]
@@ -732,7 +840,10 @@ function M.EvalYaku(state, p, info, tilesOverride)
       doraHan = doraHan + countType(all, nextDora(cardTypeOf(ind)))
     end
   end
-  if doraHan > 0 then han = han + doraHan end
+  if doraHan > 0 then
+    han = han + doraHan
+    table.insert(dora, { key = "yyfy_yaku_dora", han = doraHan })
+  end
   if state.riichi[p.id] then
     local uraHan = 0
     for i = 5, 4 + state.dora_count do
@@ -741,16 +852,39 @@ function M.EvalYaku(state, p, info, tilesOverride)
         uraHan = uraHan + countType(all, nextDora(cardTypeOf(ind)))
       end
     end
-    if uraHan > 0 then han = han + uraHan end
+    if uraHan > 0 then
+      han = han + uraHan
+      table.insert(dora, { key = "yyfy_yaku_ura", han = uraHan })
+    end
   end
+  -- 赤宝牌：按牌名（yyfy_0m/p/s）识别，与普通五区分开；每张 1 番，最多累计 3 番
   local akaHan = 0
-  for _, t in ipairs(all) do
-    if table.contains(AKA_TYPES, t) then akaHan = akaHan + 1 end
+  local function countAka(id)
+    local c = id and Fk:getCardById(id)
+    if c and c.name:find("yyfy_0", 1, true) then akaHan = akaHan + 1 end
   end
-  if akaHan > 0 then han = han + akaHan end
+  for _, id in ipairs(p:getCardIds("h")) do countAka(id) end
+  for _, m in ipairs(melds) do
+    for _, id in ipairs(m.cards or {}) do countAka(id) end
+  end
+  -- 荣 / 抢杠：和牌张不在手牌中，需单独计入（自摸时和牌张已在手牌内）
+  if not info.tsumo then
+    local winId
+    if info.chankan and info.victim and info.winTile then
+      winId = findHandIds(info.victim, info.winTile, 1)[1]
+    elseif state.lastDiscard then
+      winId = state.lastDiscard.id
+    end
+    countAka(winId)
+  end
+  if akaHan > 3 then akaHan = 3 end
+  if akaHan > 0 then
+    han = han + akaHan
+    table.insert(dora, { key = "yyfy_yaku_aka", han = akaHan })
+  end
 
   if han <= 0 then han = 1 end -- 无番缚：0 番按 1 番
-  return { yaku = yaku, han = han }
+  return { yaku = yaku, han = han, dora = dora }
 end
 
 --- 判断玩家是否满足和牌资格：牌型成立 且 至少有一个起胡役
@@ -763,7 +897,7 @@ function M.CanSettle(state, p, info, extraTile)
   if extraTile then table.insert(tiles, extraTile) end
   if not M.CanWin(tiles, state.melds[p.id]) then return false end
   local ev = M.EvalYaku(state, p, info, tiles)
-  if #ev.yaku == 0 then return false end
+  if #ev.yaku == 0 and #(ev.yakuman or {}) == 0 then return false end
   return true, ev
 end
 
@@ -793,6 +927,70 @@ function M.Transfer(room, state, payments)
   return true
 end
 
+-- 组装并广播胡牌结算界面所需的数据（客户端监听 YyfyMahjongResult 通知）
+function M.BroadcastResult(room, state, winner, info, ev, score)
+  -- 和牌张：自摸=本轮刚摸的牌；荣=被打出的弃牌；抢杠=被抢的那张手牌
+  local winTileId
+  if info.tsumo then
+    winTileId = state.new_draw_id[winner.id]
+  elseif info.chankan and info.victim and info.winTile then
+    winTileId = findHandIds(info.victim, info.winTile, 1)[1]
+  elseif state.lastDiscard then
+    winTileId = state.lastDiscard.id
+  end
+  -- 手牌区（不含和牌张，和牌张单独展示在最后）
+  local handIds = {}
+  for _, id in ipairs(winner:getCardIds("h")) do
+    if id ~= winTileId then table.insert(handIds, id) end
+  end
+  -- 副露区：扁平化为 meldCards（所有副露牌 id 依次排列）+ meldLens（每组张数）。
+  -- 不向 QML 传嵌套数组：框架对 Lua 表格为浅转换，内层数组在 QML 里不可迭代。
+  local meldCards, meldLens = {}, {}
+  for _, m in ipairs(state.melds[winner.id] or {}) do
+    local cards = m.cards or {}
+    if #cards > 0 then
+      table.insert(meldLens, #cards)
+      for _, id in ipairs(cards) do table.insert(meldCards, id) end
+    end
+  end
+  -- 役种在前、宝牌类在后，逐条展示（役满时不报小番，另用 yakuman 列出）
+  local yakuList = {}
+  for _, y in ipairs(ev.yaku) do table.insert(yakuList, { key = y.key, han = y.han }) end
+  for _, y in ipairs(ev.dora or {}) do table.insert(yakuList, { key = y.key, han = y.han }) end
+  -- 宝牌 / 里宝指示牌：各取 dora_count 张（扁平数组，QML 侧按需翻面）
+  local omoteIndicators, uraIndicators = {}, {}
+  for i = 1, state.dora_count do
+    local ind = state.indicator[i]
+    if ind then table.insert(omoteIndicators, ind) end
+  end
+  for i = 5, 4 + state.dora_count do
+    local ind = state.indicator[i]
+    if ind then table.insert(uraIndicators, ind) end
+  end
+  local scoreData = score or {}
+  room:doBroadcastNotify("YyfyMahjongResult", {
+    winnerId = winner.id,
+    general = winner.general,
+    screenName = winner._splayer:getScreenName(),
+    tsumo = not not info.tsumo,
+    handIds = handIds,
+    meldCards = meldCards,
+    meldLens = meldLens,
+    winTileId = winTileId,
+    winTileName = (not winTileId) and info.winTile and TYPE_TO_NAME[info.winTile] or nil,
+    yaku = yakuList,
+    han = ev.han,
+    yakuman = ev.yakuman,
+    baseScore = scoreData.base,
+    bonusScore = scoreData.bonus,
+    totalScore = scoreData.total,
+    doraCount = state.dora_count,
+    omoteIndicators = omoteIndicators,
+    uraIndicators = uraIndicators,
+    uraRevealed = state.riichi[winner.id] ~= nil,
+  })
+end
+
 function M.SettleWin(room, state, winner, info)
   -- 荣时弃牌尚未入手，需并入后才够 14 张，否则役判定会漏掉该面子
   local evalTiles
@@ -803,35 +1001,43 @@ function M.SettleWin(room, state, winner, info)
   local ev = M.EvalYaku(state, winner, info, evalTiles)
   local band = getBand(ev.han)
   local payments = {}
+  -- 本场加算：每多 1 本场，放铳时放铳者多付 300；自摸时每家多付 100（赢家合计多收 300）
+  local honba = state.renchan_count or 0
+  local honbaBonus = honba * 300
+  -- 场供：本局与之前局所有人的立直棒（结算前累计的供托）
+  local kyotakuBonus = state.kyotaku or 0
+  local baseScore = 0
   if info.tsumo then
     local y = TSUMO_TABLE[band][2]
     local x = TSUMO_TABLE[band][1]
-    local gain = 0
     for _, p in ipairs(state.players) do
       if p ~= winner then
         -- 庄家自摸：每人付庄付（y）；子家自摸：庄付 y、其他子付 x
         local pay = (winner == state.dealer) and y or ((p == state.dealer) and y or x)
-        payments[p.id] = -pay
-        gain = gain + pay
+        payments[p.id] = -(pay + honba * 100)
+        baseScore = baseScore + pay
       end
     end
-    payments[winner.id] = gain
   else
     local victim = info.victim
     local pay = RON_TABLE[band][(victim == state.dealer) and 2 or 1]
-    payments[victim.id] = -pay
-    payments[winner.id] = pay
+    payments[victim.id] = -(pay + honbaBonus)
+    baseScore = pay
   end
-  -- 立直棒
-  for pid, _ in pairs(state.riichi_bets) do
-    payments[pid] = (payments[pid] or 0) - 1000
-    payments[winner.id] = payments[winner.id] + 1000
-  end
-  state.riichi_bets = {}
+  -- 赢家收取：基础分 + 本场加算 + 场供
+  local bonusScore = honbaBonus + kyotakuBonus
+  local totalScore = baseScore + bonusScore
+  payments[winner.id] = (payments[winner.id] or 0) + totalScore
+  state.kyotaku = 0
   -- 日志与展示（结算停顿数秒，让玩家看清和牌结果）
-  room:sendLog{ type = "#yyfy_mj_win", arg = winner._splayer:getScreenName(), arg2 = ev.han, toast = true }
+  room:sendLog{ type = "#yyfy_mj_win", arg = winner._splayer:getScreenName(), arg2 = ev.han, arg3 = totalScore, toast = true }
   room:delay(2000)
-  local yakuText = table.concat(table.map(ev.yaku, function(k) return Fk:translate(k) end), "、")
+  local yakuText
+  if ev.yakuman and #ev.yakuman > 0 then
+    yakuText = table.concat(table.map(ev.yakuman, function(k) return Fk:translate(k) end), "、")
+  else
+    yakuText = table.concat(table.map(ev.yaku, function(k) return Fk:translate(k.key) end), "、")
+  end
   room:sendLog{ type = "#yyfy_mj_yaku", arg = yakuText, toast = true }
   -- 立直家胡牌：此时才揭晓里宝牌
   if state.riichi[winner.id] then
@@ -839,6 +1045,9 @@ function M.SettleWin(room, state, winner, info)
     room:setBanner("@yyfy_mj_dora", allDoraTexts(state, true))
     room:sendLog{ type = "#yyfy_mj_ura_log", arg = uraText, toast = true }
   end
+  -- 广播结算界面数据（客户端展示役种与番数、和牌手牌、武将卡图）
+  M.BroadcastResult(room, state, winner, info, ev,
+    { base = baseScore, bonus = bonusScore, total = totalScore })
   room:delay(3000)
   if not M.Transfer(room, state, payments) then return false end
   state.lastWinner = winner
@@ -850,7 +1059,8 @@ end
 --------------------------------------------------------------------------
 
 -- 杠后处理：翻指示牌、活牌底移入王牌山、摸岭上
-function M.OnKan(room, state, p)
+-- kanKind / kanTile：杠的种类（"明杠"/"暗杠"/"加杠"）与杠的牌类型，用于播报
+function M.OnKan(room, state, p, kanKind, kanTile)
   local skill_name = state.skill_name
   state.kan_count = state.kan_count + 1
   state.dora_count = math.min(state.dora_count + 1, 4)
@@ -864,15 +1074,22 @@ function M.OnKan(room, state, p)
     local id = table.remove(state.rinshan, 1)
     room:moveCardTo(id, Card.PlayerHand, p, fk.ReasonJustMove, skill_name, nil, false, p)
     state.last_drawn[p.id] = cardTypeOf(id)
+    state.new_draw_id[p.id] = id
     state.rinshan_pending = true
   end
-  room:sendLog{ type = "#yyfy_mj_kan_log", arg = p._splayer:getScreenName(), toast = true }
+  room:sendLog{ type = "#yyfy_mj_kan_log",
+    arg = p._splayer:getScreenName(),
+    arg2 = kanKind or "杠",
+    arg3 = kanTile and Fk:translate(TYPE_TO_NAME[kanTile]) or "",
+    toast = true }
   -- 更新指示牌 banner（文字显示表宝牌，如“3索”）
   room:setBanner("@yyfy_mj_dora", omoteDoraTexts(state))
   local newInd = state.indicator[state.dora_count]
   if newInd then
     room:sendLog{ type = "#yyfy_mj_dora_log", arg = Fk:translate(TYPE_TO_NAME[nextDora(cardTypeOf(newInd))]), toast = true }
   end
+  -- 翻出新的表宝牌指示牌后，刷新全场手牌上的"宝牌"标记
+  refreshAllDoraMarks(room, state)
 end
 
 -- 抢杠检查：加杠前他家听这张牌则荣
@@ -915,6 +1132,7 @@ function M.CheckClaims(room, state, discardingPlayer, dType)
   for _, p in ipairs(order) do
     if p ~= discardingPlayer then
       local acts = {}
+      local canMeld = not state.riichi[p.id] -- 立直后不可吃碰杠（仍可荣）
       -- 荣（须能胡、非振听、且至少有一个起胡役；弃牌并入手牌后才有 14 张）
       local tiles13 = handTypes(p)
       local waits = M.GetWaits(tiles13, state.melds[p.id])
@@ -925,15 +1143,15 @@ function M.CheckClaims(room, state, discardingPlayer, dType)
         table.insert(acts, "yyfy_mj_ron")
       end
       -- 大明杠
-      if countType(handTypes(p), dType) >= 3 then
+      if canMeld and countType(handTypes(p), dType) >= 3 then
         table.insert(acts, "yyfy_mj_kan")
       end
       -- 碰
-      if countType(handTypes(p), dType) >= 2 then
+      if canMeld and countType(handTypes(p), dType) >= 2 then
         table.insert(acts, "yyfy_mj_pon")
       end
       -- 吃（仅下家）
-      if p == nextP then
+      if canMeld and p == nextP then
         local combos = M.GetChiCombos(handTypes(p), dType)
         if #combos > 0 then
           table.insert(acts, "yyfy_mj_chi")
@@ -1048,13 +1266,16 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
       for _, id in ipairs(handIds) do
         if cardTypeOf(id) == dType then table.insert(ids, id) end
       end
-      local groups = {}
+      -- 扁平存组：每相邻两个元素为一组（避免向 QML 传嵌套数组）
+      local flat, groupNum = {}, 0
       for i = 1, #ids - 1 do
         for j = i + 1, #ids do
-          table.insert(groups, { ids[i], ids[j] })
+          table.insert(flat, ids[i])
+          table.insert(flat, ids[j])
+          groupNum = groupNum + 1
         end
       end
-      if #groups > 1 then
+      if groupNum > 1 then
         local result = room:askToCustomDialog(p, {
           skill_name = "yyfy_mj_pon",
           component = {
@@ -1062,7 +1283,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
             model = {
               url = "packages/hidden-clouds/qml/models/YyfyMahjongMeldModel.qml",
               prop = {
-                groups = groups,
+                ids = flat,
                 prompt = "#yyfy_mj_pon_choose_prompt",
                 kind = "pon",
                 cancelable = true,
@@ -1079,7 +1300,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
           return nil
         end
       else
-        picked = groups[1]
+        picked = { flat[1], flat[2] }
       end
     else
       for _, id in ipairs(handIds) do
@@ -1104,7 +1325,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     end
     local cards = { discardId, picked[1], picked[2], picked[3] }
     table.insert(state.melds[p.id], { type = "kan_open", tiles = { dType, dType, dType, dType }, cards = cards, concealed = false })
-    M.OnKan(room, state, p)
+    M.OnKan(room, state, p, "明杠", dType)
   elseif claim.kind == "chi" then
     -- 分组选项框：每个合法组合映射为一组（两张手牌 id），用卡图询问玩家用哪组吃牌
     local groups = {}
@@ -1120,6 +1341,11 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
       end
       if #ids == 2 then table.insert(groups, ids) end
     end
+    local flat = {}
+    for _, g in ipairs(groups) do
+      table.insert(flat, g[1])
+      table.insert(flat, g[2])
+    end
     local combo, picked
     if p.id > 0 and #groups > 1 then
       local result = room:askToCustomDialog(p, {
@@ -1129,7 +1355,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
           model = {
             url = "packages/hidden-clouds/qml/models/YyfyMahjongMeldModel.qml",
             prop = {
-              groups = groups,
+              ids = flat,
               prompt = "#yyfy_mj_chi_choose_prompt",
               kind = "chi",
               cancelable = true,
@@ -1182,7 +1408,15 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     table.insert(state.melds[p.id], { type = "chi", tiles = combo, cards = cards, concealed = false })
   end
 
-  room:sendLog{ type = "#yyfy_mj_claim_log", arg = p._splayer:getScreenName(), toast = true }
+  -- 碰 / 吃 播报（杠的播报已在 M.OnKan 内按 明杠/暗杠/加杠 输出）
+  if claim.kind ~= "kan" then
+    local verb = (claim.kind == "pon") and "碰" or "吃"
+    room:sendLog{ type = "#yyfy_mj_claim_log",
+      arg = p._splayer:getScreenName(),
+      arg2 = verb,
+      arg3 = Fk:translate(TYPE_TO_NAME[dType]),
+      toast = true }
+  end
   room:delay(700)
   state.no_meld = false -- 发生副露，取消地和
   return state.melds[p.id][#state.melds[p.id]]
@@ -1203,17 +1437,21 @@ local function doTurnDraw(room, state, turn, fromRinshan)
     local id = table.remove(state.live, 1)
     room:moveCardTo(id, Card.PlayerHand, turn, fk.ReasonJustMove, skill_name, nil, false, turn)
     state.last_drawn[turn.id] = cardTypeOf(id)
+    state.new_draw_id[turn.id] = id
     haitei = #state.live == 0
     rinshan = state.rinshan_pending
-    state.rinshan_pending = false
     -- 已摸牌：立直后的下一巡摸牌完成，一发进入可成立状态
     if state.ippatsu[turn.id] == 1 then state.ippatsu[turn.id] = 2 end
     -- 只有第一巡摸牌才可能地和
     if state.first_draw[turn.id] then state.first_draw[turn.id] = false end
   end
+  -- 无论正常摸牌还是杠后岭上摸牌，都在此消费掉"杠后摸岭上"标记，避免泄漏到下一巡
+  state.rinshan_pending = false
+  -- 摸牌后刷新摸牌者手牌上的"宝牌"标记（新摸到的宝牌立即提示）
+  refreshDoraMarks(room, state, turn)
 
   local chiihou = state.no_meld and state.first_draw[turn.id] and turn ~= state.dealer and not rinshan
-  local info = { tsumo = true, haitei = haitei, rinshan = rinshan }
+  local info = { tsumo = true, haitei = haitei, rinshan = rinshan, winTile = state.last_drawn[turn.id] }
   if chiihou then info.chiihou = true end
   -- 和牌资格：牌型成立 + 至少一个起胡役（仅红宝牌等宝牌役不能胡）
   if M.CanSettle(state, turn, info) then
@@ -1269,17 +1507,24 @@ function M.PlayRound(room, state)
     -- 行动阶段（立直 / 暗杠 / 加杠）
     local actKan = false
     if turn.id > 0 and not state.riichi[turn.id] then
-      -- 立直
-      local waits = M.GetWaits(handTypes(turn), state.melds[turn.id])
-      local canRiichi = #state.melds[turn.id] == 0 and state.points[turn.id] >= 1000 and next(waits) ~= nil
-      if canRiichi then
-        if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_prompt" }) then
-          state.points[turn.id] = state.points[turn.id] - 1000
-          state.riichi[turn.id] = true
-          state.riichi_bets[turn.id] = true
-          state.ippatsu[turn.id] = 1
-          room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
-          room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
+      -- 立直：门前清、点数≥1000，且存在"弃一张后仍听牌"的牌
+      state.riichi_discardables = nil
+      if #state.melds[turn.id] == 0 and state.points[turn.id] >= 1000 then
+        local discardables = M.RiichiDiscardables(handTypes(turn), state.melds[turn.id])
+        if next(discardables) ~= nil then
+          if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_prompt" }) then
+            -- 二次确认：给玩家一次反悔机会，点取消则视为不立直
+            if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_confirm_prompt" }) then
+              state.points[turn.id] = state.points[turn.id] - 1000
+              state.kyotaku = (state.kyotaku or 0) + 1000
+              state.riichi[turn.id] = true
+              state.ippatsu[turn.id] = 1
+              state.riichi_discardables = discardables
+              room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
+              room:setPlayerMark(turn, "@yyfy_mj_riichi", "")
+              room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
+            end
+          end
         end
       end
       -- 杠（暗杠 / 加杠）
@@ -1335,13 +1580,13 @@ function M.PlayRound(room, state)
               meld.type = "kan_added"
               table.insert(meld.tiles, t)
               table.insert(meld.cards, handId)
-              M.OnKan(room, state, turn)
+              M.OnKan(room, state, turn, "加杠", t)
             else
               -- 暗杠
               local ids = findHandIds(turn, t, 4)
               room:moveCardTo(ids, Card.PlayerSpecial, turn, fk.ReasonJustMove, state.skill_name, "yyfy_mj_meld", true, turn)
               table.insert(state.melds[turn.id], { type = "kan_closed", tiles = { t, t, t, t }, cards = ids, concealed = true })
-              M.OnKan(room, state, turn)
+              M.OnKan(room, state, turn, "暗杠", t)
             end
             actKan = true
           end
@@ -1360,36 +1605,54 @@ function M.PlayRound(room, state)
       end
     end
 
-    -- 出牌前把手牌按麻将序重排（1234056789m…p…s 东南西北白发中）
+    -- 出牌前把手牌按麻将序重排，并标记本轮新摸的牌（"新摸"仅摸牌者本人可见）
     sortHandByMahjong(room, turn)
+    if turn.id > 0 then markNewDraw(room, state, turn) end
 
     -- 打牌：真人直接在手牌区点选一张牌，点确定打出（不弹中央选牌框，框架 AskForUseActiveSkill 手牌区选牌）
     local discardId
-    if turn.id > 0 then
-      local result = room:askToCards(turn, {
+    if turn.id > 0 and state.riichi[turn.id] and not state.riichi_discardables then
+      -- 已立直（非宣言回合）：只能摸切，自动打出刚摸的牌
+      discardId = state.new_draw_id[turn.id]
+    elseif turn.id > 0 then
+      local askParams = {
         max_num = 1,
         min_num = 1,
         cancelable = false,
         skill_name = "yyfy_mj_play",
         prompt = "#yyfy_mj_discard_prompt",
-      })
+      }
+      if state.riichi_discardables then
+        -- 立直宣言回合：限制只能打出可保持听牌的牌
+        local allowedIds = {}
+        for _, id in ipairs(turn:getCardIds("h")) do
+          if state.riichi_discardables[cardTypeOf(id)] then table.insert(allowedIds, id) end
+        end
+        askParams.prompt = "#yyfy_mj_riichi_discard_prompt"
+        askParams.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
+      end
+      local result = room:askToCards(turn, askParams)
       if type(result) == "table" and result[1] then
         discardId = result[1]
       end
     end
     if not discardId then
-      -- 人机 / 超时兜底：默认模切
-      local lastT = state.last_drawn[turn.id]
+      -- 人机 / 超时兜底：默认摸切（打刚摸的牌），否则打第一张
+      local nd = state.new_draw_id[turn.id]
       local handIds = turn:getCardIds("h")
-      discardId = nil
-      for _, id in ipairs(handIds) do
-        if lastT ~= nil and cardTypeOf(id) == lastT then discardId = id break end
+      if nd and table.contains(handIds, nd) then
+        discardId = nd
+      else
+        discardId = handIds[1]
       end
-      if not discardId then discardId = handIds[1] end
       room:delay(500)
     end
     if not discardId then return nil end
     local dType = cardTypeOf(discardId)
+    -- 摸切/手切：是否打出了本轮刚摸的牌
+    local tsumogiri = (state.new_draw_id[turn.id] ~= nil and discardId == state.new_draw_id[turn.id])
+    -- 清除"新摸"标记（弃牌前清除，避免该牌在展示区残留标记）
+    clearNewDrawMark(room, state, turn)
     -- 上一张弃牌若仍在处理区，先移入其打出者的"已打出"牌堆（按顺序展示在角色头上）
     if state.lastDiscard then
       local prevId = state.lastDiscard.id
@@ -1404,7 +1667,22 @@ function M.PlayRound(room, state)
     state.lastDiscard = { id = discardId, type = dType, player = turn }
     -- 立直者已摸过牌且本巡仍未和：一发失效
     if state.ippatsu[turn.id] == 2 then state.ippatsu[turn.id] = nil end
-    room:sendLog{ type = "#yyfy_mj_discard_log", arg = turn._splayer:getScreenName(), arg2 = Fk:translate(TYPE_TO_NAME[dType]), toast = true }
+    room:sendLog{
+      type = tsumogiri and "#yyfy_mj_discard_tsumogiri" or "#yyfy_mj_discard_tegiri",
+      arg = turn._splayer:getScreenName(),
+      arg2 = Fk:translate(TYPE_TO_NAME[dType]),
+      toast = true }
+    -- 立直宣言回合结束：记录听牌并显示"已立直"字幕（覆盖手牌区）
+    if state.riichi[turn.id] and state.riichi_discardables then
+      state.riichi_discardables = nil
+      local waits = M.GetWaits(handTypes(turn), state.melds[turn.id])
+      local names = {}
+      for t in pairs(waits) do table.insert(names, Fk:translate(TYPE_TO_NAME[t])) end
+      table.sort(names)
+      local text = Fk:translate("yyfy_mj_riichi_caption") .. "\n"
+        .. Fk:translate("yyfy_mj_riichi_waits") .. table.concat(names, "、")
+      room:setPlayerProperty(turn, "handAreaOverlay", text)
+    end
     room:delay(600)
 
     -- 副露检查
@@ -1489,11 +1767,7 @@ function M.SettleExhaustive(room, state)
       end
     end
   end
-  -- 退立直棒
-  for pid, _ in pairs(state.riichi_bets) do
-    payments[pid] = (payments[pid] or 0) + 1000
-  end
-  state.riichi_bets = {}
+  -- 立直棒不退还：作为供托留在桌上，累计到下一次有人和牌时由赢家收取
   if next(payments) then
     if not M.Transfer(room, state, payments) then return nil end
   end
@@ -1548,8 +1822,10 @@ end
 
 -- 更新庄家标记（UI 上明确显示当前庄家，随连庄/换庄同步）
 local function updateDealerMark(room, state)
+  -- 标记数字与本场数挂钩：首局为 1，每连庄/流局连庄 +1
+  local cur = (state.renchan_count or 0) + 1
   for _, p in ipairs(state.players) do
-    room:setPlayerMark(p, "@yyfy_mj_dealer", p == state.dealer and 1 or 0)
+    room:setPlayerMark(p, "@yyfy_mj_dealer", p == state.dealer and cur or 0)
   end
 end
 
@@ -1565,6 +1841,17 @@ end
 function M.RestartRound(room, state)
   local skill_name = state.skill_name
   for _, p in ipairs(state.players) do
+    -- 清除手牌上的"新摸"/"宝牌"卡牌标记（避免回收发牌后残留）
+    for _, id in ipairs(p:getCardIds("h")) do
+      local card = Fk:getCardById(id)
+      if card then
+        room:setCardMark(card, NEW_DRAW_MARK, 0)
+        room:setCardMark(card, DORA_MARK, 0)
+      end
+    end
+    -- 清除立直标记与手牌区字幕
+    room:setPlayerMark(p, "@yyfy_mj_riichi", 0)
+    room:setPlayerProperty(p, "handAreaOverlay", "")
     p:throwAllCards("h")
     -- 回收副露牌堆（PlayerSpecial 源区须用 moveCardTo 而非 changeCardArea）
     local pile = p:getPile("yyfy_mj_meld")
@@ -1580,8 +1867,10 @@ function M.RestartRound(room, state)
     state.riichi[p.id] = nil
     state.ippatsu[p.id] = nil
     state.last_drawn[p.id] = nil
+    state.new_draw_id[p.id] = nil
     state.first_draw[p.id] = true
   end
+  state.riichi_discardables = nil
   -- 回收处理区（弃牌展示区）
   local proc = table.simpleClone(room.processing_area)
   if #proc > 0 then room:moveCardTo(proc, Card.DrawPile, nil, fk.ReasonJustMove, skill_name) end
@@ -1594,6 +1883,9 @@ function M.RestartRound(room, state)
   state.no_meld = true
   M.BuildWalls(room, state)
   M.DealInitial(room, state)
+  -- 配牌后立即按麻将序整理庄家手牌（一次性批量塞回，日志简洁）
+  sortHandByMahjong(room, state.dealer)
+  refreshAllDoraMarks(room, state)
   return true
 end
 
@@ -1628,9 +1920,11 @@ function M.Init(room, players, skill_name)
     discard_ids = {},
     melds = {},
     riichi = {},
-    riichi_bets = {},
+    kyotaku = 0, -- 供托：本局及之前局的立直棒（流局不退还，跨局累计，直到有人和牌）
     ippatsu = {},
     last_drawn = {},
+    new_draw_id = {},
+    riichi_discardables = nil,
     live = {},
     rinshan = {},
     indicator = {},
@@ -1659,6 +1953,9 @@ function M.Init(room, players, skill_name)
   updateRoles(room, state)
   M.BuildWalls(room, state)
   M.DealInitial(room, state)
+  -- 配牌后立即按麻将序整理庄家手牌（一次性批量塞回，日志简洁）
+  sortHandByMahjong(room, state.dealer)
+  refreshAllDoraMarks(room, state)
   return state
 end
 
@@ -1669,15 +1966,25 @@ end
 function M.Run(room, players, skill_name)
   local state = M.Init(room, players, skill_name)
   if not state then return end
+  -- 麻将模式全程禁止玩家主动调整手牌顺序（只能依靠出牌前自动排序）
+  for _, p in ipairs(players) do
+    room:banSortingHandcards(p, "-_yyfy_mj")
+  end
+  local function unbanSortingAll()
+    for _, p in ipairs(players) do
+      room:unbanSortingHandcards(p, "-_yyfy_mj")
+    end
+  end
   local guard = 0
   while true do
     guard = guard + 1
     if guard > 30 then
       M.EndGameByPoints(room, state)
+      unbanSortingAll()
       return
     end
     local result = M.PlayRound(room, state)
-    if result == nil then return end -- 已结束（击飞等）
+    if result == nil then unbanSortingAll() return end -- 已结束（击飞等）
 
     -- 局后：连庄 / 换庄（用 id 比较，避免对象引用歧义）
     if result == "win" then
@@ -1712,6 +2019,7 @@ function M.Run(room, players, skill_name)
     -- 半庄两圈：东场 4 局 + 南场 4 局，共 8 局
     if state.round > 8 then
       M.EndGameByPoints(room, state)
+      unbanSortingAll()
       return
     end
     M.RestartRound(room, state)
