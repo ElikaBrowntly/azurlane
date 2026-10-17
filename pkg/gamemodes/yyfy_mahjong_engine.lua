@@ -255,7 +255,9 @@ local function clearNewDrawMark(room, state, p)
 end
 
 -- 手牌上的"宝牌"标记：仅标注表宝牌类型（里宝牌与红宝牌不标）
-local DORA_MARK = "@@yyfy_dora-inhand"
+-- 注意：不带 "-inhand" 后缀，否则每次手牌重排（出牌前排序）都会因"离开手牌区"而清除标记；
+--       一张牌成为本场宝牌后应在本场内持续显示，直到本场结束统一清洗
+local DORA_MARK = "@@yyfy_dora"
 
 -- 当前表宝牌类型集合
 local function omoteDoraTypes(state)
@@ -482,6 +484,53 @@ function M.RiichiDiscardables(tiles, melds)
     end
   end
   return ret
+end
+
+--- 把听牌集合转成简短文本（如 {2p,5p,3s} -> "25p3s"），用于立直宣言选牌界面的提示
+local function waitsText(waits)
+  local parts = {}
+  local suitChar = { "m", "p", "s" }
+  for suit = 0, 2 do
+    local nums = {}
+    for n = 1, 9 do
+      if waits[suit * 9 + (n - 1)] then table.insert(nums, n) end
+    end
+    if #nums > 0 then table.insert(parts, table.concat(nums) .. suitChar[suit + 1]) end
+  end
+  local honors = { "东", "南", "西", "北", "白", "发", "中" }
+  for i = 1, 7 do
+    if waits[26 + i] then table.insert(parts, honors[i]) end
+  end
+  return table.concat(parts)
+end
+
+-- 立直宣言选牌界面的"听牌提示"卡牌标记：标记名翻译为空，故只显示值（形如"听25p3s"）
+local RIICHI_WAIT_MARK = "@@yyfy_riichi_wait"
+
+--- 在每张可作立直宣言的牌上标注"用此牌立直后会听什么"
+local function markRiichiWaits(room, state, p, discardables, tiles)
+  for _, id in ipairs(p:getCardIds("h")) do
+    local t = cardTypeOf(id)
+    if discardables[t] then
+      local rest = {}
+      local removed = false
+      for _, tt in ipairs(tiles) do
+        if tt == t and not removed then removed = true else table.insert(rest, tt) end
+      end
+      local card = Fk:getCardById(id)
+      if card then
+        room:setCardMark(card, RIICHI_WAIT_MARK, "听" .. waitsText(M.GetWaits(rest, state.melds[p.id])))
+      end
+    end
+  end
+end
+
+--- 清除立直宣言的听牌提示标记
+local function clearRiichiWaits(room, p)
+  for _, id in ipairs(p:getCardIds("h")) do
+    local card = Fk:getCardById(id)
+    if card then room:setCardMark(card, RIICHI_WAIT_MARK, 0) end
+  end
 end
 
 -- 振听判定：自家牌河含有所听之牌
@@ -1475,6 +1524,8 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     end
     local cards = { discardId, picked[1], picked[2] }
     table.insert(state.melds[p.id], { type = "pon", tiles = { dType, dType, dType }, cards = cards, concealed = false })
+    -- 碰后本巡不得立即加杠，需等到自己下一次行动（摸牌）才可选择加杠
+    state.no_kakan[p.id] = true
   elseif claim.kind == "kan" then
     takeDiscard()
     local picked = {}
@@ -1704,34 +1755,23 @@ function M.PlayRound(room, state)
         and (RULES.tailRiichi or not tailTurn) then
         local discardables = M.RiichiDiscardables(handTypes(turn), state.melds[turn.id])
         if next(discardables) ~= nil then
+          -- 只询问一次"是否立直"；具体用哪张牌宣言、以及取消反悔都在下面的选牌界面完成
           if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_prompt" }) then
-            -- 二次确认：给玩家一次反悔机会，点取消则视为不立直
-            if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_confirm_prompt" }) then
-              state.points[turn.id] = state.points[turn.id] - 1000
-              state.kyotaku = (state.kyotaku or 0) + 1000
-              state.riichi[turn.id] = true
-              state.ippatsu[turn.id] = 1
-              state.riichi_discardables = discardables
-              -- 两立直：第一巡、无人鸣牌且自身尚未出牌时立直
-              if state.no_meld and #(state.discards[turn.id] or {}) == 0 then
-                state.double_riichi[turn.id] = true
-              end
-              room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
-              room:setPlayerMark(turn, "@yyfy_mj_riichi", "")
-              room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
-            end
+            state.riichi_discardables = discardables
           end
         end
       end
       -- 杠（暗杠 / 加杠）：摸到海底牌（本巡为最后一张牌山的摸牌）后不可再开杠，只能切牌
-      if not state.riichi[turn.id] and not state.haitei_draw then
+      -- 已选择立直（尚未在选牌界面确认）时也不可开杠：立直后必须立即打牌
+      if not state.riichi[turn.id] and not state.riichi_discardables and not state.haitei_draw then
         local counts = countTable(handTypes(turn))
         local ankanTypes, addKanTypes = {}, {}
         for t = 0, 33 do
           if counts[t] >= 4 then table.insert(ankanTypes, t) end
         end
         for _, m in ipairs(state.melds[turn.id]) do
-          if m.type == "pon" and counts[m.tiles[1]] >= 1 then
+          -- 碰后本巡禁止加杠：需等到自己下一次行动（摸牌）后才可选择加杠
+          if m.type == "pon" and counts[m.tiles[1]] >= 1 and not state.no_kakan[turn.id] then
             table.insert(addKanTypes, m.tiles[1])
           end
         end
@@ -1813,35 +1853,65 @@ function M.PlayRound(room, state)
       -- 已立直（非宣言回合）：只能摸切，自动打出刚摸的牌
       discardId = state.new_draw_id[turn.id]
     elseif turn.id > 0 then
-      local askParams = {
-        max_num = 1,
-        min_num = 1,
-        cancelable = false,
-        skill_name = "yyfy_mj_play",
-        prompt = "#yyfy_mj_discard_prompt",
-      }
-      local forbid = state.kuikae_forbid[turn.id]
-      if state.riichi_discardables then
-        -- 立直宣言回合：限制只能打出可保持听牌的牌
-        local allowedIds = {}
-        for _, id in ipairs(turn:getCardIds("h")) do
-          if state.riichi_discardables[cardTypeOf(id)] then table.insert(allowedIds, id) end
+      -- 构造打牌询问参数；riichiMode 为真 = "立直宣言选牌界面"（可取消，且只列可保持听牌的牌）
+      local function buildDiscardAsk(riichiMode)
+        local params = {
+          max_num = 1,
+          min_num = 1,
+          cancelable = riichiMode, -- 立直宣言界面提供取消按钮；取消即回到不立直分支
+          skill_name = "yyfy_mj_play",
+          prompt = "#yyfy_mj_discard_prompt",
+        }
+        local forbid = state.kuikae_forbid[turn.id]
+        if riichiMode then
+          -- 立直宣言回合：限制只能打出可保持听牌的牌
+          local allowedIds = {}
+          for _, id in ipairs(turn:getCardIds("h")) do
+            if state.riichi_discardables[cardTypeOf(id)] then table.insert(allowedIds, id) end
+          end
+          params.prompt = "#yyfy_mj_riichi_discard_prompt"
+          params.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
+        elseif forbid then
+          -- 喰い替え：本巡不可打出与所鸣牌同型/可滑移之牌，仅列出手牌中允许打出的牌
+          local allowedIds = {}
+          for _, id in ipairs(turn:getCardIds("h")) do
+            if not forbid[cardTypeOf(id)] then table.insert(allowedIds, id) end
+          end
+          if #allowedIds > 0 then
+            params.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
+          end
         end
-        askParams.prompt = "#yyfy_mj_riichi_discard_prompt"
-        askParams.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
-      elseif forbid then
-        -- 喰い替え：本巡不可打出与所鸣牌同型/可滑移之牌，仅列出手牌中允许打出的牌
-        local allowedIds = {}
-        for _, id in ipairs(turn:getCardIds("h")) do
-          if not forbid[cardTypeOf(id)] then table.insert(allowedIds, id) end
-        end
-        if #allowedIds > 0 then
-          askParams.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
-        end
+        return params
       end
-      local result = room:askToCards(turn, askParams)
-      if type(result) == "table" and result[1] then
-        discardId = result[1]
+
+      if state.riichi_discardables then
+        -- 立直宣言回合：在每张可宣言的牌上标注"听XXX"；选牌确定则立直成功，取消则转为不立直
+        markRiichiWaits(room, state, turn, state.riichi_discardables, handTypes(turn))
+        local result = room:askToCards(turn, buildDiscardAsk(true))
+        clearRiichiWaits(room, turn)
+        if type(result) == "table" and result[1] then
+          -- 确认立直：此时才扣点、置立直标记
+          state.points[turn.id] = state.points[turn.id] - 1000
+          state.kyotaku = (state.kyotaku or 0) + 1000
+          state.riichi[turn.id] = true
+          state.ippatsu[turn.id] = 1
+          -- 两立直：第一巡、无人鸣牌且自身尚未出牌时立直
+          if state.no_meld and #(state.discards[turn.id] or {}) == 0 then
+            state.double_riichi[turn.id] = true
+          end
+          room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
+          room:setPlayerMark(turn, "@yyfy_mj_riichi", "")
+          room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
+          discardId = result[1]
+        else
+          -- 取消：回到不立直分支，重新正常选牌切一张
+          state.riichi_discardables = nil
+          local r2 = room:askToCards(turn, buildDiscardAsk(false))
+          if type(r2) == "table" and r2[1] then discardId = r2[1] end
+        end
+      else
+        local result = room:askToCards(turn, buildDiscardAsk(false))
+        if type(result) == "table" and result[1] then discardId = result[1] end
       end
     end
     if not discardId then
@@ -1864,6 +1934,8 @@ function M.PlayRound(room, state)
     local dType = cardTypeOf(discardId)
     -- 喰い替え禁打状态在本巡弃牌后解除
     state.kuikae_forbid[turn.id] = nil
+    -- 碰后禁加杠状态在本巡弃牌后解除（下次摸牌即可加杠）
+    state.no_kakan[turn.id] = nil
     -- 摸切/手切：是否打出了本轮刚摸的牌
     local tsumogiri = (state.new_draw_id[turn.id] ~= nil and discardId == state.new_draw_id[turn.id])
     -- 清除"新摸"标记（弃牌前清除，避免该牌在展示区残留标记）
@@ -2146,12 +2218,11 @@ end
 function M.RestartRound(room, state)
   local skill_name = state.skill_name
   for _, p in ipairs(state.players) do
-    -- 清除手牌上的"新摸"/"宝牌"卡牌标记（避免回收发牌后残留）
+    -- 清除手牌上的"新摸"卡牌标记（避免回收发牌后残留）
     for _, id in ipairs(p:getCardIds("h")) do
       local card = Fk:getCardById(id)
       if card then
         room:setCardMark(card, NEW_DRAW_MARK, 0)
-        room:setCardMark(card, DORA_MARK, 0)
       end
     end
     -- 清除立直标记与手牌区字幕
@@ -2178,6 +2249,7 @@ function M.RestartRound(room, state)
     state.first_discard_type[p.id] = nil
     state.discard_claimed[p.id] = nil
     state.kuikae_forbid[p.id] = nil
+    state.no_kakan[p.id] = nil
   end
   state.riichi_discardables = nil
   state.haitei_draw = false
@@ -2186,6 +2258,11 @@ function M.RestartRound(room, state)
   if #proc > 0 then room:moveCardTo(proc, Card.DrawPile, nil, fk.ReasonJustMove, skill_name) end
   local discard = table.simpleClone(room.discard_pile)
   if #discard > 0 then room:changeCardArea(discard, Card.DrawPile) end
+  -- 本场结束：统一清洗全场所有牌上的"宝牌"标记（含已弃出后被回收的牌），避免残留到下一场
+  for _, id in ipairs(room.draw_pile) do
+    local card = Fk:getCardById(id)
+    if card then room:setCardMark(card, DORA_MARK, 0) end
+  end
   state.lastDiscard = nil
   state.dora_count = 1
   state.kan_count = 0
@@ -2257,6 +2334,7 @@ function M.Init(room, players, skill_name)
     first_discard_type = {}, -- 各家本局首次打出的牌类型（四风连打判定）
     discard_claimed = {}, -- 各家弃牌是否被副露（流局满贯判定）
     kuikae_forbid = {}, -- 喰い替え：鸣牌后本巡各家不可打出的牌型集合
+    no_kakan = {}, -- 碰后本巡禁止加杠的玩家集合（需等下一次自己行动才可加杠）
     haitei_draw = false, -- 本巡摸到的是否为海底牌（为真时禁止开杠）
   }
   for i, p in ipairs(players) do
