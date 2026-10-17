@@ -504,11 +504,13 @@ local function waitsText(waits)
   return table.concat(parts)
 end
 
--- 立直宣言选牌界面的"听牌提示"卡牌标记：标记名翻译为空，故只显示值（形如"听25p3s"）
-local RIICHI_WAIT_MARK = "@@yyfy_riichi_wait"
-
---- 在每张可作立直宣言的牌上标注"用此牌立直后会听什么"
-local function markRiichiWaits(room, state, p, discardables, tiles)
+--- 立直宣言选牌界面：为每张可宣言的牌计算"打这张牌之后会听什么牌"，
+--- 通过 room:setPlayerProperty("yyfyMjRiichiTips") 交给客户端，
+--- 客户端在玩家选中某张牌、点确定之前，于手牌上方弹窗提示。
+---@return table 卡牌 id（字符串）-> 提示文本（如"听25p3s"；打出去不听则为"不听"）
+local function buildRiichiTips(state, p, discardables)
+  local tiles = handTypes(p)
+  local tips = {}
   for _, id in ipairs(p:getCardIds("h")) do
     local t = cardTypeOf(id)
     if discardables[t] then
@@ -517,20 +519,11 @@ local function markRiichiWaits(room, state, p, discardables, tiles)
       for _, tt in ipairs(tiles) do
         if tt == t and not removed then removed = true else table.insert(rest, tt) end
       end
-      local card = Fk:getCardById(id)
-      if card then
-        room:setCardMark(card, RIICHI_WAIT_MARK, "听" .. waitsText(M.GetWaits(rest, state.melds[p.id])))
-      end
+      local text = waitsText(M.GetWaits(rest, state.melds[p.id]))
+      tips[tostring(id)] = (text ~= "" and ("听" .. text)) or "不听"
     end
   end
-end
-
---- 清除立直宣言的听牌提示标记
-local function clearRiichiWaits(room, p)
-  for _, id in ipairs(p:getCardIds("h")) do
-    local card = Fk:getCardById(id)
-    if card then room:setCardMark(card, RIICHI_WAIT_MARK, 0) end
-  end
+  return tips
 end
 
 -- 振听判定：自家牌河含有所听之牌
@@ -1225,6 +1218,8 @@ function M.SettleWin(room, state, winner, info, opts)
   payments[winner.id] = (payments[winner.id] or 0) + totalScore
   if giveKyotaku then state.kyotaku = 0 end
   -- 日志与展示（结算停顿数秒，让玩家看清和牌结果）
+  -- 和牌语音：自摸 / 荣和
+  winner:broadcastSkillInvoke(info.tsumo and "yyfy_mj_tsumo" or "yyfy_mj_ron")
   room:sendLog{ type = "#yyfy_mj_win", arg = winner._splayer:getScreenName(), arg2 = ev.han, arg3 = totalScore, toast = true }
   room:delay(2000)
   local yakuText
@@ -1272,6 +1267,8 @@ function M.OnKan(room, state, p, kanKind, kanTile)
     state.new_draw_id[p.id] = id
     state.rinshan_pending = true
   end
+  -- 杠语音（明杠 / 加杠 / 暗杠 统一使用 yyfy_mj_kan）
+  p:broadcastSkillInvoke("yyfy_mj_kan")
   room:sendLog{ type = "#yyfy_mj_kan_log",
     arg = p._splayer:getScreenName(),
     arg2 = kanKind or "杠",
@@ -1524,6 +1521,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     end
     local cards = { discardId, picked[1], picked[2] }
     table.insert(state.melds[p.id], { type = "pon", tiles = { dType, dType, dType }, cards = cards, concealed = false })
+    p:broadcastSkillInvoke("yyfy_mj_pon")
     -- 碰后本巡不得立即加杠，需等到自己下一次行动（摸牌）才可选择加杠
     state.no_kakan[p.id] = true
   elseif claim.kind == "kan" then
@@ -1619,6 +1617,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
     local cards = { discardId }
     for _, id in ipairs(picked) do table.insert(cards, id) end
     table.insert(state.melds[p.id], { type = "chi", tiles = combo, cards = cards, concealed = false })
+    p:broadcastSkillInvoke("yyfy_mj_chi")
   end
 
   -- 碰 / 吃 播报（杠的播报已在 M.OnKan 内按 明杠/暗杠/加杠 输出）
@@ -1885,10 +1884,11 @@ function M.PlayRound(room, state)
       end
 
       if state.riichi_discardables then
-        -- 立直宣言回合：在每张可宣言的牌上标注"听XXX"；选牌确定则立直成功，取消则转为不立直
-        markRiichiWaits(room, state, turn, state.riichi_discardables, handTypes(turn))
+        -- 立直宣言回合：把"打某张牌后会听什么牌"交给客户端，玩家选中牌后手牌上方弹窗提示；
+        -- 选牌确定则立直成功，点取消则转为不立直
+        room:setPlayerProperty(turn, "yyfyMjRiichiTips", buildRiichiTips(state, turn, state.riichi_discardables))
         local result = room:askToCards(turn, buildDiscardAsk(true))
-        clearRiichiWaits(room, turn)
+        room:setPlayerProperty(turn, "yyfyMjRiichiTips", {})
         if type(result) == "table" and result[1] then
           -- 确认立直：此时才扣点、置立直标记
           state.points[turn.id] = state.points[turn.id] - 1000
@@ -1901,6 +1901,12 @@ function M.PlayRound(room, state)
           end
           room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
           room:setPlayerMark(turn, "@yyfy_mj_riichi", "")
+          -- 立直语音：两立直单独播放（无对应技能，用 broadcastPlaySound），其余走技能语音
+          if state.double_riichi[turn.id] then
+            room:broadcastPlaySound("./packages/hidden-clouds/audio/skill/yyfy_mj_daburu_riichi")
+          else
+            turn:broadcastSkillInvoke("yyfy_mj_riichi")
+          end
           room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
           discardId = result[1]
         else
@@ -2228,6 +2234,8 @@ function M.RestartRound(room, state)
     -- 清除立直标记与手牌区字幕
     room:setPlayerMark(p, "@yyfy_mj_riichi", 0)
     room:setPlayerProperty(p, "handAreaOverlay", "")
+    -- 清除立直宣言的听牌提示（避免残留到下一场）
+    room:setPlayerProperty(p, "yyfyMjRiichiTips", {})
     p:throwAllCards("h")
     -- 回收副露牌堆（PlayerSpecial 源区须用 moveCardTo 而非 changeCardArea）
     local pile = p:getPile("yyfy_mj_meld")
@@ -2259,9 +2267,10 @@ function M.RestartRound(room, state)
   local discard = table.simpleClone(room.discard_pile)
   if #discard > 0 then room:changeCardArea(discard, Card.DrawPile) end
   -- 本场结束：统一清洗全场所有牌上的"宝牌"标记（含已弃出后被回收的牌），避免残留到下一场
+  -- 此时所有牌都已回到牌堆、客户端无需感知，直接改服务端牌对象，避免逐张广播无谓的 SetCardMark 通知
   for _, id in ipairs(room.draw_pile) do
     local card = Fk:getCardById(id)
-    if card then room:setCardMark(card, DORA_MARK, 0) end
+    if card then card:setMark(DORA_MARK, 0) end
   end
   state.lastDiscard = nil
   state.dora_count = 1
