@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // 夜隐浮云·麻将模式：吃/碰分组选项框
 // 每组显示两张卡图（93x130），点击某组即选用该两张牌吃/碰；可取消
+// 渲染方式：外层用数量模型 + 组内两张牌显式写出，避免嵌套 Repeater
 import QtQuick 2.15
 import QtQuick.Controls
 import Fk
@@ -16,7 +17,7 @@ GraphicsBox {
     required property YyfyMahjongMeldModel dataModel
 
     title.text: root.dataModel.promptText
-    width: 40 + Math.min(4, root.dataModel.groups.length) * 214
+    width: 40 + Math.min(4, root.dataModel.groupCount) * 214
     height: 270
 
     Rectangle {
@@ -49,7 +50,7 @@ GraphicsBox {
                 spacing: 10
 
                 Repeater {
-                    model: root.dataModel.groups
+                    model: root.dataModel.groupCount
                     delegate: groupDelegate
                 }
             }
@@ -75,14 +76,16 @@ GraphicsBox {
                 anchors.centerIn: parent
                 spacing: 8
 
-                Repeater {
-                    model: modelData
+                CardItem {
+                    width: 93
+                    height: 130
+                    dataModel: Ltk.createCardModel(root.dataModel.idAt(index, 0))
+                }
 
-                    CardItem {
-                        width: 93
-                        height: 130
-                        dataModel: Ltk.createCardModel(modelData)
-                    }
+                CardItem {
+                    width: 93
+                    height: 130
+                    dataModel: Ltk.createCardModel(root.dataModel.idAt(index, 1))
                 }
             }
 
