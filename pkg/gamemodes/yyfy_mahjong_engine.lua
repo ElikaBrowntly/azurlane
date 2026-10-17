@@ -2,13 +2,42 @@
 -- 夜隐浮云·麻将模式核心引擎
 -- 规则概要（雀魂/立直麻将）：
 --   三赤、有击飞、无古役、无番缚、有振听、有食断、有立直
---   四人游戏，初始 25000 点，半庄两圈（东场 4 局 + 南场 4 局，round>8 结束按点数判胜）
---   庄家随机东起（主公），逆时针行牌，门风随庄家旋转、场风东/南，均计入起胡役
+--   四人游戏，初始 25000 点；西入开关（RULES.seiu）见文件开头规则开关表：
+--     开启则半庄（南四过庄）后无人达 30000 续战西场/北场，每局结束立即判定无刷分，最多至北四；
+--     关闭则东场 4 局 + 南场 4 局，round>8 按点数判胜
+--   庄家随机东起（主公），逆时针行牌，门风随庄家旋转（庄家门风恒为东）、
+--   场风按局数取东/南/西/北，均计入起胡役
 --   牌堆 136 张：数牌 108（含红五三张）+ 字牌 28
 -- 主入口：M.Run(room, players, skill_name)，同步阻塞驱动整局游戏
 -- 对局状态持久化在 room:setTag("yyfy_mj_state", state)
 
 local M = {}
+
+--------------------------------------------------------------------------
+-- 规则开关（地方规则系统）
+-- 通过组合各开关状态形成不同的预设规则。
+--------------------------------------------------------------------------
+local RULES = {
+  -- 西入：半庄（南四过庄）后若无人达到 30000 点，则由最初庄家续坐西一局
+  -- （门风仍东、场风转西），此后每局结束立即检查，有人达 30000 即终局（无刷分），
+  -- 最多打到北四（第 16 局）强制结束。
+  seiu = true,
+  -- 食断（食い断）：副露后仍可成立断幺九。关闭后，有副露时断幺九不计番（不能作为起胡役）。
+  kuitan = true,
+  -- 尾巡立直：是否允许在"已无下一次摸牌机会"的尾巡立直。默认不允许（置 true 为允许）。
+  tailRiichi = false,
+}
+
+-- 役满权重累计（单倍=1，双倍=2，复合役满求和），用于计算倍数与结算总分
+local function yakumanWeightSum(list)
+  local n = 0
+  for _, y in ipairs(list or {}) do n = n + (y.weight or 1) end
+  return n
+end
+
+local function addYakuman(list, key, weight)
+  table.insert(list, { key = key, weight = weight or 1 })
+end
 
 --------------------------------------------------------------------------
 -- 牌名 / 类型索引
@@ -306,6 +335,30 @@ local function isKokushi(tiles)
   return sum == 14 and have == 13
 end
 
+-- 国士无双十三面：和牌前的 13 张恰为十三种幺九牌各一张（十三面听）
+local function isKokushiJuusan(tiles, winTile)
+  if winTile == nil then return false end
+  local rest = table.simpleClone(tiles)
+  local removed = false
+  for i, t in ipairs(rest) do
+    if t == winTile and not removed then
+      table.remove(rest, i)
+      removed = true
+      break
+    end
+  end
+  if #rest ~= 13 then return false end
+  local counts = countTable(rest)
+  for t = 0, 33 do
+    if isYaochu(t) then
+      if counts[t] ~= 1 then return false end
+    elseif counts[t] ~= 0 then
+      return false
+    end
+  end
+  return true
+end
+
 local function isSevenPairs(tiles)
   if #tiles ~= 14 then return false end
   local counts = countTable(tiles)
@@ -319,6 +372,54 @@ local function isSevenPairs(tiles)
     end
   end
   return pairs == 7
+end
+
+-- 九莲宝灯：门前清、清一色，牌型为 1112345678999 + 任意一张同花色数牌
+local function isChuuren(tiles)
+  if #tiles ~= 14 then return false end
+  if tiles[1] >= 27 then return false end
+  local suit = math.floor(tiles[1] / 9)
+  local counts = countTable(tiles)
+  for t = 0, 33 do
+    if t >= 27 or math.floor(t / 9) ~= suit then
+      if counts[t] ~= 0 then return false end
+    end
+  end
+  local base = suit * 9
+  if counts[base] < 3 or counts[base + 8] < 3 then return false end
+  for d = 1, 7 do
+    if counts[base + d] < 1 then return false end
+  end
+  return true
+end
+
+-- 纯正九莲宝灯：和牌前的 13 张恰为 1112345678999（九面听）
+local function isJunseiChuuren(tiles, winTile)
+  if winTile == nil then return false end
+  local rest = table.simpleClone(tiles)
+  local removed = false
+  for i, t in ipairs(rest) do
+    if t == winTile and not removed then
+      table.remove(rest, i)
+      removed = true
+      break
+    end
+  end
+  if #rest ~= 13 then return false end
+  if rest[1] >= 27 then return false end
+  local suit = math.floor(rest[1] / 9)
+  local counts = countTable(rest)
+  for t = 0, 33 do
+    if t >= 27 or math.floor(t / 9) ~= suit then
+      if counts[t] ~= 0 then return false end
+    end
+  end
+  local base = suit * 9
+  if counts[base] ~= 3 or counts[base + 8] ~= 3 then return false end
+  for d = 1, 7 do
+    if counts[base + d] ~= 1 then return false end
+  end
+  return true
 end
 
 --- 判断当前手牌 + 副露是否可以和牌
@@ -506,6 +607,12 @@ local function getBand(han)
   else return 8 end
 end
 
+-- 场风：第 1-4 局东场(27)、5-8 局南场(28)、9-12 局西场(29)、13-16 局北场(30)
+local function roundWindOf(round)
+  local field = math.floor((round - 1) / 4)
+  return 27 + math.min(field, 3)
+end
+
 --------------------------------------------------------------------------
 -- 役种评估
 --------------------------------------------------------------------------
@@ -586,7 +693,16 @@ function M.EvalYaku(state, p, info, tilesOverride)
   local openPenalty = (#melds > 0) and -1 or 0
 
   if form and form.kokushi then
-    return { yaku = {}, dora = {}, yakuman = { "yyfy_yk_kokushi" }, han = 13 }
+    -- 国士无双：十三面听为双倍役满；天和/地和可与之复合
+    local yaks = {}
+    if isKokushiJuusan(tiles, info.winTile) then
+      addYakuman(yaks, "yyfy_yk_kokushi_juusan", 2)
+    else
+      addYakuman(yaks, "yyfy_yk_kokushi")
+    end
+    if info.tenhou then addYakuman(yaks, "yyfy_yk_tenhou") end
+    if info.chiihou then addYakuman(yaks, "yyfy_yk_chiihou") end
+    return { yaku = {}, dora = {}, yakuman = yaks, han = 13 * yakumanWeightSum(yaks) }
   end
 
   local hasTri = function(t)
@@ -597,7 +713,7 @@ function M.EvalYaku(state, p, info, tilesOverride)
   end
 
   -- 场风 / 自风（平和雀头判定与役牌判定都需用到）
-  local roundWind = (state.round <= 4) and 27 or 28 -- 东场（第 1-4 局）/ 南场（第 5-8 局）
+  local roundWind = roundWindOf(state.round) -- 东场 / 南场 / 西场 / 北场
   local dealerIdx = 1
   for i, q in ipairs(state.players) do
     if q == state.dealer then dealerIdx = i break end
@@ -615,37 +731,56 @@ function M.EvalYaku(state, p, info, tilesOverride)
     for _, t in ipairs(m.tiles) do table.insert(all, t) end
   end
 
-  -- 役满：可复合，逐条收集役满名（不再只保留最后一个）
+  -- 役满：可复合，逐条收集（每条带权重，用于显示"役满/两倍役满/N倍役满"）
   local yaks = {}
   local winds = { 27, 28, 29, 30 }
   local windTri = 0
   for _, w in ipairs(winds) do if hasTri(w) then windTri = windTri + 1 end end
-  if hasTri(31) and hasTri(32) and hasTri(33) then table.insert(yaks, "yyfy_yk_daisangen") end
+  if hasTri(31) and hasTri(32) and hasTri(33) then addYakuman(yaks, "yyfy_yk_daisangen") end
   if windTri == 4 then
-    table.insert(yaks, "yyfy_yk_daisuushi")
+    addYakuman(yaks, "yyfy_yk_daisuushi")
   elseif windTri == 3 and table.contains(winds, form and form.pair or -1) then
-    table.insert(yaks, "yyfy_yk_shousuushi")
+    addYakuman(yaks, "yyfy_yk_shousuushi")
   end
   if form and form.mentsu and #form.mentsu == 4 then
     local allClosed = true
     for _, m in ipairs(form.mentsu) do
       if m.k ~= "tri" or m.open then allClosed = false break end
     end
-    if allClosed then table.insert(yaks, "yyfy_yk_suuankou") end
+    if allClosed then
+      -- 四暗刻单骑（双倍役满）：和牌张恰为雀头（单骑听）
+      if info.winTile and form.pair == info.winTile then
+        addYakuman(yaks, "yyfy_yk_suuankou_tanki", 2)
+      else
+        addYakuman(yaks, "yyfy_yk_suuankou")
+      end
+    end
   end
   -- 字一色：全部由字牌组成
   local allHonor = true
   for _, t in ipairs(all) do if t < 27 then allHonor = false break end end
-  if allHonor then table.insert(yaks, "yyfy_yk_tsuuiisou") end
-  if info.tenhou then table.insert(yaks, "yyfy_yk_tenhou") end
-  if info.chiihou then table.insert(yaks, "yyfy_yk_chiihou") end
+  if allHonor then addYakuman(yaks, "yyfy_yk_tsuuiisou") end
+  -- 九莲宝灯（门前清、清一色）；纯正九莲宝灯为双倍役满
+  if #melds == 0 and isChuuren(all) then
+    if isJunseiChuuren(all, info.winTile) then
+      addYakuman(yaks, "yyfy_yk_junsei_chuuren", 2)
+    else
+      addYakuman(yaks, "yyfy_yk_chuuren")
+    end
+  end
+  if info.tenhou then addYakuman(yaks, "yyfy_yk_tenhou") end
+  if info.chiihou then addYakuman(yaks, "yyfy_yk_chiihou") end
   if #yaks > 0 then
-    return { yaku = {}, dora = {}, yakuman = yaks, han = 13 * #yaks }
+    return { yaku = {}, dora = {}, yakuman = yaks, han = 13 * yakumanWeightSum(yaks) }
   end
 
-  -- 立直 / 一发
+  -- 立直 / 两立直 / 一发
   if state.riichi[p.id] then
-    addYaku("yyfy_yaku_riichi", 1)
+    if state.double_riichi[p.id] then
+      addYaku("yyfy_yaku_daburu_riichi", 2)
+    else
+      addYaku("yyfy_yaku_riichi", 1)
+    end
     if state.ippatsu[p.id] then
       addYaku("yyfy_yaku_ippatsu", 1)
     end
@@ -753,12 +888,12 @@ function M.EvalYaku(state, p, info, tilesOverride)
   end
 
   -- 全局牌役（荣时弃牌已并入 tiles，直接以 tiles + 副露 统计；all 已在上方算出）
-  -- 断幺
+  -- 断幺（食断开关：关闭后，有副露时断幺九不计番、不能作为起胡役）
   local tanyao = true
   for _, t in ipairs(all) do
     if isYaochu(t) then tanyao = false break end
   end
-  if tanyao then
+  if tanyao and (RULES.kuitan or #melds == 0) then
     addYaku("yyfy_yaku_tanyao", 1)
   end
   -- 混一色 / 清一色
@@ -918,9 +1053,8 @@ function M.Transfer(room, state, payments)
     if state.points[p.id] <= 0 then
       room:sendLog{ type = "#yyfy_mj_fly", arg = p._splayer:getScreenName(), toast = true }
       room:delay(2000)
-      local winners = table.filter(room:getAlivePlayers(false), function(q) return q ~= p end)
-      if #winners == 0 then winners = room:getAlivePlayers(false) end
-      room:gameOver(winners)
+      -- 击飞终局：被击飞者（点数 ≤ 0）一律判负；其余按点数取前两位获胜
+      room:gameOver(M.WinnersByPoints(state))
       return false
     end
   end
@@ -957,6 +1091,12 @@ function M.BroadcastResult(room, state, winner, info, ev, score)
   local yakuList = {}
   for _, y in ipairs(ev.yaku) do table.insert(yakuList, { key = y.key, han = y.han }) end
   for _, y in ipairs(ev.dora or {}) do table.insert(yakuList, { key = y.key, han = y.han }) end
+  -- 役满：转为名称列表 + 总权重（QML 按总权重显示"役满/两倍役满/N倍役满"）
+  local yakumanNames, yakumanWeight = {}, 0
+  for _, y in ipairs(ev.yakuman or {}) do
+    table.insert(yakumanNames, y.key)
+    yakumanWeight = yakumanWeight + (y.weight or 1)
+  end
   -- 宝牌 / 里宝指示牌：各取 dora_count 张（扁平数组，QML 侧按需翻面）
   local omoteIndicators, uraIndicators = {}, {}
   for i = 1, state.dora_count do
@@ -980,7 +1120,8 @@ function M.BroadcastResult(room, state, winner, info, ev, score)
     winTileName = (not winTileId) and info.winTile and TYPE_TO_NAME[info.winTile] or nil,
     yaku = yakuList,
     han = ev.han,
-    yakuman = ev.yakuman,
+    yakuman = yakumanNames,
+    yakumanTotalWeight = yakumanWeight,
     baseScore = scoreData.base,
     bonusScore = scoreData.bonus,
     totalScore = scoreData.total,
@@ -991,7 +1132,8 @@ function M.BroadcastResult(room, state, winner, info, ev, score)
   })
 end
 
-function M.SettleWin(room, state, winner, info)
+---@param opts? table { giveKyotaku = false 时本次不收场供（一炮多响中非第一位荣家） }
+function M.SettleWin(room, state, winner, info, opts)
   -- 荣时弃牌尚未入手，需并入后才够 14 张，否则役判定会漏掉该面子
   local evalTiles
   if not info.tsumo and info.winTile then
@@ -1000,16 +1142,19 @@ function M.SettleWin(room, state, winner, info)
   end
   local ev = M.EvalYaku(state, winner, info, evalTiles)
   local band = getBand(ev.han)
+  -- 役满倍数：单倍=1，双倍/复合役满按总权重放大点数（如两倍役满 64000/96000）
+  local mult = math.max(1, yakumanWeightSum(ev.yakuman or {}))
   local payments = {}
   -- 本场加算：每多 1 本场，放铳时放铳者多付 300；自摸时每家多付 100（赢家合计多收 300）
   local honba = state.renchan_count or 0
   local honbaBonus = honba * 300
   -- 场供：本局与之前局所有人的立直棒（结算前累计的供托）
-  local kyotakuBonus = state.kyotaku or 0
+  local giveKyotaku = (opts == nil) or (opts.giveKyotaku ~= false)
+  local kyotakuBonus = giveKyotaku and (state.kyotaku or 0) or 0
   local baseScore = 0
   if info.tsumo then
-    local y = TSUMO_TABLE[band][2]
-    local x = TSUMO_TABLE[band][1]
+    local y = TSUMO_TABLE[band][2] * mult
+    local x = TSUMO_TABLE[band][1] * mult
     for _, p in ipairs(state.players) do
       if p ~= winner then
         -- 庄家自摸：每人付庄付（y）；子家自摸：庄付 y、其他子付 x
@@ -1020,7 +1165,8 @@ function M.SettleWin(room, state, winner, info)
     end
   else
     local victim = info.victim
-    local pay = RON_TABLE[band][(victim == state.dealer) and 2 or 1]
+    -- 荣和基础分倍率取决于"赢家是否为庄家"（庄家荣时为闲家的 1.5 倍）
+    local pay = RON_TABLE[band][(winner == state.dealer) and 2 or 1] * mult
     payments[victim.id] = -(pay + honbaBonus)
     baseScore = pay
   end
@@ -1028,13 +1174,13 @@ function M.SettleWin(room, state, winner, info)
   local bonusScore = honbaBonus + kyotakuBonus
   local totalScore = baseScore + bonusScore
   payments[winner.id] = (payments[winner.id] or 0) + totalScore
-  state.kyotaku = 0
+  if giveKyotaku then state.kyotaku = 0 end
   -- 日志与展示（结算停顿数秒，让玩家看清和牌结果）
   room:sendLog{ type = "#yyfy_mj_win", arg = winner._splayer:getScreenName(), arg2 = ev.han, arg3 = totalScore, toast = true }
   room:delay(2000)
   local yakuText
   if ev.yakuman and #ev.yakuman > 0 then
-    yakuText = table.concat(table.map(ev.yakuman, function(k) return Fk:translate(k) end), "、")
+    yakuText = table.concat(table.map(ev.yakuman, function(y) return Fk:translate(y.key) end), "、")
   else
     yakuText = table.concat(table.map(ev.yaku, function(k) return Fk:translate(k.key) end), "、")
   end
@@ -1215,13 +1361,26 @@ function M.CheckClaims(room, state, discardingPlayer, dType)
   room:notifyMoveFocus({}, "")
 
   -- 解析：荣 > 杠 > 碰 > 吃；同类按座次（弃牌者起，最近的优先）
+  -- 一炮双响：收集全部选择荣的玩家，按摸牌顺序（离放铳者由近及远）依次结算；
+  -- 场供（立直棒）归离放铳者最近的第一位荣家，其余荣家只收基础分与本场加算。
+  local ronPlayers = {}
   for _, p in ipairs(order) do
-    if chosen[p.id] == "yyfy_mj_ron" then
-      if not M.SettleWin(room, state, p, { tsumo = false, victim = discardingPlayer, houtei = houtei, winTile = dType }) then
+    if chosen[p.id] == "yyfy_mj_ron" then table.insert(ronPlayers, p) end
+  end
+  if #ronPlayers > 0 then
+    for i, p in ipairs(ronPlayers) do
+      local info = { tsumo = false, victim = discardingPlayer, houtei = houtei, winTile = dType }
+      if not M.SettleWin(room, state, p, info, { giveKyotaku = (i == 1) }) then
         return "ended"
       end
-      return "ron"
     end
+    -- 连庄判定：庄家为荣家之一则庄家连庄，否则以第一位荣家为最后和牌者
+    local dealerWon = false
+    for _, p in ipairs(ronPlayers) do
+      if p == state.dealer then dealerWon = true break end
+    end
+    state.lastWinner = dealerWon and state.dealer or ronPlayers[1]
+    return "ron"
   end
   for _, p in ipairs(order) do
     if chosen[p.id] == "yyfy_mj_kan" then return { player = p, kind = "kan" } end
@@ -1249,6 +1408,8 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
   local function takeDiscard()
     room:moveCardTo(discardId, Card.PlayerSpecial, p, fk.ReasonJustMove, skill_name, "yyfy_mj_meld", true, p)
   end
+
+  local chiCombo -- 吃牌时使用的组合（用于喰い替え禁打判定）
 
   if claim.kind == "pon" then
     takeDiscard()
@@ -1384,6 +1545,7 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
       end
     end
     if not combo then combo = claim.combos[1] end
+    chiCombo = combo
     if not picked then
       -- 兜底（人机 / 单组 / 超时）：取与组合匹配的两张手牌
       picked = groups[1] or {}
@@ -1418,7 +1580,31 @@ function M.ApplyClaim(room, state, discardingPlayer, claim, dType)
       toast = true }
   end
   room:delay(700)
+  -- 该弃牌被副露，记录用于流局满贯判定（被鸣过的弃牌不成立流满）
+  state.discard_claimed[discardingPlayer.id] = true
   state.no_meld = false -- 发生副露，取消地和
+  -- 喰い替え（禁打）：本巡不可打出与所鸣牌同型之牌。
+  --   碰：禁打所碰的牌型。
+  --   吃：禁打所吃的牌型；若吃的是顺子低端，还禁打低端+3（等值于改吃该张）；高端则禁打高端-3。
+  if claim.kind == "pon" then
+    state.kuikae_forbid[p.id] = { [dType] = true }
+  elseif claim.kind == "chi" and chiCombo then
+    local forb = { [dType] = true }
+    local lo, hi = math.huge, -math.huge
+    for _, t in ipairs(chiCombo) do
+      lo = math.min(lo, t)
+      hi = math.max(hi, t)
+    end
+    local suitStart = math.floor(dType / 9) * 9
+    if dType == lo then
+      local s = lo + 3
+      if s < suitStart + 9 then forb[s] = true end
+    elseif dType == hi then
+      local s = hi - 3
+      if s >= suitStart then forb[s] = true end
+    end
+    state.kuikae_forbid[p.id] = forb
+  end
   return state.melds[p.id][#state.melds[p.id]]
 end
 
@@ -1447,6 +1633,8 @@ local function doTurnDraw(room, state, turn, fromRinshan)
   end
   -- 无论正常摸牌还是杠后岭上摸牌，都在此消费掉"杠后摸岭上"标记，避免泄漏到下一巡
   state.rinshan_pending = false
+  -- 记录本巡摸到的是否为海底牌（最后一张牌山摸牌）：为真时禁止开杠（"只能切牌"）
+  state.haitei_draw = haitei
   -- 摸牌后刷新摸牌者手牌上的"宝牌"标记（新摸到的宝牌立即提示）
   refreshDoraMarks(room, state, turn)
 
@@ -1508,8 +1696,12 @@ function M.PlayRound(room, state)
     local actKan = false
     if turn.id > 0 and not state.riichi[turn.id] then
       -- 立直：门前清、点数≥1000，且存在"弃一张后仍听牌"的牌
+      -- 尾巡限制：本巡弃牌后已无下一次摸牌机会（剩余牌山 < 4，无法再轮到自己摸牌）时，
+      --         默认不允许立直（RULES.tailRiichi 置 true 可解除）
+      local tailTurn = #state.live < 4
       state.riichi_discardables = nil
-      if #state.melds[turn.id] == 0 and state.points[turn.id] >= 1000 then
+      if #state.melds[turn.id] == 0 and state.points[turn.id] >= 1000
+        and (RULES.tailRiichi or not tailTurn) then
         local discardables = M.RiichiDiscardables(handTypes(turn), state.melds[turn.id])
         if next(discardables) ~= nil then
           if room:askToSkillInvoke(turn, { skill_name = "yyfy_mj_riichi", prompt = "#yyfy_mj_riichi_prompt" }) then
@@ -1520,6 +1712,10 @@ function M.PlayRound(room, state)
               state.riichi[turn.id] = true
               state.ippatsu[turn.id] = 1
               state.riichi_discardables = discardables
+              -- 两立直：第一巡、无人鸣牌且自身尚未出牌时立直
+              if state.no_meld and #(state.discards[turn.id] or {}) == 0 then
+                state.double_riichi[turn.id] = true
+              end
               room:setPlayerMark(turn, "@yyfy_mj_points", state.points[turn.id])
               room:setPlayerMark(turn, "@yyfy_mj_riichi", "")
               room:sendLog{ type = "#yyfy_mj_riichi_log", arg = turn._splayer:getScreenName(), toast = true }
@@ -1527,8 +1723,8 @@ function M.PlayRound(room, state)
           end
         end
       end
-      -- 杠（暗杠 / 加杠）
-      if not state.riichi[turn.id] then
+      -- 杠（暗杠 / 加杠）：摸到海底牌（本巡为最后一张牌山的摸牌）后不可再开杠，只能切牌
+      if not state.riichi[turn.id] and not state.haitei_draw then
         local counts = countTable(handTypes(turn))
         local ankanTypes, addKanTypes = {}, {}
         for t = 0, 33 do
@@ -1606,8 +1802,10 @@ function M.PlayRound(room, state)
     end
 
     -- 出牌前把手牌按麻将序重排，并标记本轮新摸的牌（"新摸"仅摸牌者本人可见）
+    -- 注意：moveCards 会清除手牌上的 "-inhand" 标记，故排序后需重新补打"宝牌"标记
     sortHandByMahjong(room, turn)
     if turn.id > 0 then markNewDraw(room, state, turn) end
+    refreshDoraMarks(room, state, turn)
 
     -- 打牌：真人直接在手牌区点选一张牌，点确定打出（不弹中央选牌框，框架 AskForUseActiveSkill 手牌区选牌）
     local discardId
@@ -1622,6 +1820,7 @@ function M.PlayRound(room, state)
         skill_name = "yyfy_mj_play",
         prompt = "#yyfy_mj_discard_prompt",
       }
+      local forbid = state.kuikae_forbid[turn.id]
       if state.riichi_discardables then
         -- 立直宣言回合：限制只能打出可保持听牌的牌
         local allowedIds = {}
@@ -1630,6 +1829,15 @@ function M.PlayRound(room, state)
         end
         askParams.prompt = "#yyfy_mj_riichi_discard_prompt"
         askParams.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
+      elseif forbid then
+        -- 喰い替え：本巡不可打出与所鸣牌同型/可滑移之牌，仅列出手牌中允许打出的牌
+        local allowedIds = {}
+        for _, id in ipairs(turn:getCardIds("h")) do
+          if not forbid[cardTypeOf(id)] then table.insert(allowedIds, id) end
+        end
+        if #allowedIds > 0 then
+          askParams.pattern = ".|.|.|.|.|.|" .. table.concat(allowedIds, ",")
+        end
       end
       local result = room:askToCards(turn, askParams)
       if type(result) == "table" and result[1] then
@@ -1637,18 +1845,25 @@ function M.PlayRound(room, state)
       end
     end
     if not discardId then
-      -- 人机 / 超时兜底：默认摸切（打刚摸的牌），否则打第一张
+      -- 人机 / 超时兜底：默认摸切（打刚摸的牌），否则打第一张；喰い替え禁打时跳过被禁牌
       local nd = state.new_draw_id[turn.id]
       local handIds = turn:getCardIds("h")
-      if nd and table.contains(handIds, nd) then
-        discardId = nd
+      local forbid = state.kuikae_forbid[turn.id] or {}
+      local pick
+      if nd and table.contains(handIds, nd) and not forbid[cardTypeOf(nd)] then
+        pick = nd
       else
-        discardId = handIds[1]
+        for _, id in ipairs(handIds) do
+          if not forbid[cardTypeOf(id)] then pick = id break end
+        end
       end
+      discardId = pick or handIds[1]
       room:delay(500)
     end
     if not discardId then return nil end
     local dType = cardTypeOf(discardId)
+    -- 喰い替え禁打状态在本巡弃牌后解除
+    state.kuikae_forbid[turn.id] = nil
     -- 摸切/手切：是否打出了本轮刚摸的牌
     local tsumogiri = (state.new_draw_id[turn.id] ~= nil and discardId == state.new_draw_id[turn.id])
     -- 清除"新摸"标记（弃牌前清除，避免该牌在展示区残留标记）
@@ -1664,6 +1879,8 @@ function M.PlayRound(room, state)
     room:moveCardTo(discardId, Card.Processing, nil, fk.ReasonDiscard, state.skill_name, nil, true, turn)
     table.insert(state.discards[turn.id], dType)
     table.insert(state.discard_ids[turn.id], discardId)
+    -- 记录本局首次打出的牌（四风连打判定）
+    if #state.discards[turn.id] == 1 then state.first_discard_type[turn.id] = dType end
     state.lastDiscard = { id = discardId, type = dType, player = turn }
     -- 立直者已摸过牌且本巡仍未和：一发失效
     if state.ippatsu[turn.id] == 2 then state.ippatsu[turn.id] = nil end
@@ -1714,6 +1931,23 @@ function M.PlayRound(room, state)
         for pid, _ in pairs(state.ippatsu) do state.ippatsu[pid] = nil end
       end
     else
+      -- 四风连打：第一巡无人副露、四家首次打出的均为同一张风牌 → 途中流局
+      if state.no_meld then
+        local fd = state.first_discard_type
+        local base = fd[state.players[1].id]
+        local fourWind = base ~= nil and base >= 27 and base <= 30
+        if fourWind then
+          for _, p in ipairs(state.players) do
+            if fd[p.id] ~= base then fourWind = false break end
+          end
+        end
+        if fourWind then
+          room:sendLog{ type = "#yyfy_mj_four_wind", toast = true }
+          room:delay(2000)
+          state.renchan_dealer = true -- 途中流局：庄家续坐
+          return "exhaustive"
+        end
+      end
       turn = nextSeat(state, turn)
       room:setCurrent(turn)
       needDraw = true
@@ -1721,8 +1955,62 @@ function M.PlayRound(room, state)
   end
 end
 
+-- 流局满贯资格：本局所有弃牌均为幺九牌、且从未被其他家副露（自家暗杠不影响）
+function M.GetNagashiPlayers(state)
+  local ret = {}
+  for _, p in ipairs(state.players) do
+    local discards = state.discards[p.id] or {}
+    if #discards > 0 and not state.discard_claimed[p.id] then
+      local ok = true
+      for _, t in ipairs(discards) do
+        if not isYaochu(t) then ok = false break end
+      end
+      if ok then table.insert(ret, p) end
+    end
+  end
+  return ret
+end
+
+-- 流局满贯结算：视为满贯自摸（子家 2000/4000、庄家 4000 均一，本场每家 +100/本场）。
+-- 场供给离庄家按摸牌顺序最近的第一位流满者（庄家流满即给庄家）。
+function M.SettleNagashi(room, state, winners)
+  local payments = {}
+  local honba = state.renchan_count or 0
+  local order = seatOrderFrom(state, state.dealer)
+  local firstWinner
+  for _, p in ipairs(order) do
+    if table.contains(winners, p) then firstWinner = p break end
+  end
+  local kyotakuBonus = state.kyotaku or 0
+  state.kyotaku = 0
+  for _, w in ipairs(winners) do
+    local isDealer = (w == state.dealer)
+    for _, q in ipairs(state.players) do
+      -- 多人和了流满时彼此不付钱，只由未流满者支付
+      if q ~= w and not table.contains(winners, q) then
+        local pay = isDealer and 4000 or ((q == state.dealer) and 4000 or 2000)
+        payments[q.id] = (payments[q.id] or 0) - (pay + honba * 100)
+        payments[w.id] = (payments[w.id] or 0) + (pay + honba * 100)
+      end
+    end
+    room:sendLog{ type = "#yyfy_mj_nagashi", arg = w._splayer:getScreenName(), toast = true }
+  end
+  if firstWinner then
+    payments[firstWinner.id] = (payments[firstWinner.id] or 0) + kyotakuBonus
+  end
+  room:delay(2500)
+  if not M.Transfer(room, state, payments) then return nil end
+  state.renchan_dealer = table.contains(winners, state.dealer)
+  return "exhaustive"
+end
+
 -- 流局结算，返回 "exhaustive" 或 nil（游戏已结束）
 function M.DoExhaustive(room, state)
+  -- 流局满贯优先：满足者视为满贯自摸，不再按普通流局结算
+  local nagashi = M.GetNagashiPlayers(state)
+  if #nagashi > 0 then
+    return M.SettleNagashi(room, state, nagashi)
+  end
   room:sendLog{ type = "#yyfy_mj_exhaustive", toast = true }
   room:delay(2500)
   local tenpaiList = M.SettleExhaustive(room, state)
@@ -1774,15 +2062,26 @@ function M.SettleExhaustive(room, state)
   return tenpaiList
 end
 
-function M.EndGameByPoints(room, state)
-  -- 排出 1-4 位：点数降序；同分按东一局初始位次（東＞南＞西＞北）
-  local sorted = table.simpleClone(state.players)
-  table.sort(sorted, function(a, b)
+-- 终局胜负判定：默认点数前两位获胜、后两位失败；
+-- 特别地，被击飞者（点数 ≤ 0）一律判负，且不参与胜利评定（此条优先于前两位规则）。
+function M.WinnersByPoints(state)
+  local able = {}
+  for _, p in ipairs(state.players) do
+    if (state.points[p.id] or 0) > 0 then table.insert(able, p) end
+  end
+  -- 点数降序；同分按东一局初始位次（東＞南＞西＞北）
+  table.sort(able, function(a, b)
     local pa, pb = state.points[a.id], state.points[b.id]
     if pa ~= pb then return pa > pb end
     return (state.wind_order[a.id] or 99) < (state.wind_order[b.id] or 99)
   end)
-  room:gameOver(sorted)
+  local ret = {}
+  for i = 1, math.min(2, #able) do table.insert(ret, able[i]) end
+  return ret
+end
+
+function M.EndGameByPoints(room, state)
+  room:gameOver(M.WinnersByPoints(state))
 end
 
 --------------------------------------------------------------------------
@@ -1799,6 +2098,12 @@ function M.BuildWalls(room, state)
   state.rinshan = table.slice(rest, 1, 5)        -- 岭上 4 张
   state.indicator = table.slice(rest, 5, 13)     -- 指示牌 8 张（前 4 表指示，后 4 里指示）
   room:setBanner("@yyfy_mj_dora", omoteDoraTexts(state))
+  -- 左上角宝牌区旁额外显示当前局与本场数（如"东三局 2本场"）
+  local windNames = { "东", "南", "西", "北" }
+  local numNames = { "一", "二", "三", "四" }
+  local wi = math.min(math.floor((state.round - 1) / 4), 3)
+  local ni = (state.round - 1) % 4
+  room:setBanner("@yyfy_mj_round", windNames[wi + 1] .. numNames[ni + 1] .. "局 " .. (state.renchan_count or 0) .. "本场")
   room:sendLog{ type = "#yyfy_mj_dora_log", arg = Fk:translate(TYPE_TO_NAME[nextDora(cardTypeOf(state.indicator[1]))]), toast = true }
 end
 
@@ -1869,8 +2174,13 @@ function M.RestartRound(room, state)
     state.last_drawn[p.id] = nil
     state.new_draw_id[p.id] = nil
     state.first_draw[p.id] = true
+    state.double_riichi[p.id] = nil
+    state.first_discard_type[p.id] = nil
+    state.discard_claimed[p.id] = nil
+    state.kuikae_forbid[p.id] = nil
   end
   state.riichi_discardables = nil
+  state.haitei_draw = false
   -- 回收处理区（弃牌展示区）
   local proc = table.simpleClone(room.processing_area)
   if #proc > 0 then room:moveCardTo(proc, Card.DrawPile, nil, fk.ReasonJustMove, skill_name) end
@@ -1883,8 +2193,13 @@ function M.RestartRound(room, state)
   state.no_meld = true
   M.BuildWalls(room, state)
   M.DealInitial(room, state)
-  -- 配牌后立即按麻将序整理庄家手牌（一次性批量塞回，日志简洁）
-  sortHandByMahjong(room, state.dealer)
+  -- 配牌后立即按麻将序整理全体玩家手牌（一次性批量塞回，日志简洁）：
+  -- 闲家虽尚未轮到，也先排序以便规划
+  for _, p in ipairs(state.players) do
+    sortHandByMahjong(room, p)
+    -- 显式把已排序的服务端手牌顺序推送给客户端，避免客户端因处理时序问题仍显示为配牌顺序
+    room:doBroadcastNotify("SetPlayerHandCards", { p.id, p:getCardIds("h") })
+  end
   refreshAllDoraMarks(room, state)
   return true
 end
@@ -1938,6 +2253,11 @@ function M.Init(room, players, skill_name)
     lastWinner = nil,
     lastDiscard = nil,
     wind_order = {}, -- 东一局初始位次（東1<南2<西3<北4），用于同分排名
+    double_riichi = {}, -- 两立直标记（第一巡无人鸣牌时立直）
+    first_discard_type = {}, -- 各家本局首次打出的牌类型（四风连打判定）
+    discard_claimed = {}, -- 各家弃牌是否被副露（流局满贯判定）
+    kuikae_forbid = {}, -- 喰い替え：鸣牌后本巡各家不可打出的牌型集合
+    haitei_draw = false, -- 本巡摸到的是否为海底牌（为真时禁止开杠）
   }
   for i, p in ipairs(players) do
     state.points[p.id] = 25000
@@ -1953,8 +2273,13 @@ function M.Init(room, players, skill_name)
   updateRoles(room, state)
   M.BuildWalls(room, state)
   M.DealInitial(room, state)
-  -- 配牌后立即按麻将序整理庄家手牌（一次性批量塞回，日志简洁）
-  sortHandByMahjong(room, state.dealer)
+  -- 配牌后立即按麻将序整理全体玩家手牌（一次性批量塞回，日志简洁）：
+  -- 闲家虽尚未轮到，也先排序以便规划
+  for _, p in ipairs(players) do
+    sortHandByMahjong(room, p)
+    -- 显式把已排序的服务端手牌顺序推送给客户端，避免客户端因处理时序问题仍显示为配牌顺序
+    room:doBroadcastNotify("SetPlayerHandCards", { p.id, p:getCardIds("h") })
+  end
   refreshAllDoraMarks(room, state)
   return state
 end
@@ -1964,11 +2289,18 @@ end
 --------------------------------------------------------------------------
 
 function M.Run(room, players, skill_name)
-  local state = M.Init(room, players, skill_name)
-  if not state then return end
   -- 麻将模式全程禁止玩家主动调整手牌顺序（只能依靠出牌前自动排序）
+  -- 必须在发牌之前执行：banSortingHandcards 会把"客户端手牌顺序"同步为服务端顺序，
+  -- 若放在发牌+排序之后，会把刚排好的服务端顺序覆盖回配牌顺序，导致闲家开局不按麻将序排列
   for _, p in ipairs(players) do
     room:banSortingHandcards(p, "-_yyfy_mj")
+  end
+  local state = M.Init(room, players, skill_name)
+  if not state then
+    for _, p in ipairs(players) do
+      room:unbanSortingHandcards(p, "-_yyfy_mj")
+    end
+    return
   end
   local function unbanSortingAll()
     for _, p in ipairs(players) do
@@ -1978,7 +2310,7 @@ function M.Run(room, players, skill_name)
   local guard = 0
   while true do
     guard = guard + 1
-    if guard > 30 then
+    if guard > 100 then
       M.EndGameByPoints(room, state)
       unbanSortingAll()
       return
@@ -2016,8 +2348,25 @@ function M.Run(room, players, skill_name)
     updateRoles(room, state)
     room:delay(1800) -- 让玩家看清连庄/换庄信息再进入下一小局
 
-    -- 半庄两圈：东场 4 局 + 南场 4 局，共 8 局
-    if state.round > 8 then
+    -- 终局判定：
+    --   未开西入：半庄两圈（东场 4 局 + 南场 4 局），round > 8 即结束；
+    --   开西入：南四过庄（round > 8）后若无人达到 30000 则续战西场；
+    --           此后每局结束立即检查，有人达到 30000 即"无刷分"终局（不论是否连庄）；
+    --           最多打到北四（round > 16）强制结束。
+    -- 无刷分：西入后每局结束都检查是否有人达到 30000
+    if RULES.seiu and state.round > 8 then
+      local reached = false
+      for _, p in ipairs(state.players) do
+        if (state.points[p.id] or 0) >= 30000 then reached = true break end
+      end
+      if reached then
+        M.EndGameByPoints(room, state)
+        unbanSortingAll()
+        return
+      end
+    end
+    local finalRound = RULES.seiu and 16 or 8
+    if state.round > finalRound then
       M.EndGameByPoints(room, state)
       unbanSortingAll()
       return
