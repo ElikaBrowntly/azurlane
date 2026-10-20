@@ -20,19 +20,19 @@ local function changeSkills(player)
   room:handleAddLoseSkills(player, "-yyfy_gemingzhuwang")
   room:handleAddLoseSkills(player, "-yyfy_yanjunjiehe")
   room:handleAddLoseSkills(player, "-yyfy_yitaixuyin")
-  if not table.contains({ "Caster", "Berserker" }, k) then
+  if not table.contains({ "yyfy_Caster", "yyfy_Berserker" }, k) then
     room:handleAddLoseSkills(player, "yyfy_youyiqinlue")
   end
-  if not table.contains({ "Saber", "Rider", "Assassin" }, k) then
+  if not table.contains({ "yyfy_Saber", "yyfy_Rider", "yyfy_Assassin" }, k) then
     room:handleAddLoseSkills(player, "yyfy_anwuzhifuyou")
   end
-  if not table.contains({ "Archer", "Lancer", "Rider" }, k) then
+  if not table.contains({ "yyfy_Archer", "yyfy_Lancer", "yyfy_Rider" }, k) then
     room:handleAddLoseSkills(player, "yyfy_gemingzhuwang")
   end
-  if not table.contains({ "Saber", "Assassin", "Berserker", "Foreigner" }, k) then
+  if not table.contains({ "yyfy_Saber", "yyfy_Assassin", "yyfy_Berserker", "yyfy_Foreigner" }, k) then
     room:handleAddLoseSkills(player, "yyfy_yanjunjiehe")
   end
-  if not table.contains({ "Archer", "Lancer", "Caster", "Foreigner" }, k) then
+  if not table.contains({ "yyfy_Archer", "yyfy_Lancer", "yyfy_Caster", "yyfy_Foreigner" }, k) then
     room:handleAddLoseSkills(player, "yyfy_yitaixuyin")
   end
 end
@@ -64,7 +64,7 @@ xietiao:addEffect(fk.BeforeGameOverJudge, {
     end
     player.tag["@yyfy_xietiao_mobileORT"] = case - 1
     player.maxHp = math.max(player.maxHp, 10)
-    local kingdoms = { "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner" }
+    local kingdoms = { "yyfy_Saber", "yyfy_Archer", "yyfy_Lancer", "yyfy_Rider", "yyfy_Caster", "yyfy_Assassin", "yyfy_Berserker", "yyfy_Foreigner" }
     player.kingdom = kingdoms[math.random(8)]
     room:broadcastProperty(player, "maxHp")
     room:broadcastProperty(player, "kingdom")
