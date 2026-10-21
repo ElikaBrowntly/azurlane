@@ -27,26 +27,26 @@ local function changeSkills(player)
   if (player.tag["@yyfy_xietiao_flyingORT"] or 0) >= 5 then
     room:handleAddLoseSkills(player, "yyfy_yinhedanti")
   end
-  if not table.contains({ "Caster", "Berserker" }, k) then
+  if not table.contains({ "yyfy_Caster", "yyfy_Berserker" }, k) then
     room:handleAddLoseSkills(player, "yyfy_fanshipengzhang")
   end
-  if not table.contains({ "Saber", "Rider", "Assassin" }, k) then
+  if not table.contains({ "yyfy_Saber", "yyfy_Rider", "yyfy_Assassin" }, k) then
     room:handleAddLoseSkills(player, "yyfy_anwuzhifuyou")
   end
-  if not table.contains({ "Archer", "Lancer", "Rider" }, k) then
+  if not table.contains({ "yyfy_Archer", "yyfy_Lancer", "yyfy_Rider" }, k) then
     room:handleAddLoseSkills(player, "yyfy_beilunbuchang")
   end
-  if not table.contains({ "Saber", "Assassin", "Berserker", "Foreigner" }, k) then
+  if not table.contains({ "yyfy_Saber", "yyfy_Assassin", "yyfy_Berserker", "yyfy_Foreigner" }, k) then
     room:handleAddLoseSkills(player, "yyfy_yanjunjiehe")
   end
-  if not table.contains({ "Archer", "Lancer", "Caster", "Foreigner" }, k) then
+  if not table.contains({ "yyfy_Archer", "yyfy_Lancer", "yyfy_Caster", "yyfy_Foreigner" }, k) then
     room:handleAddLoseSkills(player, "yyfy_yitaixuyin")
   end
 end
 
 xietiao:addAcquireEffect(function(self, player, is_start, src)
   player.tag["@yyfy_xietiao_flyingORT"] = 6                  -- 0个也有初始的一条血
-  player.room:setPlayerProperty(player, "kingdom", "Caster") -- 第一条血固定术阶
+  player.room:setPlayerProperty(player, "kingdom", "yyfy_Caster") -- 第一条血固定术阶
 end)
 
 xietiao:addEffect(fk.BeforeGameOverJudge, {
@@ -73,11 +73,11 @@ xietiao:addEffect(fk.BeforeGameOverJudge, {
     player.tag["@yyfy_xietiao_flyingORT"] = case - 1
     local max = case == 2 and 20 or case == 1 and 30 or 12
     player.maxHp = math.max(player.maxHp, max)
-    local kingdoms = { "Saber", "Archer", "Lancer", "Rider", "Caster", "Assassin", "Berserker", "Foreigner" }
+    local kingdoms = { "yyfy_Saber", "yyfy_Archer", "yyfy_Lancer", "yyfy_Rider", "yyfy_Caster", "yyfy_Assassin", "yyfy_Berserker", "yyfy_Foreigner" }
     if case == 6 then                                     -- 第二条血，实际上是case - 1 == 5
-      room:setPlayerProperty(player, "kingdom", "Rider")  -- 第二条血固定骑阶
+      room:setPlayerProperty(player, "kingdom", "yyfy_Rider")  -- 第二条血固定骑阶
     elseif case == 5 then
-      room:setPlayerProperty(player, "kingdom", "Caster") -- 第三条血固定术阶
+      room:setPlayerProperty(player, "kingdom", "yyfy_Caster") -- 第三条血固定术阶
     else
       local e = room.logic:getEventsByRule(GameEvent.Damage, 1, function(e)
         return e.data.to == player

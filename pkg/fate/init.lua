@@ -295,22 +295,22 @@ extension.customPages = {
   },
 }
 
-local CuChulainn = General:new(extension, "yyfy_CuChulainn", "Lancer", 4, 4, General.Male)
+local CuChulainn = General:new(extension, "yyfy_CuChulainn", "yyfy_Lancer", 4, 4, General.Male)
 CuChulainn:addSkills { "yyfy_bishi", "yyfy_luen", "yyfy_siji" }
 Fk:loadTranslationTable
 {
   ["hidden-clouds"] = "夜隐浮云",
   ["Chaldea Gate"] = "迦勒底之门",
-  ["moon"] = "月",
-  ["Saber"] = "剑士",
-  ["Archer"] = "弓兵",
-  ["Lancer"] = "枪兵",
-  ["Rider"] = "骑兵",
-  ["Caster"] = "魔术师",
-  ["Assassin"] = "暗杀者",
-  ["Berserker"] = "狂战士",
-  ["Foreigner"] = "降临者",
-  ["MoonCancer"] = "月之癌",
+  ["yyfy_moon"] = "月",
+  ["yyfy_Saber"] = "剑士",
+  ["yyfy_Archer"] = "弓兵",
+  ["yyfy_Lancer"] = "枪兵",
+  ["yyfy_Rider"] = "骑兵",
+  ["yyfy_Caster"] = "魔术师",
+  ["yyfy_Assassin"] = "暗杀者",
+  ["yyfy_Berserker"] = "狂战士",
+  ["yyfy_Foreigner"] = "降临者",
+  ["yyfy_MoonCancer"] = "月之癌",
   ["yyfy_CuChulainn"] = "库丘林",
   ["#yyfy_CuChulainn"] = "光之子",
   ["illustrator:yyfy_CuChulainn"] = "武内崇",
@@ -320,7 +320,7 @@ Fk:loadTranslationTable
   ["!yyfy_CuChulainn"] = "什么嘛，真是不堪一击。"
 }
 
-local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "MoonCancer", 4, 4, General.Female)
+local ArchetypeEarth = General:new(extension, "yyfy_ArchetypeEarth", "yyfy_MoonCancer", 4, 4, General.Female)
 ArchetypeEarth:addSkills { "yyfy_hongzhimoyan", "yyfy_xingzhituxi", "yyfy_FunnyVamp",
  "yyfy_kongxiangjvxianhua", "yyfy_guangzhihuihuang", "yyfy_xingzhishanshuo" }
 Fk:loadTranslationTable
@@ -334,7 +334,7 @@ Fk:loadTranslationTable
   ["~yyfy_ArchetypeEarth"] = "……意料外的情况，格外有趣……",
 }
 
-local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "Assassin", 4, 4, General.Male)
+local Tezcatlipoca = General:new(extension, "yyfy_Tezcatlipoca", "yyfy_Assassin", 4, 4, General.Male)
 Tezcatlipoca:addSkills { "yyfy_douzhengdemeili", "yyfy_heizhitaiyang", "yyfy_shanzhixinzang",
   "yyfy_diyitaiyang", "yyfy_zhanshizhisi", "yyfy_zhengwudetaiyang" }
 Fk:loadTranslationTable
@@ -349,7 +349,7 @@ Fk:loadTranslationTable
 }
 Tezcatlipoca:addRelatedSkill("fate_fuxiaodetaiyang")
 
-local ORT = General:new(extension, "yyfy_ORT", "Foreigner", 2, 2, General.Agender) -- ORT无性别
+local ORT = General:new(extension, "yyfy_ORT", "yyfy_Foreigner", 2, 2, General.Agender) -- ORT无性别
 ORT:addSkills { "yyfy_yuzhouxian", "yyfy_PPliansuo", "yyfy_baofa", "yyfy_xietiao_ORT" }
 Fk:loadTranslationTable
 {
@@ -358,7 +358,7 @@ Fk:loadTranslationTable
   ["designer:yyfy_ORT"] = "夜隐浮云",
 }
 
-local mobileORT = General:new(extension, "yyfy_mobileORT", "Foreigner", 10, 10, General.Agender) -- ORT无性别
+local mobileORT = General:new(extension, "yyfy_mobileORT", "yyfy_Foreigner", 10, 10, General.Agender) -- ORT无性别
 mobileORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo",
 "yyfy_jiexibianma", "yyfy_baofa", "yyfy_xietiao_mobileORT" }
 Fk:loadTranslationTable
@@ -369,7 +369,7 @@ Fk:loadTranslationTable
 }
 mobileORT.hidden = true
 
-local flyingORT = General:new(extension, "yyfy_flyingORT", "Foreigner", 12, 12, General.Agender) -- ORT无性别
+local flyingORT = General:new(extension, "yyfy_flyingORT", "yyfy_Foreigner", 12, 12, General.Agender) -- ORT无性别
 flyingORT:addSkills { "yyfy_bushijianglin", "yyfy_yuzhouxian", "yyfy_PPliansuo",
 "yyfy_shiluoxinxing", "yyfy_xietiao_flyingORT"}
 Fk:loadTranslationTable
@@ -380,7 +380,7 @@ Fk:loadTranslationTable
 }
 flyingORT.hidden = true
 
-local XibalbaORT = General:new(extension, "yyfy_XibalbaORT", "Foreigner", 10, 10, General.Agender) -- ORT无性别
+local XibalbaORT = General:new(extension, "yyfy_XibalbaORT", "yyfy_Foreigner", 10, 10, General.Agender) -- ORT无性别
 XibalbaORT:addSkills { "yyfy_taiyangfengbao", "yyfy_xietiao_XibalbaORT", "yyfy_disanmiejue",
 "yyfy_chuangshiji", "yyfy_huangjinshuhai", "yyfy_leyuanji", "yyfy_heianji", "yyfy_baotouji", "yyfy_kuayuebianjiezhiren"}
 Fk:loadTranslationTable
@@ -391,7 +391,7 @@ Fk:loadTranslationTable
 }
 XibalbaORT.hidden = true
 
-local OkitaSouji = General:new(extension, "yyfy_OkitaSouji", "Saber", 4, 4, General.Female)
+local OkitaSouji = General:new(extension, "yyfy_OkitaSouji", "yyfy_Saber", 4, 4, General.Female)
 OkitaSouji:addSkills { "yyfy_suodi", "yyfy_juedao", "yyfy_xinyan", "yyfy_wumingsanduantu" }
 Fk:loadTranslationTable
 {
@@ -404,7 +404,7 @@ Fk:loadTranslationTable
   ["!yyfy_OkitaSouji"] = "冲田小姐大胜利！嗯嗯，身体完全没问题，我还能行哦！咳。"
 }
 
-local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "moon", 3, 3, General.Agender)
+local SaintQuartz = General:new(extension, "yyfy_SaintQuartz", "yyfy_moon", 3, 3, General.Agender)
 SaintQuartz:addSkills { "yyfy_ChaldeaGate", "yyfy_yinguo" }
 Fk:loadTranslationTable
 {
