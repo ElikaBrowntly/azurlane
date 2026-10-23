@@ -292,4 +292,12 @@ Fk:loadTranslationTable {
   ["~yyfy_mo__lvbu"] = "人间无敌，该去地狱挑战了。"
 }
 
+local Turing = General:new(extension, "yyfy_AlanTuring", "west", 3)
+Turing:addSkills { "yyfy_1", "yyfy_0" }
+Fk:loadTranslationTable {
+  ["yyfy_AlanTuring"] = "艾伦·图灵",
+  ["#yyfy_AlanTuring"] = "计算机之父",
+  ["designer:yyfy_AlanTuring"] = "夜隐浮云"
+}
+
 return extension

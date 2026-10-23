@@ -1,4 +1,3 @@
-
 local shixi = fk.CreateSkill {
   name = "yyfy_shixi"
 }
