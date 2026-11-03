@@ -11,8 +11,6 @@ Fk:loadTranslationTable{
   ["#GouyunChange"] = "%from 发动了【%arg】，将判定牌改为 %arg2 %arg3",
 }
 
-local U = require "packages/utility/utility"
-
 gouyun:addEffect(fk.AskForRetrial, {
   anim_type = "control",
   can_trigger = function(self, event, target, player, data)
@@ -68,7 +66,7 @@ gouyun:addEffect(fk.AskForRetrial, {
     -- 这里为什么要重置一次tag呢？因为prepareDeriveCards函数保存的tag如果已有，会直接读取原来的，
     -- 这会造成只要改判过一次，后续改判都没有用，都是第一次改判的结果，因为后续印卡都没有生效
     room:setTag("yyfy_gouyun_judge_card", nil)
-    local printedCards = U.prepareDeriveCards(room, cardDic, "yyfy_gouyun_judge_card")
+    local printedCards = room:prepareDeriveCards(cardDic, "yyfy_gouyun_judge_card")
     -- 将印的牌移动到虚空区
     room:changeCardArea(printedCards, Card.Void)
     local printedCard = Fk:getCardById(printedCards[1])
