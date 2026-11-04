@@ -143,6 +143,12 @@ local yyfy_mahjong_mode = fk.CreateGameMode {
   end,
 }
 
+Fk:addMiniGame {
+  name = "yyfy_mj_result",
+  qml_path = "packages/hidden-clouds/qml/YyfyMahjongResultBox",
+  -- 只读展示，不返回结果，因此不需要 model
+}
+
 Fk:loadTranslationTable {
   ["yyfy_mahjong"] = "四人麻将",
   [":yyfy_mahjong"] = desc_yyfy_mahjong,
@@ -153,6 +159,7 @@ Fk:loadTranslationTable {
   ["yyfy_mj_pon"] = "碰",
   ["yyfy_mj_kan"] = "杠",
   ["yyfy_mj_kan_act"] = "杠",
+  ["yyfy_mj_kakan_act"] = "杠",
   ["yyfy_mj_chi"] = "吃",
   ["yyfy_mj_riichi"] = "立直",
   ["yyfy_mj_ron"] = "荣和",
@@ -201,7 +208,7 @@ Fk:loadTranslationTable {
   ["#yyfy_mj_four_wind"] = "四风连打，本局流局",
   ["#yyfy_mj_nagashi"] = "%arg 流局满贯！",
 
-  ["#yyfy_mj_discard_prompt"] = "请选择一张牌打出",
+  ["#yyfy_mj_discard_prompt"] = "请选择一张牌打出（不选牌直接点确定即为摸切）",
   ["#yyfy_mj_tsumo_prompt"] = "自摸！是否和牌？",
   ["#yyfy_mj_chiihou_prompt"] = "地和！是否和牌？",
   ["#yyfy_mj_ron_prompt"] = "荣！是否和牌？",
@@ -227,9 +234,22 @@ Fk:loadTranslationTable {
   ["yyfy_mj_riichi_caption"] = "已立直。。。",
   ["yyfy_mj_riichi_waits"] = "听牌：",
   ["yyfy_mj_han"] = "番",
+  ["yyfy_mj_fu"] = "符",
   ["yyfy_mj_total_han"] = "合计 ",
   ["yyfy_mj_result_tsumo"] = "自摸",
   ["yyfy_mj_result_ron"] = "荣和",
+
+  -- 左上角常驻状态栏（只对本人显示）
+  -- 该 banner 的 mark 名留空，使左上角只显示正文（如"2向听"/"已立直 3索6索"）
+  ["@yyfy_mj_status"] = "",
+  ["yyfy_mj_status_riichi"] = "已立直",
+  ["yyfy_mj_status_tenpai"] = "听牌",
+  ["yyfy_mj_status_shanten"] = "向听",
+  ["yyfy_mj_status_furiten"] = "振听",
+  ["yyfy_mj_status_noyaku"] = "无役",
+  ["yyfy_mj_status_maybenoyaku"] = "可能无役",
+  ["yyfy_mj_riichi_declare_hint"] = "立直宣言",
+  ["yyfy_mj_no_wait"] = "不听",
 
   ["yyfy_yaku_riichi"] = "立直",
   ["yyfy_yaku_daburu_riichi"] = "两立直",

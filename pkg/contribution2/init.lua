@@ -300,4 +300,17 @@ Fk:loadTranslationTable {
   ["designer:yyfy_AlanTuring"] = "夜隐浮云"
 }
 
+local yangci = General:new(extension, "yyfy_mou__yangci", "qun", 3)
+yangci:addSkills { "yyfy_qieyi", "yyfy_jianzhi", "yyfy_quhuo" }
+Fk:loadTranslationTable {
+  ["yyfy_mou__yangci"] = "族杨赐",
+  ["#yyfy_mou__yangci"] = "固世笃忠贞",
+  ["designer:yyfy_mou__yangci"] = "夜隐浮云",
+  ["illustrator:yyfy_mou__yangci"] = "黯荧岛",
+
+  ["$yyfy_quhuo_yyfy_mou__yangci1"] = "为师为父，所在授业解惑。",
+  ["$yyfy_quhuo_yyfy_mou__yangci2"] = "荧惑守心，宋景退殿，唯德可祛蛇变。",
+  ["~yyfy_mou__yangci"] = "泰山颓，梁木坏，哲人菱。",
+}
+
 return extension
