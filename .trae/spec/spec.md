@@ -105,3 +105,145 @@ if turn.id <= 0 then room:delay(500) end  -- 仅 AI 停顿
 - `LunarLtk/**`、`packages/freekill-core/**`、根目录 `image/**`。
 - 打牌"确定"按钮的**文案**写死在核心 QML，本仓库内无法改成"摸切"；行为上已支持空选即摸切。
 - 引擎的役判定、符数、点数、立直 banner、报番顺序保持现状。
+
+---
+
+# 本轮：击飞终局崩溃 + 小三元漏判 — 规格说明
+
+## 1. 本轮两个需求
+
+1. **A**：把人击飞（点数 ≤ 0）后本应结束游戏并弹出结算，实际控制台报
+   `QQmlComponent: Component is not ready` 与
+   `RoomModel.qml:580: TypeError: Value is null and could not be converted to an object`，
+   结算界面迟迟不出现。
+2. **B**：碰了白板 + 红中、发财作雀头单吊，应计**小三元**，实际未计该役。
+
+## 2. 根因
+
+**A（击飞终局崩溃）**
+- 崩溃点在核心 `packages/freekill-core/LunarLtk/Models/RoomModel.qml:577-583`：
+  ```qml
+  function gameOver(sender, jsonData) {
+    const modelComponent = Qt.createComponent("LunarLtk.Models.Popups", "GameOverModel");
+    const model = modelComponent.createObject();
+    model.winner = jsonData;      // ← 第 580 行 TypeError：model 为 null
+  ```
+- 日志里只有 `Component is not ready`，**没有任何 QML 编译错误**，说明组件状态是 `Loading`（
+  首次使用时类型尚在异步加载），而 `createObject()` 在非 `Ready` 状态直接返回 null。
+- 因此后续 `popupReady(GameOver)` 与 `deActivate()` 都没执行：结算不弹、对局页面不退出。
+- 已排除：`Qt.labs.qmlmodels` 模块/插件缺失、两处 `LunarLtk.Models.Popups/qmldir` 缺项、
+  `LunarLtk.Pages.Popups` 缺 GameOverBox、该 API 整体不可用（ChoicesModel/PhotoModel/AGModel 均正常）。
+- 核心 QML 不可改，只能在 `hidden-clouds` 内让该类型**在终局前就完成加载**。
+- 时序上可行：每局胡牌都会先 `BroadcastResult`（弹出 `YyfyMahjongResultBox`）→
+  `room:delay(3000)` → `M.Transfer` → 若击飞再 `room:delay(2000)` → `room:gameOver`。
+  即结算面板出现**至少 5 秒**后才可能触发终局广播。
+
+**B（小三元漏判）**
+- 引擎 `M.EvalYaku` 只实现了大三元（`hasTri(31) and hasTri(32) and hasTri(33)`），
+  **全仓库没有任何小三元实现**。
+- 现有可用信息：`hasTri(t)` 判断某类型是否有刻子；`form.pair` 是雀头牌种；
+  三元牌类型为 31=白、32=发、33=中。
+- 小三元条件：三元牌中恰有两组刻子，剩下那种三元牌作雀头。
+- 番数：门前 2 番、副露 1 番（食い下がり），与既有 `openPenalty` 约定一致。
+
+## 3. 方案
+
+### 3.1 A：结算面板内预热 `GameOverModel` 类型
+
+文件：`packages/hidden-clouds/qml/YyfyMahjongResultBox.qml`（根 `GraphicsBox`）
+
+```qml
+  // 核心 RoomModel.gameOver() 里是同步 createComponent("LunarLtk.Models.Popups","GameOverModel")
+  // 再 createObject()；该类型首次使用时可能仍是 Loading，导致 createObject() 返回 null
+  // 并抛 TypeError，终局结算弹不出来。结算面板每局都先于终局出现，
+  // 在这里把该类型提前加载进 QML 引擎的类型缓存。
+  property var gameOverPrewarm: null
+
+  Component.onCompleted: prewarmGameOverModel()
+
+  function prewarmGameOverModel() {
+    try {
+      const comp = Qt.createComponent("LunarLtk.Models.Popups", "GameOverModel");
+      if (!comp) return;
+      gameOverPrewarm = comp;   // 持有引用，避免加载完成前被回收
+
+      const warm = function () {
+        if (comp.status !== Component.Ready) {
+          console.warn("YyfyMahjongResultBox: GameOverModel 预热失败:",
+                       comp.errorString());
+          return;
+        }
+        // 实例化一次再销毁：让 Qt.labs.qmlmodels / TableModel 的插件与类型彻底就绪，
+        // 之后核心的 createComponent + createObject 才能稳定拿到非 null 对象。
+        // GameOverModel 只在 winner 变化时才播音/读战绩，这里不设 winner，无副作用。
+        try {
+          const obj = comp.createObject();
+          if (obj) obj.destroy();
+        } catch (e) {
+          console.warn("YyfyMahjongResultBox: GameOverModel 预实例化失败", e);
+        }
+      };
+
+      if (comp.status === Component.Loading) comp.statusChanged.connect(warm);
+      else warm();
+    } catch (e) {
+      console.warn("YyfyMahjongResultBox: 无法预热 GameOverModel", e);
+    }
+  }
+```
+
+- 先加载，`Ready` 后再实例化一次并立即 `destroy()`，确保插件与类型缓存都已完成。
+- 同时只编译加载 `LunarLtk.Pages.Popups` 的 `GameOverBox`（核心在 model 就绪后用它弹窗），
+  不实例化以免提前显示弹窗。
+- 每个对局至少会弹一次结算面板（胡牌必走 `BroadcastResult`，广播给所有客户端），
+  因此各客户端都会在终局前完成预热。
+- 若预热最终是 `Error`，会打印 `errorString` 便于后续定位；届时备选方案是
+  在服务端 `gameOver` 前用 `Fk:addMiniGame` 弹自定义终局面板（本规格暂不实施）。
+
+### 3.2 B：引擎补小三元
+
+文件：`packages/hidden-clouds/pkg/gamemodes/yyfy_mahjong_engine.lua` → `M.EvalYaku`
+（`elseif form then` 分支内、役牌计数之后，约 L1281 之后）
+
+```lua
+    -- 小三元：两组三元牌刻子 + 第三种三元牌作雀头（2 番，副露 -1 番）
+    local dragonTri = 0
+    for _, t in ipairs{ 31, 32, 33 } do
+      if hasTri(t) then dragonTri = dragonTri + 1 end
+    end
+    if dragonTri == 2 and form.pair and form.pair >= 31 and form.pair <= 33 then
+      addYaku("yyfy_yaku_shousangen", 2 + openPenalty)
+    end
+```
+
+- 大三元仍走前面的役满分支提前返回，二者不会重复计。
+- 与役牌可复合（两组三元牌刻子各 +1 番），符合立直麻将规则。
+
+### 3.3 B：补翻译
+
+文件：`packages/hidden-clouds/pkg/gamemodes/yyfy_mahjong_mode.lua` 静态翻译表（约 L259 役牌附近）
+
+```lua
+  ["yyfy_yaku_shousangen"] = "小三元",
+```
+
+## 4. 验证
+
+**静态**
+1. `luasyntax.py` 检查引擎、模式文件 → `SYNTAX OK`。
+2. `qmlbalance_arg.py` 检查 `YyfyMahjongResultBox.qml` → 括号平衡。
+3. 新建临时脚本 `mj_shousangen_verify.lua`（放 `C:\Users\Lenovo\AppData\Local\Temp\`）：
+   stub `Fk:getCardById / Fk:translate / table.simpleClone` 等，构造
+   `form = { mentsu = { 白刻, 中刻, 两个数牌顺子 }, pair = 33 }` 直接调用 `M.EvaluateYaku`，
+   断言返回的 `yaku` 含 `yyfy_yaku_shousangen`；再构造副露版本断言番数为 1（门前为 2）。
+4. `mj_verify.lua` 回归（上轮指示牌/摸切相关断言）仍 `VERIFY OK`。
+
+**实机（需用户）**
+1. 击飞对手 → 终局结算正常弹出，日志不再出现 `RoomModel.qml:580 TypeError`。
+2. 碰白 + 中、发财作雀头 → 结算报番含"小三元"。
+
+## 5. 明确不改动 / 已知限制
+
+- `LunarLtk/**`、`packages/freekill-core/**`、根目录 `image/**` 一律只读。
+- 不改核心 `RoomModel.qml` / `GameOverModel.qml`；A 只在自家结算面板做类型预热。
+- 若预热后仍报 `Component is not ready`，需在下一轮改用自定义终局面板方案。

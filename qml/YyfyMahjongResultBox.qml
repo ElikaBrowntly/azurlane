@@ -46,6 +46,67 @@ GraphicsBox {
   property var omoteModels: []
   property var uraModels: []
 
+  // 核心 RoomModel.gameOver() 里是同步 createComponent("LunarLtk.Models.Popups","GameOverModel")
+  // 再 createObject()；该类型首次使用时可能仍处于 Loading，createObject() 返回 null 并抛
+  // TypeError（RoomModel.qml:580），导致终局结算弹不出来。结算面板每局都先于终局出现，
+  // 在这里把该类型提前加载并实例化一次，让它进入 QML 引擎的类型缓存。
+  property var gameOverPrewarm: null
+  property var gameOverBoxPrewarm: null
+
+  Component.onCompleted: {
+    prewarmGameOverModel();
+    prewarmGameOverBox();
+  }
+
+  function prewarmGameOverModel() {
+    try {
+      const comp = Qt.createComponent("LunarLtk.Models.Popups", "GameOverModel");
+      if (!comp) return;
+      gameOverPrewarm = comp;   // 持有引用，避免加载完成前被回收
+
+      const warm = function () {
+        if (comp.status !== Component.Ready) {
+          console.warn("YyfyMahjongResultBox: GameOverModel 预热失败:",
+                       comp.errorString());
+          return;
+        }
+        // 实例化一次再销毁：让 Qt.labs.qmlmodels / TableModel 的插件与类型彻底就绪。
+        // 不设 winner，因此不会触发播音与读战绩。
+        try {
+          const obj = comp.createObject();
+          if (obj) obj.destroy();
+        } catch (e) {
+          console.warn("YyfyMahjongResultBox: GameOverModel 预实例化失败", e);
+        }
+      };
+
+      if (comp.status === Component.Loading) comp.statusChanged.connect(warm);
+      else warm();
+    } catch (e) {
+      console.warn("YyfyMahjongResultBox: 无法预热 GameOverModel", e);
+    }
+  }
+
+  // 核心在 model 就绪后还会 createComponent("LunarLtk.Pages.Popups","GameOverBox")，
+  // 该弹窗同样只在终局首次使用。这里只做编译加载、不实例化，避免提前显示弹窗。
+  function prewarmGameOverBox() {
+    try {
+      const comp = Qt.createComponent("LunarLtk.Pages.Popups", "GameOverBox");
+      if (!comp) return;
+      gameOverBoxPrewarm = comp;
+      const check = function () {
+        if (comp.status === Component.Error) {
+          console.warn("YyfyMahjongResultBox: GameOverBox 预热失败:",
+                       comp.errorString());
+        }
+      };
+      if (comp.status === Component.Loading) comp.statusChanged.connect(check);
+      else check();
+    } catch (e) {
+      console.warn("YyfyMahjongResultBox: 无法预热 GameOverBox", e);
+    }
+  }
+
   // 数据兼容：Lua 的"空表"传到 QML 后会变成普通对象而不是数组，
   // 直接 for...of 会抛异常，因此所有来列表都先经过这里。
   // 注意两种情况：真正的 JS 数组（含 Qt 的 QVariantList 代理，带 length 且从 0 开始）

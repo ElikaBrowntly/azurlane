@@ -1279,6 +1279,14 @@ function M.EvalYaku(state, p, info, tilesOverride, formOverride, waitOverride, w
     if yakuHaiCount > 0 then
       addYaku("yyfy_yaku_yakuhai", yakuHaiCount)
     end
+    -- 小三元：两组三元牌刻子 + 第三种三元牌作雀头（2 番，副露 -1 番）
+    local dragonTri = 0
+    for _, t in ipairs{ 31, 32, 33 } do
+      if hasTri(t) then dragonTri = dragonTri + 1 end
+    end
+    if dragonTri == 2 and form.pair and form.pair >= 31 and form.pair <= 33 then
+      addYaku("yyfy_yaku_shousangen", 2 + openPenalty)
+    end
     -- 面子统计
     local seqCounts = {}
     local triCount, closedTri = 0, 0

@@ -102,3 +102,37 @@
   - 出牌：不选牌直接点确定 = 摸切
   - 杠选项为中文"杠"
 
+## 本轮：击飞终局崩溃 + 小三元漏判
+
+- [x] **T17 QML：结算面板预热 GameOverModel 类型**
+  - 文件：`packages/hidden-clouds/qml/YyfyMahjongResultBox.qml`
+  - 新增 `property var gameOverPrewarm: null`
+  - 新增 `Component.onCompleted { prewarmGameOverModel(); prewarmGameOverBox(); }`
+  - `prewarmGameOverModel()`：`Qt.createComponent("LunarLtk.Models.Popups", "GameOverModel")`，
+    持有引用；`Loading` 时接 `statusChanged`，`Ready` 后 `createObject()` 一次再 `destroy()`，
+    `Error` 时打印 `errorString`
+  - 不设 `winner`，无播音/读战绩副作用
+  - 另：只编译加载 `LunarLtk.Pages.Popups` 的 `GameOverBox`（不实例化）
+  - 目的：核心 `RoomModel.gameOver()` 里的同步 `createComponent + createObject` 不再拿到 null
+
+- [x] **T18 引擎：役判定补小三元**
+  - 文件：`packages/hidden-clouds/pkg/gamemodes/yyfy_mahjong_engine.lua` → `M.EvalYaku`
+  - 位置：`elseif form then` 分支内、役牌计数之后（约 L1281 后）
+  - `dragonTri = 三元牌(31/32/33)刻子数`；`dragonTri == 2` 且 `form.pair ∈ {31,32,33}`
+  - `addYaku("yyfy_yaku_shousangen", 2 + openPenalty)`（门前 2 番 / 副露 1 番）
+
+- [x] **T19 文案：补小三元翻译**
+  - 文件：`packages/hidden-clouds/pkg/gamemodes/yyfy_mahjong_mode.lua` 静态翻译表（役牌附近）
+  - `["yyfy_yaku_shousangen"] = "小三元"`
+
+- [x] **T20 静态验证**
+  - `luasyntax.py` 引擎 + 模式 → `SYNTAX OK`
+  - `qmlbalance_arg.py YyfyMahjongResultBox.qml` → 括号平衡
+  - 临时脚本 `mj_shousangen_verify.lua`：构造白刻 + 中刻 + 发财雀头的 `form`，
+    调用 `M.EvalYaku` 断言含 `yyfy_yaku_shousangen`，门前 2 番 / 副露 1 番
+  - 结论：Lua 5.4 全文件编译通过、QML 括号平衡、`VERIFY OK`
+
+- [ ] **T21 实机验证（需用户重启服务端/客户端）**
+  - 击飞对手 → 终局结算正常弹出；日志无 `RoomModel.qml:580 TypeError`
+  - 碰白 + 中、发财雀头 → 结算报番含"小三元"
+
