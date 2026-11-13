@@ -257,6 +257,7 @@ Fk:loadTranslationTable {
   ["yyfy_yaku_tsumo"] = "门前清自摸和",
   ["yyfy_yaku_pinhu"] = "平和",
   ["yyfy_yaku_yakuhai"] = "役牌",
+  ["yyfy_yaku_shousangen"] = "小三元",
   ["yyfy_yaku_sanshoku"] = "三色同顺",
   ["yyfy_yaku_sanshoku_tri"] = "三色同刻",
   ["yyfy_yaku_ittsu"] = "一气通贯",
