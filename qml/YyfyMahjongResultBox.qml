@@ -26,6 +26,9 @@ GraphicsBox {
   property int revealed: 0        // 已"出现"的役种条数
   property real cardScale: 0.5
 
+  // 途中流局（九种九牌等）：只展示宣告者手牌与流局原因，不展示役种与点数
+  readonly property bool isAbort: !!(info && info.abortText)
+
   readonly property int gapWidth: 26
   // 役种/番数排版：番名列定宽（留足 6 字）、番数列定宽（右对齐）
   readonly property int yakuFontSize: 27
@@ -46,10 +49,10 @@ GraphicsBox {
   property var omoteModels: []
   property var uraModels: []
 
-  // 核心 RoomModel.gameOver() 里是同步 createComponent("LunarLtk.Models.Popups","GameOverModel")
+  // 核心 RoomModel.gameOver() 是同步 createComponent("LunarLtk.Models.Popups","GameOverModel")
   // 再 createObject()；该类型首次使用时可能仍处于 Loading，createObject() 返回 null 并抛
-  // TypeError（RoomModel.qml:580），导致终局结算弹不出来。结算面板每局都先于终局出现，
-  // 在这里把该类型提前加载并实例化一次，让它进入 QML 引擎的类型缓存。
+  // TypeError（RoomModel.qml:580），导致击飞终局结算弹不出来。结算面板每局都先于终局出现，
+  // 在这里提前把该类型（以及 GameOverBox）加载进 QML 引擎缓存。
   property var gameOverPrewarm: null
   property var gameOverBoxPrewarm: null
 
@@ -88,7 +91,7 @@ GraphicsBox {
   }
 
   // 核心在 model 就绪后还会 createComponent("LunarLtk.Pages.Popups","GameOverBox")，
-  // 该弹窗同样只在终局首次使用。这里只做编译加载、不实例化，避免提前显示弹窗。
+  // 这里只做编译加载、不实例化，避免提前显示弹窗。
   function prewarmGameOverBox() {
     try {
       const comp = Qt.createComponent("LunarLtk.Pages.Popups", "GameOverBox");
@@ -145,6 +148,16 @@ GraphicsBox {
   function buildEntries(d) {
     const out = [];
     if (!d) return out;
+    // 九种九牌流局：手牌不属于公开信息，服务端改为下发"牌名+点数"，
+    // 与指示牌一样用 createCardModelFromName 现场造牌面
+    const names = toList(d.handNames);
+    if (names.length > 0) {
+      const nums = toList(d.handNumbers);
+      for (let i = 0; i < names.length; i++) {
+        out.push({ name: names[i], number: nums[i] });
+      }
+      return out;
+    }
     // 无效牌 id（undefined / null / -1）不参与展示，否则会创建出缺少 suit/number
     // 的 CardModel，进而在 PokerCard.qml 里触发 "Unable to assign [undefined] to QUrl"
     const valid = id => id !== undefined && id !== null && id !== -1;
@@ -226,8 +239,9 @@ GraphicsBox {
     if (d && d.uraRevealed) {
       const arr = indicatorEntries(d, "ura");
       let count = arr.length;
-      if (d.doraCount !== undefined && d.doraCount !== null) {
-        const n = Number(d.doraCount);
+      const rc = (d.uraCount !== undefined && d.uraCount !== null) ? d.uraCount : d.doraCount;
+      if (rc !== undefined && rc !== null) {
+        const n = Number(rc);
         if (isFinite(n) && n >= 0) count = Math.min(arr.length, n);
       }
       for (let i = 0; i < count; i++) ura.push(indicatorModel(arr[i]));
@@ -243,6 +257,13 @@ GraphicsBox {
   // 触发 "Unable to assign [undefined] to QUrl" 警告。
   function cardModel(id) {
     return Ltk.createCardModel(id, { known: true, suit: "nosuit", color: "nocolor" });
+  }
+
+  // 手牌区的一张牌：默认按牌 id 造模型；流局展示时改用"牌名+点数"造模型
+  function entryModel(e) {
+    if (!e) return null;
+    if (e.name) return indicatorModel({ name: e.name, number: e.number });
+    return cardModel(e.id);
   }
 
   // 牌 id 是否可用：客户端对牌山里未公开的牌只拿到 known=false（无 name/number/suit），
@@ -293,8 +314,10 @@ GraphicsBox {
   }
 
   title.text: root.info
-    ? ((root.info.screenName || "") + " " + Lua.tr(root.info.tsumo
-        ? "yyfy_mj_result_tsumo" : "yyfy_mj_result_ron"))
+    ? (root.isAbort
+        ? ((root.info.screenName || "") + " " + Lua.tr(root.info.abortText))
+        : ((root.info.screenName || "") + " " + Lua.tr(root.info.tsumo
+            ? "yyfy_mj_result_tsumo" : "yyfy_mj_result_ron")))
     : ""
 
   // 点击任意处关闭（牌面只读，不需要其它交互）
@@ -348,7 +371,7 @@ GraphicsBox {
               anchors.top: parent.top
               cardScale: root.cardScale
               showDetail: false
-              dataModel: root.cardModel(modelData.id)
+              dataModel: root.entryModel(modelData)
             }
           }
         }
@@ -358,6 +381,7 @@ GraphicsBox {
     // 手牌行下方：宝牌指示牌 / 里宝指示牌
     Column {
       id: resultIndicators
+      visible: !root.isAbort
       anchors.top: resultCards.bottom
       anchors.topMargin: 6
       anchors.horizontalCenter: parent.horizontalCenter
@@ -477,6 +501,7 @@ GraphicsBox {
     // 下方：役种与番数，自上而下逐条"出现"
     Column {
       id: resultYakuCol
+      visible: !root.isAbort
       anchors.top: resultIndicators.bottom
       anchors.topMargin: 10
       anchors.horizontalCenter: parent.horizontalCenter
@@ -552,7 +577,7 @@ GraphicsBox {
       }
 
       Text {
-        visible: root.info && root.revealed >= root.revealTotal
+        visible: root.info && !root.isAbort && root.revealed >= root.revealTotal
         text: root.hasYakuman
           ? (Lua.tr("yyfy_mj_total_han") + (root.yakumanWeight === 1
               ? Lua.tr("yyfy_mj_yakuman")
@@ -572,7 +597,7 @@ GraphicsBox {
 
       // 分数等式：原始分 + 本场/场供加算 = 总分
       Text {
-        visible: root.info && root.revealed >= root.revealTotal
+        visible: root.info && !root.isAbort && root.revealed >= root.revealTotal
           && root.info.totalScore !== undefined
         text: (root.info ? root.info.baseScore : 0) + "+"
           + (root.info ? root.info.bonusScore : 0) + "="

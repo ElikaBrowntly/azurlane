@@ -97,6 +97,7 @@ fuhai:addEffect(fk.DrawNCards, {
 })
 -- 非洲、南极
 fuhai:addEffect(fk.DamageCaused, {
+  mute = true,
   anim_type = "offensive",
   can_trigger = function(self, event, target, player, data)
     return target == player and player:hasSkill(self) and

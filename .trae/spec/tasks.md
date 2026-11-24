@@ -136,3 +136,121 @@
   - 击飞对手 → 终局结算正常弹出；日志无 `RoomModel.qml:580 TypeError`
   - 碰白 + 中、发财雀头 → 结算报番含"小三元"
 
+## 本轮：17 项地方规则开关（默认值 = 此前行为）
+
+- [x] **T22 新建规则开关模块**
+  - 文件：`packages/hidden-clouds/pkg/gamemodes/yyfy_mahjong_rules.lua`
+  - 17 项 + 附加 `tailRiichi`，每项带中文注释；引擎与模式共用同一份配置
+  - 默认：`fourRed=false, kuitan=true, seiu=true, renchanAtTop=false, tobi=true,
+    nagashiMangan=true, kiriageMangan=false, omoteDora=true, kanOmoteDora=true,
+    uraDora=true, kanUraDora=true, kanDoraImmediate=true, fourWindAbort=true,
+    fourKanAbort=true, fiveKanAbort=false, fourRiichiAbort=false, nineTerminals=false`
+
+- [x] **T23 四赤 / 食断 / 西入 / 尾亲连庄**
+  - `yyfy_mahjong_mode.lua` `build_draw_pile`：`fourRed` 时筒子 2 张 0p + 2 张 5p
+  - 引擎断幺判定：`RULES.kuitan or #melds == 0`
+  - `M.Run` 终局：南四过庄（round 变 9）后开西入且无人 ≥30000 才续战；
+    西场/北场每局结束有人 ≥30000 即终局（无刷分）；最多北四
+  - 尾亲连庄：南四连庄（round 仍为 8）时，`renchanAtTop` 关闭且庄家为一位且 >30000 → 终局
+
+- [x] **T24 击飞 / 流局满贯 / 切上满贯**
+  - `M.Transfer`：`RULES.tobi` 且点数 `< 0` 才击飞（0 分不击飞）
+  - 立直门槛：`RULES.tobi` 时点数须 ≥1000
+  - `M.DoExhaustive`：`nagashiMangan` 关闭时不承认流局满贯
+  - `basePoints`：`kiriageMangan` 时 4 番 30 符 / 3 番 60 符按满贯 2000 基础点
+
+- [x] **T25 表/里/杠宝牌四开关**
+  - `dora_count`（表）与 `ura_count`（里）拆分，互不影响
+  - `omoteDora` 关闭：不计番、清空手牌"宝牌"标记、不显示宝牌 banner
+  - `kanOmoteDora` 关闭：开杠不追加表指示牌 / 不计新表宝
+  - `uraDora` 关闭：立直和也不揭晓、不计番；`uraRevealed = false`
+  - `kanUraDora` 关闭：开杠不追加里指示牌
+  - 赤宝牌上限：`fourRed` 时 4，否则 3
+
+- [x] **T26 明杠宝牌即翻**
+  - `M.OnKan(..., deferDora)`：明杠/加杠在 `kanDoraImmediate` 关闭时置 `pending_kan_dora`
+  - `M.RevealKanDora`：切牌后（或被荣和前）翻出；岭上直接自摸时在和牌结算前翻出
+  - 开启（默认）时明杠与暗杠一致，开杠瞬间翻
+
+- [x] **T27 四风连打 / 四杠散了 / 五杠流局 / 四家立直**
+  - 四风连打：`fourWindAbort` + 第一巡无人副露 + 四家首弃同风 → 途中流局
+  - 四杠散了：第 4 杠后岭上未自摸 → 仍需打一张；被荣和按正常放铳（不算河底）、
+    被副露则继续、通过则流局
+  - 五杠流局：`fiveKanAbort` 开启允许第 5 杠，开杠通过后立即流局（不摸岭上）；
+    关闭时第 5 杠不可宣言（暗杠/加杠/大明杠统一门槛）
+  - 四家立直：`fourRiichiAbort` 时第四家立直弃牌通过后立即流局
+
+- [x] **T28 九种九牌**
+  - 摸牌后、首次打牌前询问（每局每人一次），`countKyuushu` 同种只算 1 种
+  - 宣告后 `M.SettleKyuushu`：流局、庄家续坐
+  - 结算面板展示宣告者手牌：服务端下发 `handNames/handNumbers`，QML 用
+    `createCardModelFromName` 造牌面；`abortText` 复用结算面板并隐藏役种/点数区
+
+- [x] **T29 小三元回归补充**
+  - 副露不减番，固定 2 番（此前误用 `openPenalty`）
+
+- [x] **T30 静态验证**
+  - `lua_check.py`：规则/引擎/模式 `SYNTAX OK`；QML 括号平衡
+  - `mj_rules_verify.lua`：18 个默认值、表宝牌开/关、里宝牌开/关、小三元 2 番 → `VERIFY OK`
+
+- [ ] **T31 实机验证（需用户重启服务端/客户端）**
+  - 默认配置行为不变：三赤、食断、西入、击飞（<0）、流局满贯、无切上满贯、无四家立直/九种九牌
+  - 逐项切换：四赤牌山、切上满贯 7700/11600→8000/12000、表/里宝关闭不计番、
+    杠表/杠里宝独立、明杠延迟翻宝、四风/四杠/五杠/四家立直流局、九种九牌按钮与手牌展示
+  - 南四终局：西入 / 尾亲连庄行为符合设置
+
+## 本轮：第 18–34 项开关（默认值 = 此前行为）
+
+- [x] **T32 规则表扩充与第 4 项改名**
+  - `winEndgame`（原 `renchanAtTop` 取反）+ 18–34 全部写入 `yyfy_mahjong_rules.lua`
+  - 默认值：`tripleRonAbort=false, atamahane=false, dealerWinRenchan=true,
+    tenpaiRenchan=true, tenpaiEndgame=false, ippatsu=true, hanShibari=1,
+    doubleYakuman=true, compoundYakuman=true, kuikaeAllowed=false,
+    doubleWindPairFu=4, kokushiChankan=false, renhou=false, pao="none",
+    kazoeYakuman=true, oldYaku=false`
+
+- [x] **T33 番缚 / 役满倍数 / 符**
+  - `M.CanSettle`：役番合计 ≥ `hanShibari`（0 番缚无役可和；役满恒可和）
+  - `ykW(2)`：双倍役满开关；`applyCompound`：复合役满开关
+  - `basePoints`：13 番以上按 `kazoeYakuman` 取 8000 / 6000 基础点
+  - `computeFu`：连风雀头按 `doubleWindPairFu`（2/4 符）
+  - 一发役受 `ippatsu` 控制
+
+- [x] **T34 和牌流程：三家和了 / 头跳 / 抢杠 / 人和**
+  - `M.CheckClaims`：三响且 `tripleRonAbort` → `"abort"` → `DoAbortiveDraw`
+  - `atamahane` 开启：荣家只取座次第一个
+  - `M.CheckChankan` 返回抢杠列表；`M.CheckKokushiAnkan` 国士抢暗杠
+  - `info.renhou`：第一巡未摸牌、无人副露时荣和记人和役满
+
+- [x] **T35 包牌结算**
+  - `findPao`：按 `pao` 判定大三元/大四喜责任者（荣和张完成刻子或副露来源）
+  - `M.SettleWin`：自摸由包牌者付全部，荣和由包牌者与放铳者各付一半；
+    复合役满仅对包牌役满部分负责
+
+- [x] **T36 古役**
+  - 番种：燕返、杠上炮、十二落抬、五门齐、三连刻、一色三同顺、一筒摸月、九筒捞鱼
+  - 役满：大车轮、大竹林、大数邻、石上三年、大七星（双倍）
+  - `M.OnKan` 置 `after_kan_pending`；弃牌记录 `last_discard_riichi` / `last_discard_after_kan`
+
+- [x] **T37 连庄 / 终局开关**
+  - `dealerWinRenchan`：庄家和牌不连庄
+  - `tenpaiRenchan`：通常流局庄家听牌不连庄（途中流局仍连庄）
+  - `tenpaiEndgame`：南四通常流局且尾亲一位时按听牌 + 西入/30000 判定终局
+  - `winEndgame`：南四和牌连庄且尾亲一位（>30000）终局
+  - `DoExhaustive` 记录 `round_draw/dealer_tenpai`；`DoAbortiveDraw`/`SettleKyuushu` 记录 `abortive_draw`
+
+- [x] **T38 食替与翻译**
+  - `kuikaeAllowed`：打牌询问与超时兜底不再套用 `kuikae_forbid`
+  - 新增古役/古役满/人和/三家和了中文翻译
+
+- [x] **T39 静态验证**
+  - `lua_check.py`：规则/引擎/模式 `SYNTAX OK`；QML 括号平衡
+  - `mj_rules_verify.lua`：34 个默认值、表/里宝开关、小三元 2 番 → `VERIFY OK`
+
+- [ ] **T40 实机验证（需用户重启服务端/客户端）**
+  - 一炮双响/三响/头跳、三家和了流局
+  - 番缚 0/2/4、双倍/复合役满、累计役满
+  - 食替、连风雀头符、国士抢暗杠、人和、包牌支付
+  - 南四：胡牌连庄 / 听牌连庄 / 听牌终局 / 和了终局组合行为
+  - 古役各项与宝牌/杠/海底组合
+
