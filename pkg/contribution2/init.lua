@@ -313,4 +313,13 @@ Fk:loadTranslationTable {
   ["~yyfy_mou__yangci"] = "泰山颓，梁木坏，哲人菱。",
 }
 
+local wangkuang = General:new(extension, "yyfy_mou__wangkuang", "qun", 4)
+wangkuang:addSkills { "yyfy_renxia" }
+Fk:loadTranslationTable {
+  ["yyfy_mou__wangkuang"] = "谋王匡",
+  ["#yyfy_mou__wangkuang"] = "任侠纵横",
+  ["designer:yyfy_mou__wangkuang"] = "夜隐浮云/一维无限",
+  ["~yyfy_mou__wangkuang"] = "人心不古，世态炎凉。"
+}
+
 return extension

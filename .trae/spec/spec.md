@@ -247,3 +247,72 @@ if turn.id <= 0 then room:delay(500) end  -- 仅 AI 停顿
 - `LunarLtk/**`、`packages/freekill-core/**`、根目录 `image/**` 一律只读。
 - 不改核心 `RoomModel.qml` / `GameOverModel.qml`；A 只在自家结算面板做类型预热。
 - 若预热后仍报 `Component is not ready`，需在下一轮改用自定义终局面板方案。
+
+---
+
+# 麻将地方规则开关（34 项）
+
+## 1. 结构
+
+| 文件 | 作用 |
+| --- | --- |
+| `pkg/gamemodes/yyfy_mahjong_rules.lua` | 唯一配置表 `RULES`，34 项 + `tailRiichi` |
+| `pkg/gamemodes/yyfy_mahjong_engine.lua` | `local RULES = require "...yyfy_mahjong_rules"`，全部判定读取开关 |
+| `pkg/gamemodes/yyfy_mahjong_mode.lua` | `build_draw_pile` 读 `RULES.fourRed`；新增流局/小三元文案 |
+| `qml/YyfyMahjongResultBox.qml` | 支持 `abortText + handNames/handNumbers` 的流局展示 |
+
+默认值 = 此前实现的行为，因此不改配置时玩法与此前一致。
+
+## 2. 各开关实现位置
+
+1. **四赤** `fourRed`：`build_draw_pile` 筒子 2 张 `yyfy_0p` + 2 张 `yyfy_5p`；赤宝牌上限 4。
+2. **食断** `kuitan`：断幺判定 `RULES.kuitan or #melds == 0`。
+3. **西入** `seiu`：`M.Run` 中 round 进入 9（南四过庄）时，无人 ≥30000 才续战；西/北场每局结束有人 ≥30000 即终局；最多北四（round 16）。
+4. **和了终局** `winEndgame`：南四和牌连庄（round 仍为 8）时，开启则"尾亲为一位且 >30000"必须终局（原"尾亲连庄"取反）。
+5. **击飞** `tobi`：`M.Transfer` 仅点数 `< 0` 击飞；立直要求点数 ≥1000。
+6. **流局满贯** `nagashiMangan`：`M.DoExhaustive` 只在开启时调用 `GetNagashiPlayers`。
+7. **切上满贯** `kiriageMangan`：`basePoints` 把 4 番 30 符 / 3 番 60 符按 2000 基础点。
+8. **表宝牌** `omoteDora`：`EvalYaku` 表宝段、手牌宝牌标记、初始 banner 均受控。
+9. **杠表宝牌** `kanOmoteDora`：`M.RevealKanDora` 内表宝段。
+10. **里宝牌** `uraDora`：`EvalYaku` 里宝段、`SettleWin` 揭晓、`BroadcastResult.uraRevealed`。
+11. **杠里宝牌** `kanUraDora`：`M.RevealKanDora` 内 `ura_count` 段。
+12. **明杠宝牌即翻** `kanDoraImmediate`：`M.OnKan(..., deferDora)`；关闭时切牌后（或岭上自摸结算前）再翻。
+13. **四风连打** `fourWindAbort`：弃牌无人响应分支，四家首弃同风且 `state.no_meld` → 流局。
+14. **四杠散了** `fourKanAbort`：第 4 杠后 `kan_discard_pending`；该弃牌被荣和按正常放铳（不判河底），被副露则继续，通过则流局。
+15. **五杠流局** `fiveKanAbort`：开启允许第 5 杠，开杠通过后立即流局（不摸岭上）；关闭时第 5 杠不可宣言。
+16. **四家立直** `fourRiichiAbort`：第四家立直弃牌通过后流局。
+17. **九种九牌** `nineTerminals`：首次打牌前询问；同种只算 1 种；`M.SettleKyuushu` 流局并展示手牌。
+18. **三家和了流局** `tripleRonAbort`：`M.CheckClaims` 中三家荣和时返回 `"abort"`，`M.PlayRound` 转 `DoAbortiveDraw`；加杠抢杠同理。
+19. **头跳** `atamahane`：开启时荣家列表只取座次第一个（下家优先）；关闭时保留一炮多响。
+20. **胡牌连庄** `dealerWinRenchan`：`M.Run` 中庄家和牌是否连庄。
+21. **听牌连庄** `tenpaiRenchan`：`M.Run` 中通常流局庄家听牌是否连庄；途中流局（`abortive_draw`）不受影响。
+22. **听牌终局** `tenpaiEndgame`：南四通常流局且尾亲为一位时，听牌按西入/30000 判定，没听直接终局。
+23. **一发** `ippatsu`：`EvalYaku` 中一发役受控（`state.ippatsu` 逻辑不变）。
+24. **番缚** `hanShibari`：`M.CanSettle` 用"役番合计 ≥ 番缚"，0 表示无役也可和。
+25. **双倍役满** `doubleYakuman`：`ykW(2)` 控制四暗刻单骑/纯正九莲/国士十三面/大四喜/大七星。
+26. **复合役满** `compoundYakuman`：`applyCompound` 在关闭时只保留权重最高的役满。
+27. **食替** `kuikaeAllowed`：`buildDiscardAsk` 与超时兜底跳过 `kuikae_forbid`。
+28. **尾巡立直** `tailRiichi`：立直可宣条件。
+29. **连风雀头** `doubleWindPairFu`：`computeFu` 双风雀头符数（2 或 4）。
+30. **国士抢杠** `kokushiChankan`：暗杠前 `M.CheckKokushiAnkan` 允许国士荣和。
+31. **人和** `renhou`：`M.CheckClaims` 判定 `info.renhou`，`EvalYaku` 记为役满。
+32. **包牌** `pao`：`findPao` 判定责任者，`M.SettleWin` 拆分包牌点数结算。
+33. **累计役满** `kazoeYakuman`：`basePoints` 中 13 番以上 8000/6000 基础点。
+34. **古役** `oldYaku`：`EvalYaku` 中燕返/杠上炮/十二落抬/五门齐/三连刻/一色三同顺/一筒摸月/九筒捞鱼及古役满。
+
+## 3. 关键状态
+
+- `state.dora_count`（表宝牌数）/ `state.ura_count`（里宝牌数），开局均为 1，最多 4。
+- `state.pending_kan_dora`：明杠延迟翻宝牌。
+- `state.kan_discard_pending`：第四杠后待判定四杠散了。
+- `state.kyuushu_asked`：每局每人只询问一次九种九牌。
+- `state.after_kan_pending`：刚开杠未出牌的玩家（杠上炮）。
+- `state.last_discard_riichi` / `last_discard_after_kan`：最近舍牌是否立直宣言 / 紧接开杠（燕返、杠上炮）。
+- `state.round_draw` / `state.dealer_tenpai` / `state.abortive_draw`：流局性质与庄家听牌（听牌终局/连庄）。
+
+## 4. 验证
+
+**静态（已完成）**：`SYNTAX OK`（规则/引擎/模式）、QML 括号平衡、
+`mj_rules_verify.lua`（34 个默认值、表/里宝开关、小三元 2 番）→ `VERIFY OK`。
+
+**实机（需用户）**：默认配置行为不变；逐项切换验证（见 `tasks.md` T31）。

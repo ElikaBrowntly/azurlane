@@ -16,7 +16,7 @@ local desc_yyfy_mahjong = [[
 
   二. 基本规则
 
-  - 四人游戏，初始每人 25000 点，按点数结算（有击飞：点数归零立即结束）。
+  - 四人游戏，初始每人 25000 点，按点数结算（有击飞：点数为负立即结束，0 分不击飞；此时不足 1000 分不能立直）。
   - 庄家起手 14 张，闲家 13 张；碰、杠、吃、立直、胡均在被切牌时询问。
   - 三赤：红五作赤宝牌计 1 番。有食断：副露后仍可断幺。无古役、无番缚（0 番按 1 番结算）。
   - 有振听：牌河含有自己听牌时不荣（可自摸）。有立直（含一发）。
@@ -35,6 +35,9 @@ local desc_yyfy_mahjong = [[
   - 立直棒 1000 点随和牌由赢家获得。
 ]]
 
+local W = require "ui_emu.preferences"
+local RULES = require "packages.hidden-clouds.pkg.gamemodes.yyfy_mahjong_rules"
+
 local yyfy_mahjong_getLogic = function()
   local yyfy_mahjong_logic = GameLogic:subclass("yyfy_mahjong_logic")
 
@@ -49,6 +52,8 @@ local yyfy_mahjong_getLogic = function()
 
   function yyfy_mahjong_logic:initialize(room)
     GameLogic.initialize(self, room)
+    -- 应用创建房间时选择的"游戏规则"预设（未选择时回退到雀魂规则）
+    RULES.applyPreset(room:getSettings("yyfy_mj_rule_preset"))
     self.role_table = { nil, nil, nil, { "lord", "rebel", "rebel", "rebel" } }
     self.room.settings._game.luckTime = 0
   end
@@ -124,12 +129,20 @@ local yyfy_mahjong_mode = fk.CreateGameMode {
     local function printNTimes(name, n, number)
       for _ = 1, n do table.insert(draw, room:printCard(name, Card.NoSuit, number or 1).id) end
     end
-    -- 数牌：1~9 各 4 张，其中 5 的 1 张换作红五（0 结尾）；点数 = 牌面数字（红五=5）
+    -- 数牌：1~9 各 4 张，其中 5 的若干张换作红五（0 结尾）；点数 = 牌面数字（红五=5）
+    -- 赤宝牌数量（RULES.redFives）：0 = 无赤；1 = 三赤（各花色 1 张）；2 = 四赤（筒子 2 张）
+    -- 开局时再次按房间设置应用预设，确保与玩家最终选择一致
+    RULES.applyPreset(room:getSettings("yyfy_mj_rule_preset"))
     for _, s in ipairs{ "m", "p", "s" } do
       for i = 1, 9 do
         if i == 5 then
-          printNTimes(("yyfy_5%s"):format(s), 3, 5)
-          printNTimes(("yyfy_0%s"):format(s), 1, 5)
+          local redCount = RULES.redFives or 1
+          local red
+          if redCount <= 0 then red = 0
+          elseif redCount == 1 then red = 1
+          else red = (s == "p") and 2 or 1 end
+          printNTimes(("yyfy_5%s"):format(s), 4 - red, 5)
+          printNTimes(("yyfy_0%s"):format(s), red, 5)
         else
           printNTimes(("yyfy_%d%s"):format(i, s), 4, i)
         end
@@ -141,6 +154,13 @@ local yyfy_mahjong_mode = fk.CreateGameMode {
     end
     return draw, void
   end,
+  ui_settings = {
+    W.ComboRow {
+      _settingsKey = "yyfy_mj_rule_preset",
+      title = "yyfy_mj_rule_preset",
+      model = { "yyfy_mj_rule_jousou", "yyfy_mj_rule_ml", "yyfy_mj_rule_a1" },
+    },
+  },
 }
 
 Fk:addMiniGame {
@@ -155,6 +175,10 @@ Fk:loadTranslationTable {
   ["yyfy_mahjong_surrender"] = "麻将模式下不可投降",
   ["yyfy_mahjong_tiles"] = "夜隐浮云·麻将牌",
   ["#yyfy_mahjong_rule&"] = "夜隐浮云·麻将",
+  ["yyfy_mj_rule_preset"] = "游戏规则",
+  ["yyfy_mj_rule_jousou"] = "雀魂规则",
+  ["yyfy_mj_rule_ml"] = "ML规则",
+  ["yyfy_mj_rule_a1"] = "A-1规则",
 
   ["yyfy_mj_pon"] = "碰",
   ["yyfy_mj_kan"] = "杠",
@@ -166,6 +190,7 @@ Fk:loadTranslationTable {
   ["yyfy_mj_tsumo"] = "自摸",
 
   ["yyfy_mj_no_act"] = "不操作",
+  ["yyfy_mj_kyuushu_abort"] = "九种九牌流局",
   ["yyfy_mj_claim_wait"] = "不操作",
   ["yyfy_mj_claim"] = "副露",
   ["yyfy_mj_meld"] = "副露",
@@ -202,13 +227,18 @@ Fk:loadTranslationTable {
   ["#yyfy_mj_win"] = "%arg 和牌！%arg2 番 %arg3 点",
   ["#yyfy_mj_yaku"] = "和牌役：%arg",
   ["#yyfy_mj_exhaustive"] = "本局流局",
-  ["#yyfy_mj_fly"] = "%arg 点数归零被击飞，游戏结束！",
+  ["#yyfy_mj_fly"] = "%arg 点数为负被击飞，游戏结束！",
   ["#yyfy_mj_missing_tile"] = "缺少麻将牌卡组，无法开始游戏！",
   ["#yyfy_mj_four_kan"] = "四杠散了，本局流局",
   ["#yyfy_mj_four_wind"] = "四风连打，本局流局",
+  ["#yyfy_mj_four_riichi"] = "四家立直，本局流局",
+  ["#yyfy_mj_five_kan"] = "五杠流局，本局流局",
+  ["#yyfy_mj_triple_ron"] = "三家和了，本局流局",
+  ["#yyfy_mj_kyuushu"] = "%arg 宣告九种九牌，本局流局",
   ["#yyfy_mj_nagashi"] = "%arg 流局满贯！",
 
   ["#yyfy_mj_discard_prompt"] = "请选择一张牌打出（不选牌直接点确定即为摸切）",
+  ["#yyfy_mj_kyuushu_prompt"] = "起手已有九种以上幺九牌，是否宣告九种九牌流局？",
   ["#yyfy_mj_tsumo_prompt"] = "自摸！是否和牌？",
   ["#yyfy_mj_chiihou_prompt"] = "地和！是否和牌？",
   ["#yyfy_mj_ron_prompt"] = "荣！是否和牌？",
@@ -279,6 +309,15 @@ Fk:loadTranslationTable {
   ["yyfy_yaku_dora"] = "宝牌",
   ["yyfy_yaku_ura"] = "里宝牌",
   ["yyfy_yaku_aka"] = "红宝牌",
+  -- 古役（RULES.oldYaku）
+  ["yyfy_yaku_tsubame"] = "燕返",
+  ["yyfy_yaku_kanshouhou"] = "杠上炮",
+  ["yyfy_yaku_shaniirotou"] = "十二落抬",
+  ["yyfy_yaku_gomonchii"] = "五门齐",
+  ["yyfy_yaku_renkoku"] = "三连刻",
+  ["yyfy_yaku_isshoku_saidoujun"] = "一色三同顺",
+  ["yyfy_yaku_ippin_tsukizuki"] = "一筒摸月",
+  ["yyfy_yaku_kyuupin_sukui"] = "九筒捞鱼",
 
   ["yyfy_yk_kokushi"] = "国士无双",
   ["yyfy_yk_daisangen"] = "大三元",
@@ -292,6 +331,14 @@ Fk:loadTranslationTable {
   ["yyfy_yk_suuankou_tanki"] = "四暗刻单骑",
   ["yyfy_yk_chuuren"] = "九莲宝灯",
   ["yyfy_yk_junsei_chuuren"] = "纯正九莲宝灯",
+  -- 古役役满（RULES.oldYaku）
+  ["yyfy_yk_daisharin"] = "大车轮",
+  ["yyfy_yk_daichikurin"] = "大竹林",
+  ["yyfy_yk_daisuurin"] = "大数邻",
+  ["yyfy_yk_ishigamisan"] = "石上三年",
+  ["yyfy_yk_daishichisei"] = "大七星",
+  -- 人和（RULES.renhou）
+  ["yyfy_yk_renhou"] = "人和",
 }
 
 return yyfy_mahjong_mode
